@@ -1,0 +1,673 @@
+.learning-box {
+    width: 100%;
+    background: #fbfbfb;
+    padding: 19px 10px 10px;
+    box-sizing: border-box;
+}
+.no-data-box {
+    text-align: center;
+}
+.learning-top {
+    margin-bottom: 10px;
+}
+.learning-top .learning-left {
+    background: url(../../assets/images/learning/bg.png) no-repeat;
+    background-size: 100%;
+    width: 500px;
+    height: 100px;
+    line-height: 100px;
+    box-sizing: border-box;
+    padding-left: 23px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    left: -3px;
+    bottom: 5px;
+}
+.learning-top .learning-left .portrait {
+    width: 61px;
+    border-radius: 50%;
+    border: 1px solid #f1f1f1;
+    margin-right: 16px;
+    vertical-align: middle;
+}
+.learning-top .learning-left .user-name {
+    font-size: 24px;
+    font-weight: 400;
+    color: #2b333b;
+    vertical-align: middle;
+}
+.learning-top .learning-right {
+    display: inline-block;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+.learning-top .learning-right .time-box {
+    display: inline-block;
+    width: 330px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    height: 100px;
+    overflow: hidden;
+    text-align: center;
+}
+.learning-top .learning-right .time-box:nth-child(1) {
+    margin-right: 8px;
+}
+.learning-top .learning-right .time-box div {
+    width: 50%;
+    float: left;
+}
+.learning-top .learning-right .time-box div:first-child .time::after {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 42px;
+    background: #eaeaea;
+    right: 0;
+    top: 17px;
+}
+.learning-top .learning-right .time-box .text {
+    width: 100%;
+    height: 24%;
+    line-height: 24px;
+    background: #17388c;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+}
+.learning-top .learning-right .time-box .time {
+    display: inline-block;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #17388c;
+    height: 42px;
+    width: 100%;
+    line-height: 76px;
+    position: relative;
+}
+.learning-top .learning-right .time-box .time span {
+    color: #a3b4df;
+    font-size: 18px;
+}
+.learning-buttom {
+    width: 100%;
+}
+.learning-buttom .left {
+    width: 190px;
+    display: inline-block;
+    background: #fff;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    padding-top: 22px;
+}
+.learning-buttom .left .tab-item {
+    text-align: center;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    cursor: pointer;
+}
+.learning-buttom .left .tab-item.active {
+    background: #f2f6fc;
+}
+.learning-buttom .left .tab-item img {
+    width: 20px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.learning-buttom .left .tab-item span {
+    font-size: 16px;
+    font-weight: 400;
+    color: #71777d;
+    vertical-align: middle;
+}
+.learning-buttom .left .tab-item span.active {
+    color: #17388c;
+}
+.learning-buttom .right {
+    display: inline-block;
+    width: 980px;
+    margin-left: 10px;
+    vertical-align: top;
+    background: #fff;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+.learning-buttom .right .certificate .certificateImg {
+    position: relative;
+    width: 464px;
+    height: 663px;
+    background: url(../../assets/images/learning/certificate.png) no-repeat top;
+    background-size: 100% 100%;
+    margin: 29px auto;
+    color: #2b333b;
+}
+.learning-buttom .right .certificate .certificateImg .userName {
+    font-size: 20px;
+    font-family: STXingkaiSC-Bold, STXingkaiSC;
+    font-weight: bold;
+    line-height: 28px;
+    position: absolute;
+    left: 15%;
+    top: 41%;
+    border-bottom: 1px solid #17388c;
+    padding: 0 13px;
+}
+.learning-buttom .right .certificate .certificateImg .certificateNo {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    position: absolute;
+    left: 32%;
+    top: 55.3%;
+}
+.learning-buttom .right .certificate .certificateImg .issueDate {
+    font-size: 14px;
+    font-family: FZFSJW--GB1-0, FZFSJW--GB1;
+    font-weight: normal;
+    line-height: 24px;
+    position: absolute;
+    right: 22%;
+    bottom: 15.5%;
+}
+.learning-buttom .right .certificate .certificate-btn {
+    text-align: right;
+}
+.learning-buttom .right .certificate .certificate-btn .btn {
+    width: 80px;
+    height: 24px;
+    background-color: #17388c;
+    color: #fff;
+    margin-left: 20px;
+}
+.learning-buttom .right .tab-page {
+    padding: 20px 20px 20px 30px;
+}
+.learning-buttom .right .back {
+    width: 75px;
+    height: 23px;
+    background: #17388c;
+    box-shadow: 0px 2px 4px 0px rgba(23, 56, 140, 0.3);
+    border-radius: 12px;
+    position: absolute;
+    text-align: center;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    right: 0;
+    top: 9px;
+    cursor: pointer;
+}
+.learning-buttom .right .back img {
+    width: 16px;
+    vertical-align: middle;
+}
+.learning-buttom .right .task .task-tab span,
+.learning-buttom .right .record .task-tab span,
+.learning-buttom .right .task .record-tab span,
+.learning-buttom .right .record .record-tab span {
+    display: inline-block;
+    margin-right: 48px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #71777d;
+    line-height: 30px;
+    cursor: pointer;
+}
+.learning-buttom .right .task .task-tab span.active,
+.learning-buttom .right .record .task-tab span.active,
+.learning-buttom .right .task .record-tab span.active,
+.learning-buttom .right .record .record-tab span.active {
+    color: #17388c;
+    border-bottom: 1px solid #17388c;
+    font-weight: 500;
+}
+.learning-buttom .right .task .task-content,
+.learning-buttom .right .record .task-content,
+.learning-buttom .right .task .record-content,
+.learning-buttom .right .record .record-content {
+    margin-top: 16px;
+}
+.learning-buttom .right .task .task-content .list,
+.learning-buttom .right .record .task-content .list,
+.learning-buttom .right .task .record-content .list,
+.learning-buttom .right .record .record-content .list {
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.learning-buttom .right .task .task-content .list .img,
+.learning-buttom .right .record .task-content .list .img,
+.learning-buttom .right .task .record-content .list .img,
+.learning-buttom .right .record .record-content .list .img {
+    display: inline-block;
+    width: 206px;
+    height: 124px;
+    background: #17388c;
+    vertical-align: middle;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 124px;
+}
+.learning-buttom .right .task .task-content .list .img p,
+.learning-buttom .right .record .task-content .list .img p,
+.learning-buttom .right .task .record-content .list .img p,
+.learning-buttom .right .record .record-content .list .img p {
+    color: #fff;
+    font-size: 12px;
+}
+.learning-buttom .right .task .task-content .list .img img,
+.learning-buttom .right .record .task-content .list .img img,
+.learning-buttom .right .task .record-content .list .img img,
+.learning-buttom .right .record .record-content .list .img img {
+    width: 100%;
+}
+.learning-buttom .right .task .task-content .list .center-text,
+.learning-buttom .right .record .task-content .list .center-text,
+.learning-buttom .right .task .record-content .list .center-text,
+.learning-buttom .right .record .record-content .list .center-text {
+    display: inline-block;
+    margin-left: 20px;
+    vertical-align: middle;
+    width: 560px;
+}
+.learning-buttom .right .task .task-content .list .center-text p,
+.learning-buttom .right .record .task-content .list .center-text p,
+.learning-buttom .right .task .record-content .list .center-text p,
+.learning-buttom .right .record .record-content .list .center-text p {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+.learning-buttom .right .task .task-content .list .center-text h1,
+.learning-buttom .right .record .task-content .list .center-text h1,
+.learning-buttom .right .task .record-content .list .center-text h1,
+.learning-buttom .right .record .record-content .list .center-text h1 {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 18px;
+    font-weight: 500;
+    color: #2b333b;
+    line-height: 25px;
+    margin-bottom: 8px;
+}
+.learning-buttom .right .task .task-content .list .button,
+.learning-buttom .right .record .task-content .list .button,
+.learning-buttom .right .task .record-content .list .button,
+.learning-buttom .right .record .record-content .list .button {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 24px;
+}
+.learning-buttom .right .task .task-content .list .button button,
+.learning-buttom .right .record .task-content .list .button button,
+.learning-buttom .right .task .record-content .list .button button,
+.learning-buttom .right .record .record-content .list .button button {
+    width: 120px;
+    height: 41px;
+    background: #17388c;
+}
+.learning-buttom .right .task .task-content .list .button button.hover,
+.learning-buttom .right .record .task-content .list .button button.hover,
+.learning-buttom .right .task .record-content .list .button button.hover,
+.learning-buttom .right .record .record-content .list .button button.hover {
+    background: #17388c;
+}
+.learning-buttom .right .information,
+.learning-buttom .right .security {
+    width: 100%;
+    padding: 0;
+}
+.learning-buttom .right .information .reminder,
+.learning-buttom .right .security .reminder {
+    width: 100%;
+    height: 118px;
+    background: linear-gradient(180deg, #f1f5ff 0%, #ffffff 47%, #ffffff 100%);
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    text-align: center;
+    line-height: 118px;
+}
+.learning-buttom .right .information .reminder h1,
+.learning-buttom .right .security .reminder h1 {
+    display: inline-block;
+    margin-right: 30px;
+    font-size: 20px;
+    font-family: FZLTCHJW--GB1-0, FZLTCHJW--GB1;
+    font-weight: normal;
+    color: #17388c;
+    letter-spacing: 1px;
+    vertical-align: middle;
+}
+.learning-buttom .right .information .reminder p,
+.learning-buttom .right .security .reminder p {
+    display: inline-block;
+    line-height: 22px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    color: #17388c;
+    vertical-align: middle;
+}
+.learning-buttom .right .information .information-content,
+.learning-buttom .right .security .information-content {
+    margin-top: 6px;
+}
+.learning-buttom .right .information .information-content .text,
+.learning-buttom .right .security .information-content .text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #17388c;
+    line-height: 22px;
+    display: block;
+}
+.learning-buttom .right .information .information-content .picture,
+.learning-buttom .right .security .information-content .picture,
+.learning-buttom .right .information .information-content .title,
+.learning-buttom .right .security .information-content .title {
+    padding: 20px 30px 0 30px;
+}
+.learning-buttom .right .information .information-content .picture .text,
+.learning-buttom .right .security .information-content .picture .text,
+.learning-buttom .right .information .information-content .title .text,
+.learning-buttom .right .security .information-content .title .text {
+    float: left;
+}
+.learning-buttom .right .information .information-content .picture,
+.learning-buttom .right .security .information-content .picture {
+    width: 100%;
+    height: 211px;
+    background: url("../../assets/images/learning/bg2.png") no-repeat;
+    background-size: 100%;
+    box-sizing: border-box;
+}
+.learning-buttom .right .information .information-content .picture .uploading,
+.learning-buttom .right .security .information-content .picture .uploading {
+    margin: 0 auto;
+    margin-top: 33px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+}
+.learning-buttom .right .information .information-content .picture .uploading p,
+.learning-buttom .right .security .information-content .picture .uploading p {
+    vertical-align: middle;
+}
+.learning-buttom .right .information .information-content .picture .portrait,
+.learning-buttom .right .security .information-content .picture .portrait {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-top: 33px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .picture
+    .portrait
+    img,
+.learning-buttom .right .security .information-content .picture .portrait img {
+    width: 100%;
+    border-radius: 50%;
+}
+.learning-buttom .right .information .information-content .conserve,
+.learning-buttom .right .security .information-content .conserve {
+    float: right;
+}
+.learning-buttom .right .information .information-content .information-form,
+.learning-buttom .right .security .information-content .information-form {
+    margin-top: 26px;
+    padding-bottom: 200px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .text-left,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .text-left,
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .text-right,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .text-right {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 190px;
+}
+.learning-buttom .right .information .information-content .information-form li,
+.learning-buttom .right .security .information-content .information-form li {
+    font-size: 14px;
+    font-weight: 400;
+    color: #2b333b;
+    margin-bottom: 30px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .password-box,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .password-box {
+    padding-left: 30px;
+    padding-bottom: 42px;
+    padding-top: 30px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .password-box
+    .password-content,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .password-box
+    .password-content {
+    width: 170px;
+    margin: 0 auto;
+    margin-top: 26px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .password-box
+    .password-content
+    li,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .password-box
+    .password-content
+    li {
+    text-align: left;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .password-box
+    .password-content
+    li
+    input,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .password-box
+    .password-content
+    li
+    input {
+    border: 0;
+    width: 100px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .form-left,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .form-left {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 140px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .form-right,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .form-right {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 70px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .form-id,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .form-id {
+    margin-top: 100px;
+    padding-left: 30px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .form-id
+    .text,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .form-id
+    .text {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .button,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .button {
+    margin-top: 31px;
+    text-align: center;
+    padding-bottom: 50px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .button
+    .btn,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .button
+    .btn {
+    width: 80px;
+    height: 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    border: 0;
+    float: none;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .button
+    .btn.cancel,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .button
+    .btn.cancel {
+    background: #dee4f4;
+    color: #17388c;
+    margin-right: 10px;
+}
+.learning-buttom
+    .right
+    .information
+    .information-content
+    .information-form
+    .button
+    .btn.conserve,
+.learning-buttom
+    .right
+    .security
+    .information-content
+    .information-form
+    .button
+    .btn.conserve {
+    background: #17388c;
+    color: #fff;
+}

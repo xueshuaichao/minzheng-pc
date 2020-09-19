@@ -1,0 +1,104 @@
+/*
+Write your variables here. All available variables can be
+found in https://github.com/iview/iview/blob/2.0/src/styles/custom.less.
+*/
+
+@import "~view-design/src/styles/index.less";
+
+// Here are the variables to cover
+@primary-color: #17388c;
+@info-color: #4769c0;
+@success-color: #56bc24;
+@error-color: #d84344;
+@active-color: #fff;
+
+@link-hover-color: #3257b5;
+
+@border-color-base: #d9dde1; // outside
+
+// Button
+@btn-border-radius: 4px;
+
+// Text
+@title-color: #2b333b;
+@text-color: #71777d;
+@text-color-secondary: #b7bbbf;
+
+// shadow
+@shadow-color: rgba(43, 51, 59, 0.16);
+
+// Form
+.ivu-form-item-error-tip {
+    font-size: 12px;
+}
+
+// Input
+@input-height-base: 40px;
+@input-height-large: 48px;
+@input-height-small: 32px;
+@input-placeholder-color: #d9dde1;
+@input-border-color: #d9dde1;
+.ivu-input:focus {
+    box-shadow: none;
+    border-color: #2b333b;
+}
+.ivu-input-group-prepend {
+    background: none;
+}
+// .ivu-input-group-with-prepend .ivu-input {
+//     border-left: none;
+// }
+
+// radio
+.ivu-radio-wrapper {
+    margin-right: 32px;
+}
+.ivu-radio {
+    margin-right: 10px;
+}
+.ivu-radio-group-vertical .ivu-radio-wrapper {
+    margin-right: 8px;
+}
+
+// checkbox
+.ivu-checkbox {
+    margin-right: 10px;
+}
+
+// Table
+.ivu-table th {
+    background: #f2f6fc;
+}
+// page
+.ivu-page {
+    font-size: 16px;
+    text-align: center;
+}
+.ivu-page-item {
+    width: 48px;
+    height: 48px;
+    margin-right: 8px;
+    line-height: 48px;
+    border: none;
+    box-shadow: 0px 0px 20px 0px rgba(43, 51, 59, 0.08);
+}
+.ivu-page-item-active {
+    background-color: @primary-color;
+    &:hover {
+        color: @active-color;
+    }
+}
+.ivu-page-item-active a {
+    color: @active-color;
+    &:hover {
+        color: @active-color;
+    }
+}
+.ivu-page-prev,
+.ivu-page-next {
+    width: 80px;
+    height: 48px;
+    margin-right: 8px;
+    line-height: 48px;
+    box-shadow: 0px 0px 20px 0px rgba(43, 51, 59, 0.08);
+}
