@@ -65,6 +65,48 @@ const getPageConfigs = Promise.resolve([
             },
         ],
     },
+    {
+        uri: '/training',
+        name: '培训列表',
+        layout: [
+            {
+                aid: 'aid_1',
+                block_id: [13],
+                block_instance_id: [131],
+            },
+        ],
+        templateId: 4,
+        type: 2,
+        moduleId: 2,
+        setting: [
+            {
+                bid: 131,
+                block_id: 13,
+                setting: null,
+            },
+        ],
+    },
+    {
+        uri: '/trainingDetail',
+        name: '培训详情',
+        layout: [
+            {
+                aid: 'aid_1',
+                block_id: [14],
+                block_instance_id: [141],
+            },
+        ],
+        templateId: 4,
+        type: 2,
+        moduleId: 2,
+        setting: [
+            {
+                bid: 141,
+                block_id: 14,
+                setting: null,
+            },
+        ],
+    },
 ]);
 
 getPageConfigs.then((data) => {
