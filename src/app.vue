@@ -44,31 +44,31 @@ import store from './store/index';
 
 const NAV = [
     {
-        to: { name: 'home' },
+        to: { path: '/' },
         label: '首页',
         excat: true,
     },
     {
-        to: { path: '/policy/explain' },
-        label: '政策解读',
+        to: { path: '/course' },
+        label: '课程中心',
         excat: true,
     },
     {
         to: { path: '/course/list' },
-        label: '教育培训',
+        label: '试题中心',
     },
     {
         to: { path: '/exam/list' },
-        label: '考试测评',
+        label: '学习中心',
     },
-    {
-        to: { path: '/job/list' },
-        label: '就业信息',
-    },
-    {
-        to: { path: '/service' },
-        label: '创业服务',
-    },
+    // {
+    //     to: { path: '/job/list' },
+    //     label: '就业信息',
+    // },
+    // {
+    //     to: { path: '/service' },
+    //     label: '创业服务',
+    // },
 ];
 export default {
     data() {
