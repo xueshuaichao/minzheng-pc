@@ -2,7 +2,7 @@
     <div id="wdc-app">
         <div class="wrap">
             <header>
-                <div class="banner" />
+                <!-- <div class="banner" /> -->
                 <div class="nav">
                     <div class="m-container clearfix">
                         <ul class="nav-bar fl">
