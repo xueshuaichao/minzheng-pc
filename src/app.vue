@@ -182,7 +182,7 @@ export default {
         float: right;
     }
     .logo {
-        margin-top: 20px;
+        margin-top: 24px;
         width: 140px;
         height: 40px;
     }
