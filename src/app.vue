@@ -176,7 +176,7 @@ export default {
         cursor: pointer;
     }
     .router-link-active {
-        background: #4769c0;
+        background: #d14242;
     }
     .login-state {
         float: right;

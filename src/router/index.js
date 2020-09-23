@@ -6,6 +6,11 @@ import routes from './routers';
 
 Vue.use(Router);
 
+iView.LoadingBar.config({
+    color: '#d14242',
+    failedColor: '#d14242',
+});
+
 const router = new Router({
     mode: 'history',
     routes,
