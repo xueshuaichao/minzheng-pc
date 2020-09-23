@@ -8,34 +8,36 @@
         </div>
 
         <div class="content-box">
-            <div class="content-item">
+            <div
+                v-for="item in messageList"
+                :key="item.id"
+                class="content-item"
+            >
                 <div class="first-line">
-                    <img src="@/assets/images/learnings/clock.png">
-                    2020/04/05
+                    <img src="@/assets/images/learnings/bell.png">
+                    {{ item.submitTime }}
                 </div>
                 <div class="second-line">
                     任务修改
                 </div>
-                <div class="third-line">
-                    您的学习任务《大数实战培训》已于2019-12-25 23:59:00修改
+                <div
+                    v-if="show"
+                    class="third-line"
+                >
+                    {{ item.content }}-12-25 23:59:00修改
                 </div>
-                <div class="button">
-                    <img src="@/assets/images/learnings/up-arrow.png"> 展开
-                </div>
-            </div>
-            <div class="content-item">
-                <div class="first-line">
-                    <img src="@/assets/images/learnings/clock.png">
-                    2020/04/05
-                </div>
-                <div class="second-line">
-                    任务修改
-                </div>
-                <div class="third-line">
-                    您的学习任务《大数实战培训》已于2019-12-25 23:59:00修改
-                </div>
-                <div class="button">
-                    <img src="@/assets/images/learnings/up-arrow.png"> 展开
+                <div
+                    class="button"
+                    @click="show = !show"
+                >
+                    <template v-if="show">
+                        <img src="@/assets/images/learnings/up-arrow.png">
+                        收起
+                    </template>
+                    <template v-else>
+                        <img src="@/assets/images/learnings/up-arrow.png">
+                        展开
+                    </template>
                 </div>
             </div>
         </div>
@@ -43,9 +45,25 @@
 </template>
 
 <script>
+import learningsApi from '../../api/learnings';
+
 export default {
     data() {
-        return {};
+        return {
+            show: false,
+            messageList: [],
+        };
+    },
+    created() {
+        this.messageFindByCondition();
+    },
+    methods: {
+        messageFindByCondition() {
+            return learningsApi.messageFindByCondition({}).then((data) => {
+                console.log(data);
+                this.messageList = data.data.list;
+            });
+        },
     },
 };
 </script>
@@ -125,6 +143,7 @@ export default {
                 top: 70px;
                 right: 36px;
                 color: #d14242;
+                cursor: pointer;
                 img {
                     width: 7px;
                     height: 12px;

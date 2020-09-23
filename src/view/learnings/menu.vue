@@ -5,7 +5,14 @@
             :class="{ active: currentItem === 1 }"
             @click="handleToggle(1)"
         >
-            <img src="@/assets/images/learnings/learn.png">
+            <img
+                v-show="currentItem === 1"
+                src="@/assets/images/learnings/learn-select.png"
+            >
+            <img
+                v-show="currentItem !== 1"
+                src="@/assets/images/learnings/learn.png"
+            >
             学习
         </div>
         <div
@@ -13,7 +20,14 @@
             :class="{ active: currentItem === 2 }"
             @click="handleToggle(2)"
         >
-            <img src="@/assets/images/learnings/message.png">
+            <img
+                v-show="currentItem === 2"
+                src="@/assets/images/learnings/message-select.png"
+            >
+            <img
+                v-show="currentItem !== 2"
+                src="@/assets/images/learnings/message.png"
+            >
             消息
         </div>
         <div
@@ -21,7 +35,14 @@
             :class="{ active: currentItem === 3 }"
             @click="handleToggle(3)"
         >
-            <img src="@/assets/images/learnings/setting.png">
+            <img
+                v-show="currentItem === 3"
+                src="@/assets/images/learnings/setting-select.png"
+            >
+            <img
+                v-show="currentItem !== 3"
+                src="@/assets/images/learnings/setting.png"
+            >
             设置
         </div>
     </div>

@@ -14,21 +14,29 @@
             </div>
         </div>
 
-        <div class="content-box">
-            <div class="content-item">
+        <div
+            v-if="button1 === '我的测试'"
+            class="content-box"
+        >
+            <div
+                v-for="item in testList"
+                :key="item.id"
+                class="content-item"
+            >
                 <div class="title">
-                    试卷的名称啊，名称啊试卷的名称啊，名称啊
+                    {{ item.name }}
                 </div>
                 <div class="time">
-                    2018-08-16 12:02
+                    {{ item.submitTime }}
                 </div>
                 <div class="result">
                     <span style="color:#119C7B">对题数</span>/总题数：<span
                         style="color:#119C7B"
-                    >1</span>/5
+                    >{{ item.rightNum }}</span>/{{ item.totalNum }}
                 </div>
                 <div class="lesson">
-                    养老培训
+                    <img src="@/assets/images/learnings/txt.png">
+                    {{ item.categoryName }}
                 </div>
                 <div class="detail">
                     查看详情
@@ -37,49 +45,89 @@
                     重新测试
                 </div>
             </div>
-            <div class="content-item">
+        </div>
+        <div
+            v-else
+            class="content-error-box"
+        >
+            <div
+                v-for="item in errorList"
+                :key="item.id"
+                class="content-item"
+            >
                 <div class="title">
-                    试卷的名称啊，名称啊试卷的名称啊，名称啊
+                    {{ item.title }}
                 </div>
-                <div class="time">
-                    2018-08-16 12:02
+                <div class="xuanxiang">
+                    <RadioGroup v-model="item.userAnswer">
+                        <Radio
+                            v-for="item1 in JSON.parse(item.content)"
+                            :key="item1.id"
+                            :label="item1.code"
+                        >
+                            <span>{{ item1.value }}</span>
+                        </Radio>
+                    </RadioGroup>
                 </div>
-                <div>对题数/总题数：1/5</div>
-                <div>养老培训</div>
-                <a href="javascript:;">查看详情</a>
-                <a href="javascript:;">重新测试</a>
+                <div class="rightAnswer">
+                    正确答案{{ item.rightAnswer }}
+                </div>
+                <div class="jiexi">
+                    答案解析{{ item.remark }}
+                </div>
+                <div
+                    class="test"
+                    @click="handleRemoveError(item.id)"
+                >
+                    移除错题
+                </div>
             </div>
-            <!-- <div class="content-item">
-                <div style="height:126px;background:blue;">
-
-                </div>
-                <div style="padding-left: 10px;">
-                    <div class="title">收到答复是否石帆胜丰</div>
-                    <div class="time">2020/6/38</div>
-                    <Progress :percent="25" stroke-color="#00B288" :stroke-width="5" />
-                </div>
-            </div> -->
         </div>
     </div>
-    <!-- <div>
-        <p>我的测评</p>
-        <div>
-            <div>试卷名称</div>
-            <div>2020-8-16</div>
-            <div>对题数/总体书</div>
-            <div>养老培训</div>
-            <Button>查看详情</Button>
-            <Button>重新测试</Button>
-        </div>
-    </div> -->
 </template>
 
 <script>
+import learningsApi from '../../../api/learnings';
+
 export default {
     data() {
         return {
-            button1: '北京',
+            button1: '错题本',
+            testList: [],
+            errorList: [],
         };
+    },
+    created() {
+        this.examFindByCondition();
+        this.questionFindByCondition();
+    },
+    methods: {
+        examFindByCondition() {
+            return learningsApi.examFindByCondition({}).then((data) => {
+                console.log(data);
+                this.testList = data.data.list;
+            });
+        },
+        questionFindByCondition() {
+            return learningsApi.questionFindByCondition({}).then((data) => {
+                console.log(data);
+                this.errorList = data.data.list;
+            });
+        },
+        handleRemoveError(id) {
+            this.$Modal.confirm({
+                title: '删除提示',
+                content: '<p>删除后数据将无法恢复，是否确认删除？</p>',
+                onOk: () => {
+                    this.deleteCarousel({ id });
+                },
+            });
+        },
+        deleteCarousel(param) {
+            return learningsApi.questionRemove(param).then(() => {
+                this.questionFindByCondition();
+            });
+        },
     },
 };
 </script>
@@ -117,45 +165,85 @@ export default {
             }
         }
     }
-    .content-box {
-        // display:flex;
+    .content-error-box {
         margin-top: 20px;
         .content-item {
-            // width: 224px;
-            height: 230px;
-            // margin-right:20px;
+            height: 200px;
             font-size: 14px;
             background: #fff;
             position: relative;
-            div {
-                position: absolute;
-            }
+            padding: 24px;
+            margin-bottom: 16px;
             .title {
                 color: #272f55;
-                top: 24px;
-                left: 24px;
+                font-size: 18px;
+                margin-bottom: 16px;
+            }
+            .rightAnswer {
+                color: #272f55;
+                font-size: 16px;
+                margin-top: 32px;
+                margin-bottom: 8px;
+            }
+            .xuanxiang {
+                color: #919191;
+            }
+            .jiexi {
+                color: #272f55;
+            }
+            .test {
+                top: 137px;
+                right: 42px;
+                color: #4a90e2;
+                position: absolute;
+                cursor: pointer;
+            }
+        }
+    }
+    .content-box {
+        margin-top: 20px;
+        .content-item {
+            height: 183px;
+            font-size: 14px;
+            background: #fff;
+            position: relative;
+            padding: 24px;
+            // div {
+            //     position: absolute;
+            // }
+            .title {
+                color: #272f55;
                 font-size: 18px;
             }
             .time {
                 color: #737386;
-                top: 65px;
-                left: 24px;
+                margin-top: 16px;
+                margin-bottom: 14px;
             }
             .result {
-                top: 99px;
-                left: 24px;
                 font-size: 16px;
+                margin-bottom: 10px;
             }
             .lesson {
-                top: 135px;
-                left: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 126px;
+                height: 37px;
+                background-image: url("../../../assets/images/learnings/label.png");
+                background-size: 100% 100%;
+                img {
+                    width: 16px;
+                }
             }
             .detail {
+                position: absolute;
                 top: 91px;
                 right: 42px;
                 color: #4a90e2;
             }
             .test {
+                position: absolute;
                 top: 137px;
                 right: 42px;
                 color: #4a90e2;

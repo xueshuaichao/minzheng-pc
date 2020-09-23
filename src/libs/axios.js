@@ -62,6 +62,7 @@ const create = () => {
         timeout: 1000,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
+            token: '123',
         },
         withCredentials: true,
     };

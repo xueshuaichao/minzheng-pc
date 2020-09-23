@@ -9,8 +9,7 @@
                 <Radio label="全部" />
                 <Radio label="未开始" />
                 <Radio label="进行中" />
-                <Radio label="未通过" />
-                <Radio label="已通过" />
+                <Radio label="已完成" />
             </RadioGroup>
             <div class="search">
                 <input placeholder="请输入关键字">
@@ -32,9 +31,6 @@
                 <div style="padding-left: 10px;">
                     <div class="title">
                         {{ item.name }}
-                    </div>
-                    <div class="time">
-                        {{ item.trainStartTime }}-{{ item.trainEndTime }}
                     </div>
                     <Progress
                         :percent="item.progress"
@@ -62,9 +58,9 @@ export default {
     },
     methods: {
         taskFindByCondition() {
-            return learningsApi.taskFindByCondition({}).then((data) => {
+            return learningsApi.userCourseElective({}).then((data) => {
                 console.log(data);
-                this.taskList = data.data;
+                this.taskList = data.data.list;
             });
         },
     },

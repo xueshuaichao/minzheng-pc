@@ -25,41 +25,32 @@
             </div>
         </div>
         <taskList v-if="showItem === 1" />
+        <electiveList v-if="showItem === 2" />
         <testList v-if="showItem === 3" />
+        <!-- <keep-alive>
+            <component :is="currentTabComponent" />
+        </keep-alive> -->
     </div>
 </template>
 
 <script>
 import taskList from './components/task-list.vue';
+import electiveList from './components/elective-list.vue';
 import testList from './components/test-list.vue';
 
 export default {
     components: {
         taskList,
         testList,
+        electiveList,
     },
     data() {
         return {
-            taskList: [],
             showItem: 1,
         };
     },
-    created() {
-        this.taskFindByCondition();
-    },
+    created() {},
     methods: {
-        taskFindByCondition() {
-            this.taskList = [
-                {
-                    id: 1,
-                    name: '任务 0',
-                    status: 2,
-                    progress: 96,
-                    trainStartTime: '2020-09-19 19:45:42',
-                    trainEndTime: '2020-09-19 19:45:42',
-                },
-            ];
-        },
         handleToggle(val) {
             this.showItem = val;
         },
