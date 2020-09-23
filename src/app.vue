@@ -5,6 +5,11 @@
                 <!-- <div class="banner" /> -->
                 <div class="nav">
                     <div class="m-container clearfix">
+                        <img
+                            class="fl logo"
+                            src="@/assets/images/logo.png"
+                            alt=""
+                        >
                         <ul class="nav-bar fl">
                             <router-link
                                 v-for="item in nav"
@@ -33,7 +38,45 @@
             </header>
             <router-view />
         </div>
-        <footer />
+        <footer>
+            <div class="main-content">
+                <div class="company-infos">
+                    <div class="info">
+                        <p>
+                            主办方: 青岛市民政局
+                        </p>
+                        <p>
+                            地址: 青岛市延安三路民政大厦
+                        </p>
+                    </div>
+                    <div class="info">
+                        <p>
+                            邮政编码: 266071
+                        </p>
+                        <p>
+                            电话: 010-66490665
+                        </p>
+                    </div>
+                    <div class="qrcode-wrap">
+                        <div class="qc-item">
+                            <div class="qrcode" />
+                            <p>
+                                下载app
+                            </p>
+                        </div>
+                        <div class="qc-item">
+                            <div class="qrcode" />
+                            <p>
+                                进入H5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <p class="copyright">
+                    伟东集团有限责任公司@版权所有 京ICP 备 10026535 号-24
+                </p>
+            </div>
+        </footer>
     </div>
 </template>
 
@@ -122,9 +165,9 @@ export default {
     cursor: pointer;
 }
 .nav {
-    height: 60px;
-    line-height: 60px;
-    background: @mainColor;
+    height: 88px;
+    line-height: 88px;
+    background: #d14242;
     color: #fff;
     font-size: 18px;
     .nav-item {
@@ -138,10 +181,51 @@ export default {
     .login-state {
         float: right;
     }
+    .logo {
+        margin-top: 20px;
+        width: 140px;
+        height: 40px;
+    }
 }
 footer {
     margin-top: -120px;
-    height: 120px;
-    background: #dee4f4;
+    height: 301px;
+    background: #000000;
+    .main-content {
+        width: 1200px;
+        margin: 0 auto;
+        .copyright {
+            text-align: center;
+            font-size: 16px;
+            margin-top: 36px;
+            line-height: 36px;
+            color: #737882;
+        }
+        .company-infos {
+            display: flex;
+            font-size: 20px;
+            line-height: 28px;
+            justify-content: space-between;
+            .qrcode-wrap {
+                display: flex;
+                margin-left: 360px;
+                margin-top: 60px;
+                .qc-item {
+                    width: 102px;
+                    text-align: center;
+                    margin-left: 25px;
+                }
+                .qrcode {
+                    width: 102px;
+                    height: 102px;
+                    background: #fff;
+                    margin-bottom: 19px;
+                }
+            }
+            .info {
+                margin-top: 100px;
+            }
+        }
+    }
 }
 </style>
