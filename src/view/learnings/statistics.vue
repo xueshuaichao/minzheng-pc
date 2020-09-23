@@ -104,10 +104,12 @@ export default {
     padding: 0;
     flex-shrink: 0;
     margin-right: 24px;
+    margin-bottom: 32px;
     .item {
         flex: 1;
+        // width: 220px;
         height: 106px;
-        margin: 20px;
+        margin-right: 20px;
         background: rgba(248, 249, 250, 1);
         border-radius: 2px;
         padding-left: 28px;

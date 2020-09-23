@@ -48,6 +48,8 @@ export default {
 .menu-box {
     font-size: 20px;
     // width: 232px;
+    background: #fff;
+    height: 100%;
     .menu-item {
         height: 76px;
         display: flex;

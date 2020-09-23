@@ -1,11 +1,19 @@
 <template>
     <div class="home">
         <div style="width: 232px;">
-            <menu1 @toggle="currentItem = val" />
+            <menu1 @toggle="currentItem = $event" />
         </div>
-        <div style="flex:1;">
-            <statistics />
-            <list />
+        <div style="flex:1;padding-left:22px;padding-top:24px;">
+            <div v-if="currentItem === 1">
+                <statistics />
+                <list />
+            </div>
+            <div v-if="currentItem === 2">
+                <message />
+            </div>
+            <div v-if="currentItem === 3">
+                <setting />
+            </div>
         </div>
     </div>
 </template>
@@ -14,6 +22,8 @@
 import menu1 from './menu.vue';
 import statistics from './statistics.vue';
 import list from './list.vue';
+import Message from './message.vue';
+import Setting from './setting.vue';
 
 export default {
     name: 'Index',
@@ -21,6 +31,8 @@ export default {
         menu1,
         statistics,
         list,
+        Message,
+        Setting,
     },
     data() {
         return {
