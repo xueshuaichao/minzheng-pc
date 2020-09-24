@@ -154,6 +154,7 @@ export default {
     min-height: 100%;
     /* 底部 */
     padding-bottom: 120px;
+    background: #f7f7f9;
 }
 .banner {
     width: 100%;

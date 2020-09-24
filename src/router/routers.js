@@ -3,6 +3,7 @@ import error from './error';
 // import job from './job';
 // import exam from './exam';
 // import service from './service';
+// import course from './course.js';
 import learning from './learning';
 
 // export default [...home, ...job, ...error, ...exam, ...service, ...learning];
