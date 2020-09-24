@@ -8,23 +8,27 @@
         </div>
 
         <div class="content-box">
+            <!-- 0未读，1已读 -->
             <div
                 v-for="item in messageList"
                 :key="item.id"
                 class="content-item"
             >
                 <div class="first-line">
-                    <img src="@/assets/images/learnings/bell.png">
-                    {{ item.submitTime }}
+                    <div class="bell">
+                        <img src="@/assets/images/learnings/bell.png">
+                        <span v-if="item.status === 0" />
+                    </div>
+                    {{ item.createTime }}
                 </div>
                 <div class="second-line">
-                    任务修改
+                    {{ item.typeName }}
                 </div>
                 <div
                     v-if="show"
                     class="third-line"
                 >
-                    {{ item.content }}-12-25 23:59:00修改
+                    {{ item.content }}
                 </div>
                 <div
                     class="button"
@@ -114,28 +118,39 @@ export default {
             font-size: 14px;
             border-bottom: 1px solid #e6e6e6;
             position: relative;
-
+            & > div {
+                margin-left: 16px;
+            }
             .first-line {
-                position: absolute;
-                top: 34px;
-                left: 0px;
                 font-size: 16px;
-                img {
-                    width: 14px;
-                    height: 14px;
+                margin-top: 34px;
+                position: relative;
+                .bell {
+                    position: absolute;
+                    top: 0;
+                    left: -17px;
+                    img {
+                        width: 14px;
+                        height: 14px;
+                    }
+                    span {
+                        width: 8px;
+                        height: 8px;
+                        background: #d14242;
+                        border-radius: 4px;
+                        position: absolute;
+                        top: 2px;
+                        left: 7px;
+                    }
                 }
             }
             .second-line {
-                position: absolute;
-                top: 68px;
-                left: 16px;
+                margin-top: 10px;
                 font-size: 18px;
             }
             .third-line {
-                position: absolute;
-                top: 111px;
-                left: 16px;
                 color: #9393a0;
+                margin-top: 19px;
                 font-size: 16px;
             }
             .button {

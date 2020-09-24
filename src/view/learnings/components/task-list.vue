@@ -64,7 +64,7 @@ export default {
         taskFindByCondition() {
             return learningsApi.taskFindByCondition({}).then((data) => {
                 console.log(data);
-                this.taskList = data.data;
+                this.taskList = data.data.list;
             });
         },
     },
