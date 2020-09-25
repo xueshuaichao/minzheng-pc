@@ -71,11 +71,11 @@
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        {{ formValidate1.phone }}
+                        {{ formValidate1.phone | formatephone }}
                     </div>
                 </FormItem>
                 <FormItem
-                    v-if="!isEdit"
+                    v-show="!isEdit"
                     label="验证码"
                     prop="code"
                 >
@@ -86,10 +86,17 @@
                             placeholder="请输入验证码"
                         />
                         <div
+                            v-if="isAvalible"
                             class="yanzhengma"
                             @click="handleyanzhengma"
                         >
                             发送验证码
+                        </div>
+                        <div
+                            v-if="!isAvalible"
+                            class="yanzhengma disable"
+                        >
+                            {{ this.time }}(s)
                         </div>
                     </div>
                 </FormItem>
@@ -110,7 +117,7 @@
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        {{ formValidate1.selectedList }}
+                        {{ selectedLabels }}
                     </div>
                 </FormItem>
             </Form>
@@ -125,6 +132,7 @@
             <div
                 v-if="!isEdit"
                 style="margin-right: 20px;"
+                @click="handleSubmit('formValidate1')"
             >
                 保存
             </div>
@@ -194,7 +202,31 @@
 <script>
 import learningsApi from '../../api/learnings';
 
+const passwordvalidator = {
+    validator: (rule, value) => {
+        if (!value) {
+            return true;
+        }
+        if (value.length < 6) {
+            // eslint-disable-next-line
+            rule.message = "密码位数不得小于6位";
+            return false;
+        }
+        if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(value)) {
+            // eslint-disable-next-line
+            rule.message = "请输入字母和数字的组合";
+            return false;
+        }
+        return true;
+    },
+    trigger: 'blur',
+};
 export default {
+    filters: {
+        formatephone(phone) {
+            return `${phone.substr(0, 3)}****${phone.substr(7)}`;
+        },
+    },
     data() {
         return {
             visible1: false,
@@ -211,6 +243,7 @@ export default {
                         message: '请输入密码',
                         trigger: 'blur',
                     },
+                    passwordvalidator,
                 ],
                 newPassword: [
                     {
@@ -218,6 +251,7 @@ export default {
                         message: '请输入新密码',
                         trigger: 'blur',
                     },
+                    passwordvalidator,
                 ],
                 confirmPass: [
                     {
@@ -225,6 +259,7 @@ export default {
                         message: '请再次输入新密码',
                         trigger: 'blur',
                     },
+                    passwordvalidator,
                 ],
             },
             formValidate1: {
@@ -233,6 +268,7 @@ export default {
                 code: '',
                 selectedList: [],
             },
+            selectedLabels: [],
             ruleValidate1: {
                 name: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -244,9 +280,14 @@ export default {
                         trigger: 'blur',
                     },
                     {
-                        type: 'phone',
                         message: '手机号格式不正确',
                         trigger: 'blur',
+                        validator(rule, value) {
+                            if (!value) {
+                                return true;
+                            }
+                            return /^1[3|4|5|6|7|8|9][0-9]{9}$/.test(value);
+                        },
                     },
                 ],
                 city: [
@@ -265,6 +306,9 @@ export default {
             loading: false,
             organizations: [],
             portrait: '',
+            isAvalible: true,
+            time: 60,
+            setId: '',
         };
     },
     created() {
@@ -272,7 +316,44 @@ export default {
         this.userInfo();
     },
     methods: {
-        handleyanzhengma() {},
+        async handleyanzhengma() {
+            const result = await this.validatePhone('formValidate1');
+            console.log(result, 'abc');
+            if (result) {
+                return;
+            }
+            // learningsApi.userSendSms({phone: this.formValidate1.phone}).then((data) => {
+            //     console.log(data);
+            this.isAvalible = false;
+            clearInterval(this.setId);
+            this.setId = setInterval(() => {
+                this.time -= 1;
+                if (this.time === 0) {
+                    this.isAvalible = true;
+                    clearInterval(this.setId);
+                }
+            }, 1000);
+
+            // });
+        },
+        // 对手机字段校验
+        validatePhone(item) {
+            return new Promise((resolve) => {
+                this.$refs[item].validateField('phone', (valid) => {
+                    console.log(valid, 'valid');
+                    resolve(valid);
+                });
+            });
+        },
+        handleSubmit(item) {
+            this.$refs[item].validate((valid) => {
+                if (valid) {
+                    // this.$Message.success('Success!');
+                } else {
+                    // this.$Message.error('Fail!');
+                }
+            });
+        },
         userInfo() {
             return learningsApi.userInfo({}).then((data) => {
                 console.log(data);
@@ -280,7 +361,15 @@ export default {
                 this.formValidate1.name = userInfo.name;
                 this.formValidate1.phone = userInfo.phone;
                 this.formValidate1.selectedList = userInfo.selectedList;
+                this.selectedLabels = userInfo.selectedLabels.join('/');
                 this.organizations = userInfo.organizations;
+                // this.organizations = [{
+                //     children: [{value: 5, label: "养老机构", selected: true, parent: 1,children:null}],
+                //     label: "省级",
+                //     parent: 0,
+                //     selected: true,
+                //     value: 1
+                // }]
                 this.portrait = userInfo.portrait;
             });
         },
@@ -297,15 +386,6 @@ export default {
             console.log('cancel');
             this.$refs.formValidate4.resetFields();
             this.visible1 = false;
-        },
-        handleSubmit(item) {
-            this.$refs[item].validate((valid) => {
-                if (valid) {
-                    this.$Message.success('Success!');
-                } else {
-                    this.$Message.error('Fail!');
-                }
-            });
         },
         // 手动上传图片
         handleBeforeUpload(data) {
@@ -453,6 +533,9 @@ export default {
         text-align: center;
         color: #fff;
         line-height: 37px;
+    }
+    .disable {
+        background: #b3b3b3;
     }
 }
 </style>

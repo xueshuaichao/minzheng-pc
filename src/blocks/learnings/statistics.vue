@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import learningsApi from '../../api/learnings';
+
 export default {
     data() {
         return {
@@ -79,20 +81,20 @@ export default {
     },
     methods: {
         findUserCourseHour() {
-            this.statisticData = {
-                todayLearnTime: 99, // 今日学长
-                lastWeekLearnTime: 150, // 上周学长
-                lastMonthLearnTime: 251, // 上月学长
-                totalLearnTime: 100, // 总学长
-                score: 10.2, // 学分
-                taskProgress: 30, // 任务进度
-                electiveProgress: 40, // 选学进度
-            };
-            // return learnsApi.statisticsLearn().then((data) => {
-            //     if (data.success) {
-            //         this.userCourseHour = data.data;
-            //     }
-            // });
+            // this.statisticData = {
+            //     todayLearnTime: 99, // 今日学长
+            //     lastWeekLearnTime: 150, // 上周学长
+            //     lastMonthLearnTime: 251, // 上月学长
+            //     totalLearnTime: 100, // 总学长
+            //     score: 10.2, // 学分
+            //     taskProgress: 30, // 任务进度
+            //     electiveProgress: 40, // 选学进度
+            // };
+            return learningsApi.statisticsLearn().then((data) => {
+                if (data.success) {
+                    this.statisticData = data.data;
+                }
+            });
         },
     },
 };

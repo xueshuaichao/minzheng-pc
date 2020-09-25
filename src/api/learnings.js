@@ -56,4 +56,15 @@ export default {
         console.log(param);
         return axios.file('/apii/file/upload', param);
     },
+    // 获取验证码
+    userSendSms(param) {
+        return axios.get(
+            `/apis/learnCenter/user/sendSms?phone=${param.phone}`,
+            param,
+        );
+    },
+    // 试卷分类
+    examGetCategoryTree() {
+        return axios.get('/apis/learnCenter/exam/getCategoryTree');
+    },
 };

@@ -24,28 +24,61 @@
             v-if="button1 === '错题本'"
             class="error-filter"
         >
-            <div style="margin-bottom:36px;">
-                <div>试卷分类：</div>
-                <div
-                    v-for="item in shijuanfenlei"
-                    :key="item.value"
-                    class="task-item"
-                    :class="{ active: listparam.examCategoryId === item.value }"
-                    @click="handlefenleiToggle(item.value)"
-                >
-                    {{ item.name }}
+            <div class="first-grade">
+                <div class="first-grade-title">
+                    试卷分类：
+                </div>
+                <div class="first-grade-body">
+                    <div
+                        v-for="item in shijuanfenlei"
+                        :key="item.id"
+                        class="task-item"
+                        :class="{
+                            active: listparam.parentCategoryId === item.id
+                        }"
+                        @click="
+                            handleParentfenleiToggle(item.id, item.children)
+                        "
+                    >
+                        {{ item.name }}
+                    </div>
                 </div>
             </div>
-            <div>
-                <div>试卷难度：</div>
+            <div class="first-grade">
+                <div class="first-grade-title">
+                    子类：
+                </div>
                 <div
-                    v-for="item in shijuannandu"
-                    :key="item.value"
-                    class="task-item"
-                    :class="{ active: listparam.difficulty === item.value }"
-                    @click="handlenanduToggle(item.value)"
+                    v-if="childfenlei.length > 0"
+                    class="first-grade-body"
                 >
-                    {{ item.name }}
+                    <div
+                        v-for="item in childfenlei"
+                        :key="item.id"
+                        class="task-item"
+                        :class="{
+                            active: listparam.examCategoryId === item.id
+                        }"
+                        @click="handleChildfenleiToggle(item.id)"
+                    >
+                        {{ item.name }}
+                    </div>
+                </div>
+            </div>
+            <div class="first-grade">
+                <div class="first-grade-title">
+                    试卷难度：
+                </div>
+                <div class="first-grade-body">
+                    <div
+                        v-for="item in shijuannandu"
+                        :key="item.value"
+                        class="task-item"
+                        :class="{ active: listparam.difficulty === item.value }"
+                        @click="handlenanduToggle(item.value)"
+                    >
+                        {{ item.name }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,15 +181,25 @@ export default {
                 title: '',
                 difficulty: '',
                 examCategoryId: '',
+                parentCategoryId: '',
             },
-            shijuanfenlei: category.shijuanfenlei,
+            shijuanfenlei: [],
             shijuannandu: category.shijuannandu,
+            // categoryList: [],
+            childfenlei: [],
         };
     },
     created() {
         this.examFindByCondition(this.listparam);
+        this.examGetCategoryTree();
     },
     methods: {
+        examGetCategoryTree() {
+            return learningsApi.examGetCategoryTree().then((data) => {
+                this.shijuanfenlei = data.data;
+                console.log(data, 'data123');
+            });
+        },
         examFindByCondition(param) {
             return learningsApi.examFindByCondition(param).then((data) => {
                 console.log(data);
@@ -209,7 +252,18 @@ export default {
                 this.questionFindByCondition(this.listparam);
             }
         },
-        handlefenleiToggle(val) {
+        handleParentfenleiToggle(val, childfenlei) {
+            console.log(childfenlei, val, 'childfenlei');
+            if (String(childfenlei) === 'null') {
+                this.childfenlei = [];
+                this.listparam.parentCategoryId = val;
+                this.handlePagechange(1);
+            } else {
+                this.childfenlei = childfenlei;
+                this.listparam.parentCategoryId = val;
+            }
+        },
+        handleChildfenleiToggle(val) {
             this.listparam.examCategoryId = val;
             this.handlePagechange(1);
         },
@@ -254,30 +308,43 @@ export default {
         }
     }
     .error-filter {
-        height: 140px;
+        // height: 140px;
         padding: 24px;
         background: #fff;
         margin-top: 16px;
-        & > div {
+        .first-grade {
             display: flex;
-            .task-item {
-                color: #272f55;
+            margin-bottom: 36px;
+            font-size: 16px;
+            .first-grade-title {
                 width: 80px;
-                text-align: center;
-                cursor: pointer;
+                font-weight: 500;
             }
-            .active {
-                position: relative;
-                color: #d14242;
-                &::after {
-                    content: " ";
-                    width: 14px;
-                    height: 4px;
-                    position: absolute;
-                    background: #d14242;
-                    bottom: -8px;
-                    left: 33px;
-                    border-radius: 4px;
+            .first-grade-body {
+                display: flex;
+                flex-wrap: wrap;
+                flex: 1;
+                .task-item {
+                    color: #272f55;
+                    // width: 80px;
+                    text-align: center;
+                    cursor: pointer;
+                    flex-wrap: nowrap;
+                    margin-right: 10px;
+                }
+                .active {
+                    position: relative;
+                    color: #d14242;
+                    // &::after {
+                    //     content: " ";
+                    //     width: 14px;
+                    //     height: 4px;
+                    //     position: absolute;
+                    //     background: #d14242;
+                    //     bottom: -8px;
+                    //     left: 33px;
+                    //     border-radius: 4px;
+                    // }
                 }
             }
         }
