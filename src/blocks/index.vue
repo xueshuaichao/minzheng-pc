@@ -3,7 +3,7 @@ import Vue from 'vue';
 
 const idMap = {
     23: () => import('./course/index.vue'),
-    // 16: () => import('./course/detail.vue'),
+    16: () => import('./course/detail.vue'),
     // 17: () => import('./course/player.vue'),
     // 14: () => import('./course/hot.vue'),
     // 15: () => import('./course/recommend.vue'),

@@ -62,7 +62,7 @@ module.exports = {
             },
             '/apis': {
                 target:
-                    'http://mz-gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+                    'http://mz-course-server.testing1.svc.k8s.bjo.wdcloud.cc',
                 ws: true,
                 changeOrigin: true,
                 pathRewrite: {
