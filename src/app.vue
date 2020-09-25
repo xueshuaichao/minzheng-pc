@@ -190,6 +190,7 @@ export default {
         display: inline-block;
         padding: 0 40px;
         cursor: pointer;
+        color: #fff;
     }
     .router-link-active {
         background: #d14242;
