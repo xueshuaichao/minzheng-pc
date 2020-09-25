@@ -3,28 +3,28 @@ import { axios } from '../libs/axios';
 // 课程相关
 export default {
     // 获取课程列表
-    getCourselist(param, course) {
-        return axios.post(
-            `/course/userCourselist?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
-            course,
+    getCourselist(param) {
+        return axios.get('/apis/course/student/findCourseStudentList', param);
+    },
+    // 获取课程分类
+    getCourseCategory() {
+        return axios.get('/apis/course/student/getCourseCategory');
+    },
+    // 获取课程详情
+    findById(param) {
+        return axios.get(
+            '/apis/course/student/findStudentCourseInfoById',
+            param,
         );
     },
-    // 获取课程枚举信息
-    getCourseStaticInfo() {
-        return axios.get('/course/courseStaticInfo');
+    // 获取课程目录
+    findCourseItemByCourseId(data) {
+        return axios.get('/apis/course/student/findStudentCourseItem', data);
     },
-    // 课程明细
-    findById(id) {
-        return axios.get('/course/findById', id);
-    },
-    // 获取课程章节信息
-    findCourseItemByCourseId(courseId) {
-        return axios.get('/courseItem/findCourseItemByCourseId', courseId);
-    },
-    // 开始上课
-    startStudy(courseId) {
+    // 加入选学
+    startStudy(data) {
         return axios.post(
-            `/courseOrder/student/startStudy?courseId=${courseId}`,
+            `/apis/userCourseRecord/student/course/signup?courseId=${data.courseId}&userId=${data.userId}`,
         );
     },
     // 预览视频文件

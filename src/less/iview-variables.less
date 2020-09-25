@@ -75,31 +75,41 @@ found in https://github.com/iview/iview/blob/2.0/src/styles/custom.less.
     font-size: 16px;
     text-align: center;
 }
-.ivu-page-item {
-    width: 48px;
-    height: 48px;
-    margin-right: 8px;
-    line-height: 48px;
-    border: none;
-    box-shadow: 0px 0px 20px 0px rgba(43, 51, 59, 0.08);
+.ivu-page-item,
+.ivu-page-prev,
+.ivu-page-next {
+    width: 31.5px;
+    height: 31.5px;
+    margin-right: 18px;
+    line-height: 31.5px;
+    background: #f5f5f5;
+    border: 2px solid #e6e6eb !important;
+    // box-shadow: 0px 0px 20px 0px rgba(43, 51, 59, 0.08);
 }
 .ivu-page-item-active {
-    background-color: @primary-color;
+    background-color: #ad3535;
     &:hover {
-        color: @active-color;
+        color: #fff !important;
     }
 }
+.ivu-page-item:hover a {
+    color: #919191 !important;
+}
 .ivu-page-item-active a {
-    color: @active-color;
+    color: #fff !important;
     &:hover {
-        color: @active-color;
+        color: #fff !important;
     }
 }
 .ivu-page-prev,
 .ivu-page-next {
-    width: 80px;
-    height: 48px;
-    margin-right: 8px;
-    line-height: 48px;
-    box-shadow: 0px 0px 20px 0px rgba(43, 51, 59, 0.08);
+    line-height: 28.5px !important;
+}
+.ivu-page-options-elevator {
+    // height: 40px;
+    line-height: none;
+}
+.ivu-page-options-elevator input {
+    height: 31.5px;
+    width: 41.5px;
 }
