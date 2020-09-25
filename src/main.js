@@ -80,7 +80,7 @@ const getPageConfigs = Promise.resolve([
         moduleId: 2,
         setting: [
             {
-                bid: 131,
+                bid: 141,
                 block_id: 13,
                 setting: null,
             },

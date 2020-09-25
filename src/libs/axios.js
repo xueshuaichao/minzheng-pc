@@ -12,6 +12,16 @@ const METHOD = {
     GET: 'get',
 };
 
+const contractUrl = (url, data) => {
+    let queryString = '';
+
+    Object.keys(data).forEach((key) => {
+        const value = data[key];
+        queryString += `&${key}=${value}`;
+    });
+    return `${url}?${queryString.substr(1)}`;
+};
+
 // 请求拦截
 const interceptors = (instance) => {
     instance.interceptors.request.use(
@@ -90,6 +100,17 @@ export class HttpRequest {
     //     this.queue[newOptions.url] = instance;
     //     return instance(newOptions);
     // }
+    // request
+    request(url, params = {}) {
+        const data = JSON.parse(JSON.stringify(params));
+        if (Object.prototype.hasOwnProperty.call(data, 'queryString')) {
+            // eslint-disable-next-line no-param-reassign
+            url = contractUrl(url, data.queryString);
+            // eslint-disable-next-line no-param-reassign
+            delete data.queryString;
+        }
+        return this.post(url, data);
+    }
 
     post(url, params) {
         const data = params && JSON.parse(JSON.stringify(params));

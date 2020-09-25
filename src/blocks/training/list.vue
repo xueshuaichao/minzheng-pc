@@ -16,13 +16,14 @@
                 </p>
                 <div class="input-wrap">
                     <input
-                        v-model="filter.keyword"
+                        v-model="filter.name"
                         placeholder="请输入关键字"
                     >
                     <Icon
                         type="ios-search"
                         size="26"
                         :color="'#B4B6C2'"
+                        @click="getNameList"
                     />
                 </div>
             </div>
@@ -30,31 +31,44 @@
         <!--列表-->
         <div class="list-wrap">
             <div
-                v-for="item in 16"
-                :key="item"
+                v-for="(item, index) in list"
+                :key="index"
                 class="item"
             >
                 <img
-                    src="../../assets/images/home/bg1.png"
+                    :src="item.iconUrl || getDefaultImg"
                     class="cover"
                 >
                 <div class="btm">
                     <p class="name">
-                        数据库实据库实据库实据库实战
+                        {{ item.name }}
                     </p>
-                    <p class="time">
-                        报名时间: 2020-06-01
-                    </p>
-                    <p class="time">
-                        培训时间：2019-06-01 15:00-18:00
-                    </p>
-                    <img src="../../assets/images/training/hasjoin.png">
+                    <template v-if="item.status">
+                        <p class="time">
+                            培训开始时间：{{ item.trainStartTime }}
+                        </p>
+                        <p class="time">
+                            培训结束时间：{{ item.trainEndTime }}
+                        </p>
+                    </template>
+                    <template v-else>
+                        <p class="time">
+                            报名开始时间：{{ item.applyStartTime }}
+                        </p>
+                        <p class="time">
+                            报名结束时间：{{ item.applyEndTime }}
+                        </p>
+                    </template>
+                    <img
+                        v-if="item.userTaskDto"
+                        src="../../assets/images/training/hasjoin.png"
+                    >
                 </div>
             </div>
         </div>
         <!--分页-->
         <Page
-            v-if="total > filter.pageSize"
+            v-if="total > filter.queryString.pageSize"
             show-total
             :total="total"
             :page-size="16"
@@ -64,13 +78,17 @@
     </div>
 </template>
 <script>
+import api from '../../api/training';
+// 周日需要让后段把时间作为必填 // 09.25
+// status为数组的时候，400 bad request [1,2,3]
+
 export default {
     name: 'Training',
     data() {
         return {
             serachStatus: [
                 {
-                    status: 0,
+                    status: null,
                     title: '全部',
                 },
                 {
@@ -89,22 +107,52 @@ export default {
             curItem: null,
             total: 20,
             filter: {
-                keyword: '',
-                pageSize: 1,
-                pageNum: 10,
+                // name: '',
+                // status: [1,2,3],
+                queryString: {
+                    pageNum: 1,
+                    pageSize: 16,
+                },
             },
+            list: [],
+            getDefaultImg: require('../../assets/images/home/bg1.png'),
         };
     },
     mounted() {
         [this.curItem] = this.serachStatus;
+        this.getList();
     },
     methods: {
+        getList() {
+            api.getTaskList(this.filter).then((res) => {
+                console.log(res, 'getTaskList');
+                if (res.success) {
+                    // let list = res.data.list.map((d) => {
+                    //     d.applyEndTime = d.applyEndTime.slice(0, 16);
+                    //     d.applyStartTime = d.applyStartTime.slice(0, 16);
+                    //     d.trainEndTime = d.trainEndTime.slice(0, 16);
+                    //     d.trainStartTime = d.trainStartTime.slice(0, 16);
+                    //     return d;
+                    // })
+                    this.list = res.data.list;
+                    // this.total = res.data.total;
+                }
+            });
+        },
         setFilter(item) {
+            this.filter.status = item.status;
+            this.filter.pageNum = 1;
+            this.getList();
             this.curItem = item;
         },
         changePage(page) {
-            this.filter.pageNum = page;
             console.log(page, 'page--');
+            this.filter.pageNum = page;
+            this.getList();
+        },
+        getNameList() {
+            this.filter.pageNum = 1;
+            this.getList();
         },
     },
 };
@@ -112,11 +160,12 @@ export default {
 <style scoped lang="less">
 .training-page {
     .page-top {
-        background: #f3f3f3;
+        background: #ffff;
         padding: 24px;
         box-sizing: border-box;
         margin-bottom: 32px;
         color: #272f55;
+        margin-top: 30px;
         h3 {
             font-size: 30px;
             line-height: 42px;
@@ -174,12 +223,18 @@ export default {
     .list-wrap {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
         .item {
             border-radius: 6px;
             border: 1px solid #e6e6eb;
             margin-bottom: 23px;
             width: 284px;
+            margin: 0 10px 23px;
+            &:nth-child(4n + 1) {
+                margin-left: 0;
+            }
+            &:nth-child(4n) {
+                margin-right: 0;
+            }
         }
 
         .cover {
@@ -188,8 +243,10 @@ export default {
             border-radius: 6px 6px 0 0;
         }
         .btm {
-            padding: 18px 13px 20px;
+            padding: 18px 13px 14px;
             position: relative;
+            background: #fff;
+            border-radius: 0 0 6px 6px;
             .name {
                 color: #272f55;
                 font-size: 18px;
@@ -216,7 +273,8 @@ export default {
         }
     }
     .page-list {
-        margin-bottom: 20px;
+        margin-bottom: 110px;
+        margin-top: 58px;
         .ivu-page-prev,
         .ivu-page-next {
             width: 48px !important;

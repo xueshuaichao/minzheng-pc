@@ -1,134 +1,136 @@
 <template>
     <div class="training-deatil-page">
-        <div class="page-top">
-            <img
-                class="cover"
-                src="../../assets/images/home/bg1.png"
-            >
-            <div class="info-wrap">
-                <h4>
-                    大数据清洗全阶课程
-                </h4>
-                <p class="type">
-                    分类：软件研发
-                </p>
-                <div class="difficult">
-                    课程难度：初阶
-                </div>
-                <p class="time">
-                    培训时间：2020-06-10 13:00 ~ 2020-06-10 18:00
-                </p>
-                <p class="time">
-                    报名时间：2020-06-10 12:40 ~ 2020-06-10-13:00
-                </p>
-                <p class="infos">
-                    <span>课时：2课时</span>
-                    <span>学分：3</span>
-                </p>
-                <div class="progress-wrap">
-                    <p>
-                        已学完：
+        <template v-if="loading">
+            <div class="page-top">
+                <img
+                    class="cover"
+                    :src="detail.iconUrl || getDefaultImg"
+                >
+                <div class="info-wrap">
+                    <h4>
+                        {{ detail.name }}
+                    </h4>
+                    <p class="time">
+                        培训时间：2020-06-10 13:00 ~ 2020-06-10 18:00
                     </p>
-
-                    <Progress
-                        :percent="percent"
-                        style="width: 200px"
-                        hide-info
-                    />
-                    <p>10%</p>
+                    <p class="time">
+                        报名时间：2020-06-10 12:40 ~ 2020-06-10-13:00
+                    </p>
+                    <p class="infos infos-top">
+                        <span>总课时：2课时</span>
+                        <span>已报名：3</span>
+                    </p>
+                    <p class="infos">
+                        <span>阶段数：5</span>
+                        <span>已学完：80%</span>
+                    </p>
+                    <button class="join">
+                        {{ detail.status ? "已报名" : "立即报名" }}
+                    </button>
                 </div>
-                <button class="join">
-                    加入选学
-                </button>
             </div>
-        </div>
-        <div class="training-content">
-            <p class="ctx-title">
-                培训内容
-            </p>
-            <div
-                v-for="(item, index) in list"
-                :key="index"
-                class="item"
-            >
-                <p class="item-name">
-                    <span>
-                        {{ item.title }}
-                    </span>
-                    <Icon
-                        type="ios-arrow-down"
-                        size="26"
-                        :color="'#eee'"
-                    />
+            <div class="training-content">
+                <p class="ctx-title">
+                    培训内容
                 </p>
                 <div
-                    v-for="(subItem, idx) in item.children"
-                    :key="idx"
-                    class="sub-item"
+                    v-for="(item, index) in list"
+                    :key="index"
+                    class="item"
                 >
-                    <div class="sub-title-wrap">
-                        <img
-                            src="../../assets/images/training/play.png"
-                            class="play"
-                        >
-                        <p class="sub-title">
-                            {{ subItem.title }}
-                        </p>
-                    </div>
-
+                    <p class="item-name">
+                        <span>
+                            {{ item.stageName }}
+                        </span>
+                        <Icon
+                            type="ios-arrow-down"
+                            size="26"
+                            :color="'#eee'"
+                        />
+                    </p>
                     <div
-                        v-if="subItem.type === 3"
-                        class="exam-info"
+                        v-for="(subItem, idx) in item.taskItems"
+                        :key="idx"
+                        class="sub-item"
                     >
-                        <p>
-                            <span>考试时间：</span>
-                            <span class="red">60</span>
-                            <span class="red">分钟</span>
-                        </p>
-                        <p>
-                            <span>题数：</span>
-                            <span class="red">60</span>
-                            <span class="red">题</span>
-                        </p>
-                        <p>
-                            <span>满分：</span>
-                            <span class="red">60</span>
-                        </p>
-                        <p>
-                            <span>难度：</span>
-                            <span class="red">简单</span>
-                        </p>
-                        <p>
-                            <span>剩余考试次数：</span>
-                            <span class="red">0</span>
-                        </p>
+                        <div class="sub-title-wrap">
+                            <img
+                                src="../../assets/images/training/paper.png"
+                                class="paper"
+                            >
+                            <p class="sub-title">
+                                {{ subItem.label }}
+                            </p>
+                        </div>
+
+                        <div
+                            v-if="subItem.type === 3"
+                            class="exam-info"
+                        >
+                            <p>
+                                <span>考试时间：</span>
+                                <span class="red">60</span>
+                                <span class="red">分钟</span>
+                            </p>
+                            <p>
+                                <span>题数：</span>
+                                <span class="red">60</span>
+                                <span class="red">题</span>
+                            </p>
+                            <p>
+                                <span>满分：</span>
+                                <span class="red">60</span>
+                            </p>
+                            <p>
+                                <span>难度：</span>
+                                <span class="red">简单</span>
+                            </p>
+                            <p>
+                                <span>剩余考试次数：</span>
+                                <span class="red">0</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 <script>
+import api from '../../api/training';
+// api在浏览器上是无法打开的。
 export default {
     data() {
         return {
             percent: 10,
+            loading: false,
+            detail: {
+                iconUrl: '',
+                name: '任务',
+                status: 0,
+                trainStartTime: 0,
+                trainEndTime: 0,
+                applyStartTime: 0,
+                applyEndTime: 0,
+                taskFinishRate: 0,
+                stageDtos: [],
+            },
             list: [
                 {
-                    title: '1.1 大数据概论',
-                    children: [
+                    stageName: '1.1 大数据概论',
+                    taskItems: [
                         {
                             type: 1,
-                            title: '1.1 大数据的重新定义',
+                            label: '1.1 大数据的重新定义',
                         },
                     ],
                 },
                 {
-                    title: '1.1 大数据概论',
-                    children: [
+                    stageName: '1.1 大数据概论',
+                    taskItems: [
                         {
                             type: 3,
-                            title: '2.3 大数据的重新定义',
+                            label: '2.3 大数据的重新定义',
                             info: {
                                 time: 60,
                                 num: 20,
@@ -138,28 +140,45 @@ export default {
                             },
                         },
                         {
-                            type: 1,
-                            title: '2.1 大数据的重新定义',
-                        },
-                        {
                             type: 2,
-                            title: '2.2 大数据实操1',
+                            label: '2.2 大数据实操1',
                         },
                     ],
                 },
             ],
+            getDefaultImg: require('../../assets/images/home/bg1.png'),
         };
     },
-    methods: {},
+    created() {
+        this.getDetail();
+    },
+    methods: {
+        getDetail() {
+            api.getTrainingDetail({ taskId: 8 }).then(
+                (res) => {
+                    this.loading = true;
+                    if (res.success) {
+                        this.detail = { ...this.detail, ...res.data };
+                        this.userTaskDto = res.data.userTaskDto;
+                    }
+                },
+                (res) => {
+                    console.log(res);
+                    this.loading = true;
+                },
+            );
+        },
+    },
 };
 </script>
 <style scoped lang="less">
 .training-deatil-page {
     .page-top {
         display: flex;
-        // background: #f3f3f3;
+        background: #fff;
         padding: 30px;
         margin-bottom: 30px;
+        margin-top: 30px;
         .cover {
             margin-right: 42px;
             width: 663px;
@@ -180,30 +199,17 @@ export default {
                 color: #9b9b9b;
                 margin-bottom: 6px;
             }
-            .type {
-                color: #9b9b9b;
-                line-height: 21px;
-                margin-bottom: 17px;
-            }
-            .difficult {
-                padding: 0 15px;
-                background: #f9e4e4;
-                line-height: 22px;
-                color: #d14242;
-                font-size: 14px;
-                display: inline-block;
-                border-radius: 15px;
-                margin-bottom: 19px;
-            }
             .infos {
-                margin-top: 35px;
                 color: #575765;
                 display: flex;
-                margin-bottom: 13px;
+                margin-bottom: 10px;
                 span {
                     display: block;
                     margin-right: 21px;
                 }
+            }
+            .infos-top {
+                margin-top: 105px;
             }
             .join {
                 padding: 0 28px;
@@ -216,24 +222,13 @@ export default {
                 outline: none;
                 border: none;
             }
-            .progress-wrap {
-                display: flex;
-                margin-bottom: 31px;
-                p {
-                    margin-right: 2px;
-                }
-                .ivu-progress {
-                    margin-right: 10px;
-                    padding-top: 1px;
-                }
-                /deep/.ivu-progress-bg {
-                    background: #d14242;
-                }
-            }
         }
     }
     .training-content {
         font-size: 15px;
+        background: #fff;
+        min-height: 800px;
+        margin-bottom: 100px;
         .ctx-title {
             border-bottom: 1px solid #f7f7f9;
             padding-left: 38px;
@@ -292,10 +287,10 @@ export default {
                 font-size: 15px;
                 line-height: 30px;
             }
-            .play {
-                width: 19px;
-                height: 19px;
-                margin-top: 5px;
+            .paper {
+                width: 12px;
+                height: 15px;
+                margin-top: 7px;
                 margin-right: 10px;
             }
             .exam-info {
