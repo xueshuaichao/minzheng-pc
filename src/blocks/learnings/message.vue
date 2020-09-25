@@ -39,7 +39,7 @@
                         收起
                     </template>
                     <template v-else>
-                        <img src="@/assets/images/learnings/up-arrow.png">
+                        <img src="@/assets/images/learnings/down-arrow.png">
                         展开
                     </template>
                 </div>
@@ -78,8 +78,7 @@ export default {
     background: #fff;
     .header {
         height: 63px;
-        padding-top: 15px;
-        padding-left: 23px;
+        padding: 15px 23px 0;
         .search {
             width: 343px;
             height: 40px;

@@ -2,6 +2,12 @@
     <div class="content">
         <div class="title">
             个人设置
+            <div
+                class="password"
+                @click="visible1 = true"
+            >
+                修改密码
+            </div>
         </div>
         <div class="upload">
             <!-- <img src="@/assets/images/learnings/card4.png"> -->
@@ -32,125 +38,112 @@
                     prop="name"
                 >
                     <div
-                        v-if="nameShow"
+                        v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Input
                             v-model="formValidate1.name"
                             style="width:176px;margin-right:5px;"
                         />
-                        <img
-                            style="margin-right:5px;"
-                            src="@/assets/images/learnings/cc-yes.png"
-                            @click="handleSubmit('formValidate1')"
-                        >
-                        <img
-                            src="@/assets/images/learnings/error.png"
-                            @click="nameShow = false"
-                        >
                     </div>
                     <div
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        薛帅超<img
-                            src="@/assets/images/learnings/edit.png"
-                            @click="nameShow = true"
-                        >
+                        {{ formValidate1.name }}
                     </div>
                 </FormItem>
-            </Form>
-            <Form
-                ref="formValidate2"
-                :model="formValidate2"
-                :rules="ruleValidate2"
-                :label-width="80"
-            >
                 <FormItem
                     label="手机号"
                     prop="phone"
                 >
                     <div
-                        v-if="phoneShow"
+                        v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Input
-                            v-model="formValidate2.phone"
+                            v-model="formValidate1.phone"
                             style="width:272px;margin-right:5px;"
                             placeholder="Enter your e-mail"
                         />
-
-                        <img
-                            style="margin-right:5px;"
-                            src="@/assets/images/learnings/cc-yes.png"
-                            @click="handleSubmit('formValidate2')"
-                        >
-                        <img
-                            src="@/assets/images/learnings/error.png"
-                            @click="phoneShow = false"
-                        >
                     </div>
                     <div
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        176<img
-                            src="@/assets/images/learnings/edit.png"
-                            @click="phoneShow = true"
-                        >
+                        {{ formValidate1.phone | formatephone }}
                     </div>
                 </FormItem>
-            </Form>
-            <Form
-                ref="formValidate3"
-                :model="formValidate3"
-                :rules="ruleValidate3"
-                :label-width="80"
-            >
+                <FormItem
+                    v-show="!isEdit"
+                    label="验证码"
+                    prop="code"
+                >
+                    <div style="display:flex;align-items:center">
+                        <Input
+                            v-model="formValidate1.code"
+                            style="width:142px;margin-right:5px;"
+                            placeholder="请输入验证码"
+                        />
+                        <div
+                            v-if="isAvalible"
+                            class="yanzhengma"
+                            @click="handleyanzhengma"
+                        >
+                            发送验证码
+                        </div>
+                        <div
+                            v-if="!isAvalible"
+                            class="yanzhengma disable"
+                        >
+                            {{ this.time }}(s)
+                        </div>
+                    </div>
+                </FormItem>
                 <FormItem
                     label="养老机构"
                     prop="selectedList"
                 >
                     <div
-                        v-if="cityShow"
+                        v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Cascader
-                            v-model="formValidate3.selectedList"
+                            v-model="formValidate1.selectedList"
                             :data="organizations"
                         />
-                        <img
-                            style="margin-right:5px;"
-                            src="@/assets/images/learnings/cc-yes.png"
-                            @click="handleSubmit('formValidate3')"
-                        >
-                        <img
-                            src="@/assets/images/learnings/error.png"
-                            @click="cityShow = false"
-                        >
                     </div>
                     <div
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        176<img
-                            src="@/assets/images/learnings/edit.png"
-                            @click="cityShow = true"
-                        >
-                    </div>
-                </FormItem>
-                <FormItem
-                    label="账户安全"
-                    style="margin-top:200px;"
-                >
-                    <div
-                        style="color:#4A90E2;cursor:pointer;"
-                        @click="visible1 = true"
-                    >
-                        修改密码
+                        {{ selectedLabels }}
                     </div>
                 </FormItem>
             </Form>
+        </div>
+        <div class="button">
+            <div
+                v-if="isEdit"
+                @click="isEdit = !isEdit"
+            >
+                编辑
+            </div>
+            <div
+                v-if="!isEdit"
+                style="margin-right: 20px;"
+                @click="handleSubmit('formValidate1')"
+            >
+                保存
+            </div>
+            <div
+                v-if="!isEdit"
+                @click="isEdit = !isEdit"
+            >
+                取消
+            </div>
+            <!-- <Button type="primary">Submit</Button> -->
+            <!-- <Button style="margin-left: 8px">Cancel</Button> -->
         </div>
         <Modal
             v-model="visible1"
@@ -209,7 +202,31 @@
 <script>
 import learningsApi from '../../api/learnings';
 
+const passwordvalidator = {
+    validator: (rule, value) => {
+        if (!value) {
+            return true;
+        }
+        if (value.length < 6) {
+            // eslint-disable-next-line
+            rule.message = "密码位数不得小于6位";
+            return false;
+        }
+        if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(value)) {
+            // eslint-disable-next-line
+            rule.message = "请输入字母和数字的组合";
+            return false;
+        }
+        return true;
+    },
+    trigger: 'blur',
+};
 export default {
+    filters: {
+        formatephone(phone) {
+            return `${phone.substr(0, 3)}****${phone.substr(7)}`;
+        },
+    },
     data() {
         return {
             visible1: false,
@@ -226,6 +243,7 @@ export default {
                         message: '请输入密码',
                         trigger: 'blur',
                     },
+                    passwordvalidator,
                 ],
                 newPassword: [
                     {
@@ -233,6 +251,7 @@ export default {
                         message: '请输入新密码',
                         trigger: 'blur',
                     },
+                    passwordvalidator,
                 ],
                 confirmPass: [
                     {
@@ -240,20 +259,20 @@ export default {
                         message: '请再次输入新密码',
                         trigger: 'blur',
                     },
+                    passwordvalidator,
                 ],
             },
             formValidate1: {
                 name: '',
+                phone: '',
+                code: '',
+                selectedList: [],
             },
+            selectedLabels: [],
             ruleValidate1: {
                 name: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
                 ],
-            },
-            formValidate2: {
-                phone: '',
-            },
-            ruleValidate2: {
                 phone: [
                     {
                         required: true,
@@ -261,16 +280,16 @@ export default {
                         trigger: 'blur',
                     },
                     {
-                        type: 'phone',
                         message: '手机号格式不正确',
                         trigger: 'blur',
+                        validator(rule, value) {
+                            if (!value) {
+                                return true;
+                            }
+                            return /^1[3|4|5|6|7|8|9][0-9]{9}$/.test(value);
+                        },
                     },
                 ],
-            },
-            formValidate3: {
-                selectedList: [],
-            },
-            ruleValidate3: {
                 city: [
                     {
                         required: true,
@@ -278,14 +297,18 @@ export default {
                         trigger: 'change',
                     },
                 ],
+                code: [
+                    { required: true, message: '请输入验证码', trigger: 'blur' },
+                ],
             },
-            nameShow: true,
-            phoneShow: true,
-            cityShow: true,
+            isEdit: true,
             maxSize: 5 * 1024 * 1024,
             loading: false,
             organizations: [],
             portrait: '',
+            isAvalible: true,
+            time: 60,
+            setId: '',
         };
     },
     created() {
@@ -293,14 +316,60 @@ export default {
         this.userInfo();
     },
     methods: {
+        async handleyanzhengma() {
+            const result = await this.validatePhone('formValidate1');
+            console.log(result, 'abc');
+            if (result) {
+                return;
+            }
+            // learningsApi.userSendSms({phone: this.formValidate1.phone}).then((data) => {
+            //     console.log(data);
+            this.isAvalible = false;
+            clearInterval(this.setId);
+            this.setId = setInterval(() => {
+                this.time -= 1;
+                if (this.time === 0) {
+                    this.isAvalible = true;
+                    clearInterval(this.setId);
+                }
+            }, 1000);
+
+            // });
+        },
+        // 对手机字段校验
+        validatePhone(item) {
+            return new Promise((resolve) => {
+                this.$refs[item].validateField('phone', (valid) => {
+                    console.log(valid, 'valid');
+                    resolve(valid);
+                });
+            });
+        },
+        handleSubmit(item) {
+            this.$refs[item].validate((valid) => {
+                if (valid) {
+                    // this.$Message.success('Success!');
+                } else {
+                    // this.$Message.error('Fail!');
+                }
+            });
+        },
         userInfo() {
             return learningsApi.userInfo({}).then((data) => {
                 console.log(data);
                 const userInfo = data.data;
                 this.formValidate1.name = userInfo.name;
-                this.formValidate2.phone = userInfo.phone;
-                this.formValidate3.selectedList = userInfo.selectedList;
+                this.formValidate1.phone = userInfo.phone;
+                this.formValidate1.selectedList = userInfo.selectedList;
+                this.selectedLabels = userInfo.selectedLabels.join('/');
                 this.organizations = userInfo.organizations;
+                // this.organizations = [{
+                //     children: [{value: 5, label: "养老机构", selected: true, parent: 1,children:null}],
+                //     label: "省级",
+                //     parent: 0,
+                //     selected: true,
+                //     value: 1
+                // }]
                 this.portrait = userInfo.portrait;
             });
         },
@@ -317,15 +386,6 @@ export default {
             console.log('cancel');
             this.$refs.formValidate4.resetFields();
             this.visible1 = false;
-        },
-        handleSubmit(item) {
-            this.$refs[item].validate((valid) => {
-                if (valid) {
-                    this.$Message.success('Success!');
-                } else {
-                    this.$Message.error('Fail!');
-                }
-            });
         },
         // 手动上传图片
         handleBeforeUpload(data) {
@@ -380,8 +440,10 @@ export default {
     background: #fff;
     // margin-top: 20px;
     padding: 0 28px;
+    padding-top: 33px;
     color: @textcolor100;
     position: relative;
+    min-height: 500px;
     .upload {
         position: absolute;
         top: 78px;
@@ -395,6 +457,15 @@ export default {
         font-size: 26px;
         font-weight: 500;
         line-height: 37px;
+        position: relative;
+        .password {
+            color: #4a90e2;
+            cursor: pointer;
+            font-size: 14px;
+            position: absolute;
+            top: 0px;
+            left: 137px;
+        }
     }
     .form {
         margin-top: 30px;
@@ -436,6 +507,35 @@ export default {
                 width: 20px;
             }
         }
+    }
+    .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 96px;
+        div {
+            width: 113px;
+            height: 37px;
+            background: #d14242;
+            border-radius: 19px;
+            cursor: pointer;
+            text-align: center;
+            color: #fff;
+            line-height: 37px;
+        }
+    }
+    .yanzhengma {
+        width: 113px;
+        height: 37px;
+        background: #d14242;
+        border-radius: 19px;
+        cursor: pointer;
+        text-align: center;
+        color: #fff;
+        line-height: 37px;
+    }
+    .disable {
+        background: #b3b3b3;
     }
 }
 </style>

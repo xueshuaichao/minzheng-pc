@@ -1,14 +1,11 @@
 <template>
-    <div class="main-container">
+    <div class="main-container courseDetail">
         <i-breadcrumb
             class="g-breadcrumb"
             separator=">"
         >
-            <i-breadcrumb-item to="/">
-                首页
-            </i-breadcrumb-item>
-            <i-breadcrumb-item :to="{ name: 'courseList' }">
-                教育培训
+            <i-breadcrumb-item :to="{ path: '/course' }">
+                课程中心
             </i-breadcrumb-item>
             <i-breadcrumb-item>
                 课程详情
@@ -19,12 +16,9 @@
                 <div class="left">
                     <div class="picture-wrapper">
                         <img
-                            :src="courseInfo.courseCoverUrl"
+                            :src="courseInfo.picUrl"
                             alt=""
                         >
-                        <div>
-                            <!-- 15: 04 -->
-                        </div>
                     </div>
                 </div>
                 <div class="right">
@@ -32,14 +26,28 @@
                         {{ courseInfo.name }}
                     </a>
                     <ul class="info">
-                        <li>课程时长：{{ courseInfo.totalClassTime }}</li>
-                        <li>课程有效期：{{ courseInfo.expireTime }}</li>
-                        <li>课程学时：{{ courseInfo.courseHours }}学时</li>
+                        <li class="info-classify">
+                            分类：{{ courseInfo.categoryName }}
+                        </li>
+                        <li class="info-classdiff">
+                            课程难度：初级
+                        </li>
+                    </ul>
+                    <ul class="info1">
+                        <li class="info1-keshi">
+                            <span>课时：{{ courseInfo.classHour }}课时</span>
+                            <span>学分：{{ courseInfo.credit }}</span>
+                        </li>
+                        <li class="info1-jindu">
+                            已学完：
+                            <Progress
+                                :percent="courseInfo.learningRate"
+                                :stroke-width="5"
+                            />
+                        </li>
                     </ul>
                     <i-button
                         v-if="showBtn"
-                        type="primary"
-                        size="large"
                         @click="startStudy(courseInfo.id)"
                     >
                         {{ btntext }}
@@ -47,132 +55,49 @@
                 </div>
             </div>
             <div class="resource-info">
-                <div class="infoLeft">
-                    <div class="infoTab">
-                        <span
-                            :class="changeInfo === '1' ? 'spanselect' : ''"
-                            @click="changeTab('1')"
-                        >课程描述</span>
-                        <span
-                            :class="changeInfo === '2' ? 'spanselect' : ''"
-                            @click="changeTab('2')"
-                        >课程目录</span>
-                    </div>
-                    <div class="infoContent">
-                        <div
-                            v-if="changeInfo === '1'"
-                            class="des"
-                        >
-                            {{ courseInfo.courseIntro }}
-                        </div>
-                        <div
-                            v-if="changeInfo === '2'"
-                            class="catalog"
-                        >
-                            <div class="chapter">
-                                <div
-                                    v-for="item in catelogList"
-                                    :key="item.id"
-                                >
-                                    <div class="title">
-                                        {{ item.title }}
-                                    </div>
-                                    <ul>
-                                        <ol
-                                            v-for="lesson in item.lessonList"
-                                            :key="lesson.id"
-                                        >
-                                            {{
-                                                lesson.index
-                                            }}：
-                                            {{
-                                                lesson.title
-                                            }}
-                                            <i-button
-                                                v-if="showBtn"
-                                                type="primary"
-                                                @click="
-                                                    startStudy(
-                                                        courseInfo.id,
-                                                        lesson.resourceId,
-                                                        lesson.id
-                                                    )
-                                                "
-                                            >
-                                                {{ btntext }}
-                                            </i-button>
-                                        </ol>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="organ-info">
-                    <div class="logo">
-                        <img
-                            src="../../assets/images/course/logo@2x.png"
-                            alt=""
-                        >
-                    </div>
-                    <div class="title">
-                        北京伟云融兴
-                    </div>
-                    <div class="info">
-                        融兴在线是北京伟云融兴主打产品，平台整合多方优势资源，为退役军人提供教育培训、就业安置、创业孵化、
-                        政策咨询服务、实现知识学习普及化、政策宣传精准化、
-                        人才定制多样化，助力军民融合发展战略。
-                    </div>
-                </div>
+                <course-info
+                    :course-intro="courseInfo.intro"
+                    :catelog-list="catelogList"
+                    :zhjudge="courseInfo.stars"
+                />
             </div>
         </div>
     </div>
 </template>
 <script>
 import './index.less';
+import CourseInfo from './components/courseInfo.vue';
 // import store from '../../store/index';
 import api from '../../api/course';
 
 export default {
     name: 'CourseDetail',
+    components: {
+        CourseInfo,
+    },
     data() {
         return {
-            changeInfo: '1',
+            // changeInfo: '1',
             courseInfo: {},
             catelogList: [],
             showBtn: true,
-            btntext: '',
+            btntext: '加入选学',
             courseName: '',
         };
     },
     computed: {},
     mounted() {
-        this.courseDetail(this.$route.params.id);
+        this.courseDetail(this.$route.query.id);
     },
     methods: {
-        // 开始学习
-        startStudy(id, resourceId, lessonId) {
-            console.log(resourceId);
-            this.$router.push({
-                name: 'coursePlayer',
-                params: {
-                    id,
-                    name: this.courseName,
-                    resourceId,
-                    lessonId,
-                    type: this.$route.params.name,
-                },
+        // 加入选学
+        startStudy(id) {
+            api.startStudy({ courseId: id, userId: 1 }).then((res) => {
+                if (res.success) {
+                    this.btntext = '开始学习';
+                }
+                console.log(res);
             });
-            if (!this.courseInfo.curUserBindCourseTag) {
-                // const token = '8eef8b53b6f64c4fa467135739ef3785';
-                // store.commit('setToken', token);
-                localStorage.setItem(
-                    'token',
-                    'f3e171a4e06f492d93cb328bbeec2dd1',
-                );
-                return api.startStudy(id).then(() => {});
-            }
-            return true;
         },
         formatDate(inputTime) {
             const date = new Date(inputTime);
@@ -197,41 +122,39 @@ export default {
             return `${day}天${hour}小时${minute}分${second}秒`;
         },
         courseDetail(id) {
-            return api.findById({ id }).then((res) => {
+            return api.findById({ id, userId: 1 }).then((res) => {
                 if (res.success) {
                     const { data } = res;
                     this.courseInfo = data;
                     this.courseName = this.courseInfo.name;
-                    this.courseInfo.totalClassTime = this.secondsFormat(
-                        this.courseInfo.totalClassTime,
-                    );
-                    const time = this.formatDate(new Date().getTime());
-                    console.log(!(this.courseInfo.expireTime < time));
-                    this.showBtn = !(this.courseInfo.expireTime < time);
-                    if (this.courseInfo.curUserBindCourseTag) {
-                        this.btntext = '继续学习';
-                    } else {
-                        this.btntext = '开始学习';
-                    }
+                    this.findCourseItemByCourseId();
                 }
             });
         },
-        changeTab(index) {
-            this.changeInfo = index;
-            if (index === '2') {
-                return api
-                    .findCourseItemByCourseId({
-                        courseId: this.$route.params.id,
-                    })
-                    .then((res) => {
-                        if (res.success) {
-                            const { data } = res;
-                            this.catelogList = data;
-                        }
-                    });
-            }
-            return true;
+        // 获取目录详情
+        findCourseItemByCourseId() {
+            const param = {
+                courseId: this.courseInfo.id,
+                recordId: this.courseInfo.recordId,
+                userId: 1,
+            };
+            api.findCourseItemByCourseId(param).then((res) => {
+                console.log(res);
+            });
         },
     },
 };
 </script>
+<style lang="less">
+.courseDetail {
+    .ivu-progress {
+        width: 140px;
+    }
+    .ivu-progress-bg {
+        background-color: #d14242;
+    }
+    .ivu-progress-inner {
+        background-color: #e6e6e6;
+    }
+}
+</style>

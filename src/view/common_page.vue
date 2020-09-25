@@ -33,6 +33,12 @@ export default {
             routerParams: {},
         };
     },
+    beforeRouteUpdate(to, from, next) {
+        console.log(to, 'to11');
+        // react to route changes...
+        // don't forget to call next()
+        next();
+    },
     computed: {
         layout() {
             try {

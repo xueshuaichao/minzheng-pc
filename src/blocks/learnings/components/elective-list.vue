@@ -2,18 +2,30 @@
     <div class="content">
         <div class="header">
             <RadioGroup
-                v-model="button1"
+                v-model="listparam.status"
                 type="button"
                 style="color: #D14242;"
+                @on-change="handleRadio"
             >
-                <Radio label="全部" />
-                <Radio label="未开始" />
-                <Radio label="进行中" />
-                <Radio label="已完成" />
+                <Radio label="">
+                    全部
+                </Radio>
+                <Radio label="0">
+                    未开始
+                </Radio>
+                <Radio label="1">
+                    进行中
+                </Radio>
+                <Radio label="2">
+                    已完成
+                </Radio>
             </RadioGroup>
             <div class="search">
                 <input placeholder="请输入关键字">
-                <img src="@/assets/images/learnings/search-icon.png">
+                <img
+                    src="@/assets/images/learnings/search-icon.png"
+                    @click="handleSearch"
+                >
             </div>
         </div>
 
@@ -40,6 +52,16 @@
                 </div>
             </div>
         </div>
+        <div style="margin-top:20px;">
+            <Page
+                :total="total"
+                :current="listparam.pageNum"
+                :page-size="listparam.pageSize"
+                prev-text="上一页"
+                next-text="下一页"
+                @on-change="handlePagechange"
+            />
+        </div>
     </div>
 </template>
 
@@ -49,8 +71,14 @@ import learningsApi from '../../../api/learnings';
 export default {
     data() {
         return {
-            button1: '北京',
             taskList: [],
+            total: 0,
+            listparam: {
+                pageNum: 1,
+                pageSize: 9,
+                status: '1',
+                name: '',
+            },
         };
     },
     created() {
@@ -61,7 +89,21 @@ export default {
             return learningsApi.userCourseElective({}).then((data) => {
                 console.log(data);
                 this.taskList = data.data.list;
+                this.total = data.data.total;
             });
+        },
+        handleRadio() {
+            this.listparam.pageNum = 1;
+            this.taskFindByCondition();
+        },
+        handleSearch() {
+            this.listparam.pageNum = 1;
+            this.taskFindByCondition();
+        },
+        handlePagechange(page) {
+            console.log(page);
+            this.listparam.pageNum = page;
+            this.taskFindByCondition();
         },
     },
 };

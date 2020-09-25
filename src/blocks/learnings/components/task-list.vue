@@ -2,19 +2,36 @@
     <div class="content">
         <div class="header">
             <RadioGroup
-                v-model="button1"
+                v-model="listparam.status"
                 type="button"
                 style="color: #D14242;"
+                @on-change="handleRadio"
             >
-                <Radio label="全部" />
-                <Radio label="未开始" />
-                <Radio label="进行中" />
-                <Radio label="未通过" />
-                <Radio label="已通过" />
+                <Radio label="1">
+                    全部
+                </Radio>
+                <Radio label="2">
+                    未开始
+                </Radio>
+                <Radio label="3">
+                    进行中
+                </Radio>
+                <Radio label="4">
+                    未通过
+                </Radio>
+                <Radio label="5">
+                    已通过
+                </Radio>
             </RadioGroup>
             <div class="search">
-                <input placeholder="请输入关键字">
-                <img src="@/assets/images/learnings/search-icon.png">
+                <input
+                    v-model="listparam.name"
+                    placeholder="请输入关键字"
+                >
+                <img
+                    src="@/assets/images/learnings/search-icon.png"
+                    @click="handleSearch"
+                >
             </div>
         </div>
 
@@ -44,6 +61,16 @@
                 </div>
             </div>
         </div>
+        <div style="margin-top:20px;">
+            <Page
+                :total="total"
+                :current="listparam.pageNum"
+                :page-size="listparam.pageSize"
+                prev-text="上一页"
+                next-text="下一页"
+                @on-change="handlePagechange"
+            />
+        </div>
     </div>
 </template>
 
@@ -53,19 +80,41 @@ import learningsApi from '../../../api/learnings';
 export default {
     data() {
         return {
-            button1: '北京',
             taskList: [],
+            total: 0,
+            listparam: {
+                pageNum: 1,
+                pageSize: 9,
+                status: '1',
+                name: '',
+            },
         };
     },
     created() {
         this.taskFindByCondition();
     },
     methods: {
+        handleSearch() {
+            this.listparam.pageNum = 1;
+            this.taskFindByCondition();
+        },
+        handleRadio() {
+            this.listparam.pageNum = 1;
+            this.taskFindByCondition();
+        },
         taskFindByCondition() {
-            return learningsApi.taskFindByCondition({}).then((data) => {
-                console.log(data);
-                this.taskList = data.data.list;
-            });
+            return learningsApi
+                .taskFindByCondition(this.listparam)
+                .then((data) => {
+                    console.log(data);
+                    this.taskList = data.data.list;
+                    this.total = data.data.total;
+                });
+        },
+        handlePagechange(page) {
+            console.log(page);
+            this.listparam.pageNum = page;
+            this.taskFindByCondition();
         },
     },
 };
@@ -77,8 +126,7 @@ export default {
     .header {
         height: 63px;
         background: #fff;
-        padding-top: 15px;
-        padding-left: 23px;
+        padding: 15px 23px 0;
         .search {
             width: 343px;
             height: 40px;
@@ -92,6 +140,7 @@ export default {
                 right: 12px;
                 width: 20px;
                 height: 20px;
+                cursor: pointer;
             }
             input {
                 width: 280px;
@@ -106,12 +155,13 @@ export default {
     }
     .content-box {
         display: flex;
+        justify-content: space-between;
         flex-wrap: wrap;
         margin-top: 20px;
         .content-item {
             width: 224px;
             height: 230px;
-            margin-right: 20px;
+            margin-bottom: 24px;
             font-size: 14px;
             background: #fff;
             .title {
