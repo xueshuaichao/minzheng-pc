@@ -12,6 +12,7 @@ const idMap = {
     12: () => import('./system/course.vue'),
     13: () => import('./training/list.vue'),
     14: () => import('./training/detail.vue'),
+    15: () => import('./learnings/index.vue'),
 };
 
 export default {

@@ -10,6 +10,7 @@ const idMap = {
     2: () => import('./layout_1.vue'),
     3: () => import('./layout_2.vue'),
     4: () => import('./layout_3.vue'),
+    5: () => import('./layout_4.vue'),
     layout_recursive: () => import('./layout_recursive.vue'),
 };
 // todo may be has a prop "config" or "data"

@@ -4,16 +4,51 @@
             <RadioGroup
                 v-model="button1"
                 type="button"
+                @on-change="handleRadiochange"
             >
                 <Radio label="我的测试" />
                 <Radio label="错题本" />
             </RadioGroup>
             <div class="search">
-                <input placeholder="请输入关键字">
-                <img src="@/assets/images/learnings/search-icon.png">
+                <input
+                    v-model="listparam.title"
+                    placeholder="请输入关键字"
+                >
+                <img
+                    src="@/assets/images/learnings/search-icon.png"
+                    @click="handlePagechange"
+                >
             </div>
         </div>
-
+        <div
+            v-if="button1 === '错题本'"
+            class="error-filter"
+        >
+            <div style="margin-bottom:36px;">
+                <div>试卷分类：</div>
+                <div
+                    v-for="item in shijuanfenlei"
+                    :key="item.value"
+                    class="task-item"
+                    :class="{ active: listparam.examCategoryId === item.value }"
+                    @click="handlefenleiToggle(item.value)"
+                >
+                    {{ item.name }}
+                </div>
+            </div>
+            <div>
+                <div>试卷难度：</div>
+                <div
+                    v-for="item in shijuannandu"
+                    :key="item.value"
+                    class="task-item"
+                    :class="{ active: listparam.difficulty === item.value }"
+                    @click="handlenanduToggle(item.value)"
+                >
+                    {{ item.name }}
+                </div>
+            </div>
+        </div>
         <div
             v-if="button1 === '我的测试'"
             class="content-box"
@@ -83,35 +118,57 @@
                 </div>
             </div>
         </div>
+        <div style="margin-top:20px;">
+            <Page
+                :total="total"
+                :current="listparam.pageNum"
+                :page-size="listparam.pageSize"
+                prev-text="上一页"
+                next-text="下一页"
+                @on-change="handlePagechange"
+            />
+        </div>
     </div>
 </template>
 
 <script>
 import learningsApi from '../../../api/learnings';
+import category from '../const/category';
 
 export default {
     data() {
         return {
-            button1: '错题本',
+            button1: '我的测试',
             testList: [],
             errorList: [],
+            total: 0,
+            listparam: {
+                pageNum: 1,
+                pageSize: 9,
+                title: '',
+                difficulty: '',
+                examCategoryId: '',
+            },
+            shijuanfenlei: category.shijuanfenlei,
+            shijuannandu: category.shijuannandu,
         };
     },
     created() {
-        this.examFindByCondition();
-        this.questionFindByCondition();
+        this.examFindByCondition(this.listparam);
     },
     methods: {
-        examFindByCondition() {
-            return learningsApi.examFindByCondition({}).then((data) => {
+        examFindByCondition(param) {
+            return learningsApi.examFindByCondition(param).then((data) => {
                 console.log(data);
                 this.testList = data.data.list;
+                this.total = data.data.total;
             });
         },
-        questionFindByCondition() {
-            return learningsApi.questionFindByCondition({}).then((data) => {
+        questionFindByCondition(param) {
+            return learningsApi.questionFindByCondition(param).then((data) => {
                 console.log(data);
                 this.errorList = data.data.list;
+                this.total = data.data.total;
             });
         },
         handleRemoveError(id) {
@@ -125,8 +182,40 @@ export default {
         },
         deleteCarousel(param) {
             return learningsApi.questionRemove(param).then(() => {
-                this.questionFindByCondition();
+                this.handlePagechange(1);
             });
+        },
+        handleRadiochange(button1) {
+            this.listparam.pageNum = 1;
+            if (button1 === '我的测试') {
+                this.examFindByCondition({
+                    pageNum: this.listparam.pageNum,
+                    pageSize: this.listparam.pageSize,
+                    name: this.listparam.title,
+                });
+            } else {
+                this.questionFindByCondition(this.listparam);
+            }
+        },
+        handlePagechange(page = 1) {
+            this.listparam.pageNum = page;
+            if (this.button1 === '我的测试') {
+                this.examFindByCondition({
+                    pageNum: this.listparam.pageNum,
+                    pageSize: this.listparam.pageSize,
+                    name: this.listparam.title,
+                });
+            } else {
+                this.questionFindByCondition(this.listparam);
+            }
+        },
+        handlefenleiToggle(val) {
+            this.listparam.examCategoryId = val;
+            this.handlePagechange(1);
+        },
+        handlenanduToggle(val) {
+            this.listparam.difficulty = val;
+            this.handlePagechange(1);
         },
     },
 };
@@ -138,8 +227,7 @@ export default {
     .header {
         height: 63px;
         background: #fff;
-        padding-top: 15px;
-        padding-left: 23px;
+        padding: 15px 23px 0;
         .search {
             width: 343px;
             height: 40px;
@@ -162,6 +250,35 @@ export default {
                 left: 13px;
                 border: none;
                 outline: none;
+            }
+        }
+    }
+    .error-filter {
+        height: 140px;
+        padding: 24px;
+        background: #fff;
+        margin-top: 16px;
+        & > div {
+            display: flex;
+            .task-item {
+                color: #272f55;
+                width: 80px;
+                text-align: center;
+                cursor: pointer;
+            }
+            .active {
+                position: relative;
+                color: #d14242;
+                &::after {
+                    content: " ";
+                    width: 14px;
+                    height: 4px;
+                    position: absolute;
+                    background: #d14242;
+                    bottom: -8px;
+                    left: 33px;
+                    border-radius: 4px;
+                }
             }
         }
     }

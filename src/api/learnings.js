@@ -12,28 +12,28 @@ export default {
     },
     taskFindByCondition(param) {
         return axios.post(
-            '/apis/learnCenter/task/findByCondition?pageNum=1&pageSize=20',
+            `/apis/learnCenter/task/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 选学列表
     userCourseElective(param) {
         return axios.post(
-            '/apis/learnCenter/userCourse/elective?pageNum=1&pageSize=20',
+            `/apis/learnCenter/userCourse/elective?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 测评列表
     examFindByCondition(param) {
         return axios.post(
-            '/apis/learnCenter/exam/findByCondition?pageNum=1&pageSize=20',
+            `/apis/learnCenter/exam/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 错题本信息
     questionFindByCondition(param) {
         return axios.post(
-            '/apis/learnCenter/question/findByCondition?pageNum=1&pageSize=20',
+            `/apis/learnCenter/question/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
@@ -48,7 +48,7 @@ export default {
     // 消息列表
     messageFindByCondition(param) {
         return axios.get(
-            '/apis/learnCenter/message/findByCondition?pageNum=1&pageSize=20',
+            `/apis/learnCenter/message/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },

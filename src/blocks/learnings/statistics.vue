@@ -4,21 +4,23 @@
             <div class="item flex-row">
                 <div class="duration-info">
                     <p class="flex-row">
-                        <i />今天学习时长
+                        <i
+                            style="position:absolute;top:3px;left:0px;"
+                        />今天时长:
                         <span>{{ statisticData.todayLearnTime }}</span>
                     </p>
                     <p class="flex-row">
-                        <i style="background: #F3B14F;" />上周学习时长
+                        <i style="background: #F3B14F;" />上周时长:
                         <span>{{ statisticData.lastWeekLearnTime }}</span>
                     </p>
                     <p class="flex-row">
-                        <i style="background: #4A90E2;" />上月学习时长
+                        <i style="background: #4A90E2;" />上月时长:
                         <span>{{ statisticData.lastMonthLearnTime }}</span>
                     </p>
                     <p class="flex-row">
                         <img
                             src="@/assets/images/learnings/clock.png"
-                        >累计时长
+                        >累计时长:
                         <span>{{ statisticData.totalLearnTime }}</span>
                     </p>
                 </div>
@@ -105,30 +107,42 @@ export default {
     flex-shrink: 0;
     margin-right: 24px;
     margin-bottom: 32px;
+    justify-content: space-between;
     .item {
-        flex: 1;
-        // width: 220px;
+        // flex: 1;
+        width: 220px;
         height: 106px;
-        margin-right: 20px;
-        background: rgba(248, 249, 250, 1);
+        // margin-right: 20px;
+        background: #fff;
         border-radius: 2px;
         padding-left: 28px;
         background-size: 100% 100%;
         position: relative;
         .duration-info {
             color: @textcolor60;
-            span {
-                color: @textcolor100;
-            }
-            i {
-                width: 5px;
-                height: 5px;
-                background: #d0021b;
-                border-radius: 5px;
-            }
-            img {
-                width: 16px;
-                height: 16px;
+            p {
+                position: relative;
+                padding-left: 16px;
+                span {
+                    color: @textcolor100;
+                    margin-left: 7px;
+                }
+                i {
+                    width: 5px;
+                    height: 5px;
+                    background: #d0021b;
+                    border-radius: 5px;
+                    position: absolute;
+                    top: 9px;
+                    left: 0px;
+                }
+                img {
+                    width: 16px;
+                    height: 16px;
+                    position: absolute;
+                    top: 2px;
+                    left: -5px;
+                }
             }
         }
         .first-line {

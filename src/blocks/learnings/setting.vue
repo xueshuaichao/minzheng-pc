@@ -2,6 +2,12 @@
     <div class="content">
         <div class="title">
             个人设置
+            <div
+                class="password"
+                @click="visible1 = true"
+            >
+                修改密码
+            </div>
         </div>
         <div class="upload">
             <!-- <img src="@/assets/images/learnings/card4.png"> -->
@@ -32,125 +38,104 @@
                     prop="name"
                 >
                     <div
-                        v-if="nameShow"
+                        v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Input
                             v-model="formValidate1.name"
                             style="width:176px;margin-right:5px;"
                         />
-                        <img
-                            style="margin-right:5px;"
-                            src="@/assets/images/learnings/cc-yes.png"
-                            @click="handleSubmit('formValidate1')"
-                        >
-                        <img
-                            src="@/assets/images/learnings/error.png"
-                            @click="nameShow = false"
-                        >
                     </div>
                     <div
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        薛帅超<img
-                            src="@/assets/images/learnings/edit.png"
-                            @click="nameShow = true"
-                        >
+                        {{ formValidate1.name }}
                     </div>
                 </FormItem>
-            </Form>
-            <Form
-                ref="formValidate2"
-                :model="formValidate2"
-                :rules="ruleValidate2"
-                :label-width="80"
-            >
                 <FormItem
                     label="手机号"
                     prop="phone"
                 >
                     <div
-                        v-if="phoneShow"
+                        v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Input
-                            v-model="formValidate2.phone"
+                            v-model="formValidate1.phone"
                             style="width:272px;margin-right:5px;"
                             placeholder="Enter your e-mail"
                         />
-
-                        <img
-                            style="margin-right:5px;"
-                            src="@/assets/images/learnings/cc-yes.png"
-                            @click="handleSubmit('formValidate2')"
-                        >
-                        <img
-                            src="@/assets/images/learnings/error.png"
-                            @click="phoneShow = false"
-                        >
                     </div>
                     <div
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        176<img
-                            src="@/assets/images/learnings/edit.png"
-                            @click="phoneShow = true"
-                        >
+                        {{ formValidate1.phone }}
                     </div>
                 </FormItem>
-            </Form>
-            <Form
-                ref="formValidate3"
-                :model="formValidate3"
-                :rules="ruleValidate3"
-                :label-width="80"
-            >
+                <FormItem
+                    v-if="!isEdit"
+                    label="验证码"
+                    prop="code"
+                >
+                    <div style="display:flex;align-items:center">
+                        <Input
+                            v-model="formValidate1.code"
+                            style="width:142px;margin-right:5px;"
+                            placeholder="请输入验证码"
+                        />
+                        <div
+                            class="yanzhengma"
+                            @click="handleyanzhengma"
+                        >
+                            发送验证码
+                        </div>
+                    </div>
+                </FormItem>
                 <FormItem
                     label="养老机构"
                     prop="selectedList"
                 >
                     <div
-                        v-if="cityShow"
+                        v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Cascader
-                            v-model="formValidate3.selectedList"
+                            v-model="formValidate1.selectedList"
                             :data="organizations"
                         />
-                        <img
-                            style="margin-right:5px;"
-                            src="@/assets/images/learnings/cc-yes.png"
-                            @click="handleSubmit('formValidate3')"
-                        >
-                        <img
-                            src="@/assets/images/learnings/error.png"
-                            @click="cityShow = false"
-                        >
                     </div>
                     <div
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        176<img
-                            src="@/assets/images/learnings/edit.png"
-                            @click="cityShow = true"
-                        >
-                    </div>
-                </FormItem>
-                <FormItem
-                    label="账户安全"
-                    style="margin-top:200px;"
-                >
-                    <div
-                        style="color:#4A90E2;cursor:pointer;"
-                        @click="visible1 = true"
-                    >
-                        修改密码
+                        {{ formValidate1.selectedList }}
                     </div>
                 </FormItem>
             </Form>
+        </div>
+        <div class="button">
+            <div
+                v-if="isEdit"
+                @click="isEdit = !isEdit"
+            >
+                编辑
+            </div>
+            <div
+                v-if="!isEdit"
+                style="margin-right: 20px;"
+            >
+                保存
+            </div>
+            <div
+                v-if="!isEdit"
+                @click="isEdit = !isEdit"
+            >
+                取消
+            </div>
+            <!-- <Button type="primary">Submit</Button> -->
+            <!-- <Button style="margin-left: 8px">Cancel</Button> -->
         </div>
         <Modal
             v-model="visible1"
@@ -244,16 +229,14 @@ export default {
             },
             formValidate1: {
                 name: '',
+                phone: '',
+                code: '',
+                selectedList: [],
             },
             ruleValidate1: {
                 name: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
                 ],
-            },
-            formValidate2: {
-                phone: '',
-            },
-            ruleValidate2: {
                 phone: [
                     {
                         required: true,
@@ -266,11 +249,6 @@ export default {
                         trigger: 'blur',
                     },
                 ],
-            },
-            formValidate3: {
-                selectedList: [],
-            },
-            ruleValidate3: {
                 city: [
                     {
                         required: true,
@@ -278,10 +256,11 @@ export default {
                         trigger: 'change',
                     },
                 ],
+                code: [
+                    { required: true, message: '请输入验证码', trigger: 'blur' },
+                ],
             },
-            nameShow: true,
-            phoneShow: true,
-            cityShow: true,
+            isEdit: true,
             maxSize: 5 * 1024 * 1024,
             loading: false,
             organizations: [],
@@ -293,13 +272,14 @@ export default {
         this.userInfo();
     },
     methods: {
+        handleyanzhengma() {},
         userInfo() {
             return learningsApi.userInfo({}).then((data) => {
                 console.log(data);
                 const userInfo = data.data;
                 this.formValidate1.name = userInfo.name;
-                this.formValidate2.phone = userInfo.phone;
-                this.formValidate3.selectedList = userInfo.selectedList;
+                this.formValidate1.phone = userInfo.phone;
+                this.formValidate1.selectedList = userInfo.selectedList;
                 this.organizations = userInfo.organizations;
                 this.portrait = userInfo.portrait;
             });
@@ -380,8 +360,10 @@ export default {
     background: #fff;
     // margin-top: 20px;
     padding: 0 28px;
+    padding-top: 33px;
     color: @textcolor100;
     position: relative;
+    min-height: 500px;
     .upload {
         position: absolute;
         top: 78px;
@@ -395,6 +377,15 @@ export default {
         font-size: 26px;
         font-weight: 500;
         line-height: 37px;
+        position: relative;
+        .password {
+            color: #4a90e2;
+            cursor: pointer;
+            font-size: 14px;
+            position: absolute;
+            top: 0px;
+            left: 137px;
+        }
     }
     .form {
         margin-top: 30px;
@@ -436,6 +427,32 @@ export default {
                 width: 20px;
             }
         }
+    }
+    .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 96px;
+        div {
+            width: 113px;
+            height: 37px;
+            background: #d14242;
+            border-radius: 19px;
+            cursor: pointer;
+            text-align: center;
+            color: #fff;
+            line-height: 37px;
+        }
+    }
+    .yanzhengma {
+        width: 113px;
+        height: 37px;
+        background: #d14242;
+        border-radius: 19px;
+        cursor: pointer;
+        text-align: center;
+        color: #fff;
+        line-height: 37px;
     }
 }
 </style>

@@ -39,7 +39,7 @@
                         收起
                     </template>
                     <template v-else>
-                        <img src="@/assets/images/learnings/up-arrow.png">
+                        <img src="@/assets/images/learnings/down-arrow.png">
                         展开
                     </template>
                 </div>

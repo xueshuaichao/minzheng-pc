@@ -14,12 +14,18 @@
                             <router-link
                                 v-for="item in nav"
                                 :key="item.label"
-                                tag="li"
-                                class="nav-item"
                                 :to="item.to"
                                 :exact="!!item.excat"
                             >
-                                {{ item.label }}
+                                <li
+                                    class="nav-item"
+                                    :class="{
+                                        active: currentRoute === item.to.path
+                                    }"
+                                    @click="handleRouterchange(item.to)"
+                                >
+                                    {{ item.label }}
+                                </li>
                             </router-link>
                         </ul>
                         <div class="login-state fr">
@@ -101,7 +107,7 @@ const NAV = [
         label: '试题中心',
     },
     {
-        to: { path: '/exam/list' },
+        to: { path: '/learnings1' },
         label: '学习中心',
     },
     // {
@@ -118,6 +124,7 @@ export default {
         return {
             nav: NAV,
             username: '',
+            currentRoute: '',
         };
     },
     computed: {
@@ -136,13 +143,21 @@ export default {
             this.handleLoginSuccess();
         }
     },
+    mounted() {
+        setTimeout(() => {
+            console.log(this.$router, 'rout');
+            this.currentRoute = this.$router.currentRoute.path;
+        }, 100);
+    },
     methods: {
+        handleRouterchange(to) {
+            this.currentRoute = to.path;
+        },
         handleLoginSuccess() {
             // todo fetch userInfo
             api.getUserInfo().then((res) => {
                 store.commit('setUserInfo', res.data);
             });
-            // console.log(store.state);
         },
     },
 };
@@ -186,9 +201,12 @@ export default {
         width: 140px;
         height: 40px;
     }
+    .active {
+        background: #a32525;
+    }
 }
 footer {
-    margin-top: -120px;
+    // margin-top: -120px;
     height: 301px;
     background: #000000;
     .main-content {

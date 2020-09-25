@@ -107,6 +107,32 @@ const getPageConfigs = Promise.resolve([
             },
         ],
     },
+    {
+        uri: '/learnings1',
+        layout: [
+            {
+                aid: 'aid_1',
+                block_id: [15],
+                block_instance_id: [151],
+            },
+        ],
+        name: '学习中心',
+        templateId: 4, // templateId 对应layouts下的layout
+        type: 2,
+        moduleId: 1, // 系统模块 1 课程中心2 试题中心3
+        setting: [
+            {
+                bid: 111,
+                block_id: 11,
+                setting: null,
+            },
+            {
+                bid: 121,
+                block_id: 12,
+                setting: null,
+            },
+        ],
+    },
 ]);
 
 getPageConfigs.then((data) => {
