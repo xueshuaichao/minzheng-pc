@@ -1,34 +1,9 @@
 <template>
     <div class="main-container">
-        <i-breadcrumb
-            class="g-breadcrumb"
-            separator=">"
-        >
-            <i-breadcrumb-item to="/">
-                首页
-            </i-breadcrumb-item>
-            <i-breadcrumb-item>
-                教育培训
-            </i-breadcrumb-item>
-            <!-- <i-breadcrumb-item>
-                培训课程
-            </i-breadcrumb-item> -->
-        </i-breadcrumb>
         <div class="search-bar">
-            <div class="search-input">
-                <i-input
-                    v-model="listparam.course.key"
-                    placeholder="请输入关键字"
-                />
-                <i-button
-                    type="primary"
-                    @click="handleSeach()"
-                >
-                    搜索
-                </i-button>
-            </div>
             <div class="search-condition">
-                <div class="search-condition-part">
+                <div class="search-condition-part clearfix">
+                    <span class="classfiy">课程分类：</span>
                     <ul class="condition-btn">
                         <li
                             class="btnLi"
@@ -48,13 +23,15 @@
                         </li>
                     </ul>
                 </div>
-                <div
-                    v-if="secondCategory.length > 0"
-                    class="search-condition-part"
-                >
+                <div class="search-condition-part">
+                    <span class="classfiy">子类：</span>
                     <ul class="condition-btn">
-                        <li>
-                            分类
+                        <li
+                            class="btnLi"
+                            :class="{ active: conditionid === null }"
+                            @click="setcondition('', null)"
+                        >
+                            全部
                         </li>
                         <li
                             v-for="child in secondCategory"
@@ -69,21 +46,22 @@
                         </li>
                     </ul>
                 </div>
-                <div class="search-condition-part">
-                    <ul class="condition-btn">
-                        <li>
-                            课程类型
-                        </li>
-                        <li
-                            v-for="(item, index) in courseType"
-                            :key="index"
-                            class="btnLi"
-                            :class="{ active: index == typeconditionid }"
-                            @click="setcondition('type', index)"
-                        >
-                            {{ item }}
-                        </li>
-                    </ul>
+                <div class="search-condition-type">
+                    <Dropdown
+                        trigger="click"
+                        style="margin-left: 20px"
+                        placement="bottom-end"
+                    >
+                        综合排序
+                        <Icon type="md-arrow-dropdown" />
+                        <DropdownMenu slot="list">
+                            <DropdownItem>按课时排序</DropdownItem>
+                            <DropdownItem>按报名人数排序</DropdownItem>
+                            <DropdownItem>按时间排序</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                    <span class="classtype">热门课程</span>
+                    <span class="classtype">最新课程</span>
                 </div>
             </div>
         </div>
@@ -103,35 +81,21 @@
                             :src="item.courseCoverUrl"
                             alt=""
                         >
-                        <div>
-                            <!-- 15: 04 -->
-                        </div>
+                        <!-- <div>
+
+                        </div> -->
                     </div>
-                    <div class="info">
-                        <h5 class="title">
+                    <div class="info clearfix">
+                        <h5 class="title fl">
                             {{ item.name }}
                         </h5>
-                        <p>
-                            <span
-                                v-if="item.courseType === 0"
-                                class="compulsory"
-                            >
-                                必修
-                            </span>
-                            <span
-                                v-if="item.courseType === 1"
-                                class="elective"
-                            >
-                                选修
-                            </span>
-                            <span
-                                v-if="item.courseType === 2"
-                                class="free"
-                            >
-                                免费
-                            </span>
-                            <span v-if="item.courseType !== 2">
-                                {{ item.courseHours }}学时
+                        <p class="fr">
+                            <span class="baoming">
+                                <img
+                                    src="../../assets/images/course/people@2x.png"
+                                    alt=""
+                                >
+                                已报名
                             </span>
                         </p>
                     </div>
@@ -177,7 +141,38 @@ export default {
             conditionid: null,
             courseType: [],
             categories: [],
-            courseList: [],
+            courseList: [
+                {
+                    courseCoverUrl:
+                        'https://soldier-prod.oss-cn-beijing.aliyuncs.com/saas/image/c23d6efbe67e6fd611b5fb375e90bab6.jpg',
+                    name: '职业规划与就业指导',
+                },
+                {
+                    courseCoverUrl:
+                        'https://soldier-prod.oss-cn-beijing.aliyuncs.com/saas/image/c23d6efbe67e6fd611b5fb375e90bab6.jpg',
+                    name: '职业规划与就业指导',
+                },
+                {
+                    courseCoverUrl:
+                        'https://soldier-prod.oss-cn-beijing.aliyuncs.com/saas/image/c23d6efbe67e6fd611b5fb375e90bab6.jpg',
+                    name: '职业规划与就业指导',
+                },
+                {
+                    courseCoverUrl:
+                        'https://soldier-prod.oss-cn-beijing.aliyuncs.com/saas/image/c23d6efbe67e6fd611b5fb375e90bab6.jpg',
+                    name: '职业规划与就业指导',
+                },
+                {
+                    courseCoverUrl:
+                        'https://soldier-prod.oss-cn-beijing.aliyuncs.com/saas/image/c23d6efbe67e6fd611b5fb375e90bab6.jpg',
+                    name: '职业规划与就业指导',
+                },
+                {
+                    courseCoverUrl:
+                        'https://soldier-prod.oss-cn-beijing.aliyuncs.com/saas/image/c23d6efbe67e6fd611b5fb375e90bab6.jpg',
+                    name: '职业规划与就业指导',
+                },
+            ],
         };
     },
     mounted() {
@@ -185,7 +180,7 @@ export default {
             this.listparam.course.firstCategoryId = this.$route.query.cate;
             this.conditionid = this.$route.query.cate;
         }
-        this.getCourselist();
+        // this.getCourselist();
         this.getStaticInfo();
     },
     methods: {
@@ -259,3 +254,32 @@ export default {
     },
 };
 </script>
+<style lang="less">
+@import "../../less/variables";
+.search-condition-type {
+    position: relative;
+    .ivu-select-dropdown {
+        width: 170px;
+        margin: 0px;
+        padding: 0px;
+        border-radius: 0px;
+        box-shadow: 0px;
+        -webkit-box-shadow: none;
+        top: 48px !important;
+        left: -24px !important;
+        .ivu-dropdown-menu {
+            .ivu-dropdown-item {
+                color: @textColor1;
+                height: 49px;
+                line-height: 49px;
+                text-align: center;
+                padding: 0px;
+                &:hover {
+                    color: @white;
+                    background-color: @primaryred;
+                }
+            }
+        }
+    }
+}
+</style>
