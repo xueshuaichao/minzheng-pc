@@ -11,21 +11,26 @@
                         {{ detail.name }}
                     </h4>
                     <p class="time">
-                        培训时间：2020-06-10 13:00 ~ 2020-06-10 18:00
+                        培训时间：{{ detail.trainEndTime }} ~
+                        {{ detail.trainEndTime }}
                     </p>
                     <p class="time">
-                        报名时间：2020-06-10 12:40 ~ 2020-06-10-13:00
+                        报名时间：{{ detail.trainEndTime }} ~
+                        {{ detail.trainEndTime }}
                     </p>
                     <p class="infos infos-top">
-                        <span>总课时：2课时</span>
-                        <span>已报名：3</span>
+                        <span>总课时：{{ detail.allClass }}</span>
+                        <span>已报名：{{ detail.applyCount }}</span>
                     </p>
                     <p class="infos">
-                        <span>阶段数：5</span>
-                        <span>已学完：80%</span>
+                        <span>阶段数：{{ stageDtos.length }}</span>
+                        <span>已学完：{{ detail.timeSchedule }}%</span>
                     </p>
-                    <button class="join">
-                        {{ detail.status ? "已报名" : "立即报名" }}
+                    <button
+                        class="join"
+                        @click="changeStaus"
+                    >
+                        {{ detail.status ? "取消报名" : "立即报名" }}
                     </button>
                 </div>
             </div>
@@ -40,7 +45,9 @@
                 >
                     <p class="item-name">
                         <span>
-                            {{ item.stageName }}
+                            {{ item.stageName }}({{
+                                item.taskItems.length
+                            }}课时)
                         </span>
                         <Icon
                             type="ios-arrow-down"
@@ -98,6 +105,7 @@
 </template>
 <script>
 import api from '../../api/training';
+import learningsApi from '../../api/learnings';
 // api在浏览器上是无法打开的。
 export default {
     data() {
@@ -113,8 +121,11 @@ export default {
                 applyStartTime: 0,
                 applyEndTime: 0,
                 taskFinishRate: 0,
-                stageDtos: [],
+                timeSchedule: 0,
+                allClass: 0,
+                taskSumUser: 0,
             },
+            stageDtos: [],
             list: [
                 {
                     stageName: '1.1 大数据概论',
@@ -147,19 +158,65 @@ export default {
                 },
             ],
             getDefaultImg: require('../../assets/images/home/bg1.png'),
+            taskId: 8,
+            lackInfo: false,
         };
     },
     created() {
+        if (this.$route.query.id !== undefined) {
+            this.taskId = Number(this.$route.query.id);
+        }
+
         this.getDetail();
+        this.getUserInfo();
     },
     methods: {
+        getUserInfo() {
+            learningsApi.userInfo({}).then((res) => {
+                if (
+                    res.data
+                    && (!res.data.organizations
+                        || !res.data.phone
+                        || !res.data.name)
+                ) {
+                    this.lackInfo = true;
+                }
+            });
+        },
         getDetail() {
-            api.getTrainingDetail({ taskId: 8 }).then(
+            api.getTrainingDetail({ taskId: this.taskId }).then(
                 (res) => {
                     this.loading = true;
                     if (res.success) {
-                        this.detail = { ...this.detail, ...res.data };
-                        this.userTaskDto = res.data.userTaskDto;
+                        const trainEndTime = new Date(
+                            res.data.trainEndTime,
+                        ).toLocaleString();
+                        const trainStartTime = new Date(
+                            res.data.trainStartTime,
+                        ).toLocaleString();
+                        const applyEndTime = new Date(
+                            res.data.applyEndTime,
+                        ).toLocaleString();
+                        const applyStartTime = new Date(
+                            res.data.applyStartTime,
+                        ).toLocaleString();
+                        let allClass = 0;
+                        if (res.data.stageDtos) {
+                            res.data.stageDtos.forEach((d) => {
+                                allClass += d.taskItems.length;
+                            });
+                        }
+                        console.log(allClass, 'allClass', this.stageDtos);
+                        this.detail = {
+                            ...this.detail,
+                            ...res.data,
+                            applyStartTime,
+                            applyEndTime,
+                            trainStartTime,
+                            trainEndTime,
+                            allClass,
+                        };
+                        this.stageDtos = res.data.stageDtos;
                     }
                 },
                 (res) => {
@@ -167,6 +224,22 @@ export default {
                     this.loading = true;
                 },
             );
+        },
+        changeStaus() {
+            if (this.lackInfo) {
+                // 补全信息，并返回报名页面
+                this.$router.push({
+                    path: 'learnings1',
+                    query: {
+                        from: 'taskDetail',
+                    },
+                });
+            } else {
+                api.changeTaskApply({
+                    taskId: this.taskId,
+                    isApply: this.detail.applyStatus ? 0 : 1,
+                });
+            }
         },
     },
 };

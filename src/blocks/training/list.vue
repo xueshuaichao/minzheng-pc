@@ -34,6 +34,7 @@
                 v-for="(item, index) in list"
                 :key="index"
                 class="item"
+                @click="jumpDetail(item)"
             >
                 <img
                     :src="item.iconUrl || getDefaultImg"
@@ -107,8 +108,8 @@ export default {
             curItem: null,
             total: 20,
             filter: {
-                // name: '',
-                // status: [1,2,3],
+                name: '',
+                status: 1,
                 queryString: {
                     pageNum: 1,
                     pageSize: 16,
@@ -153,6 +154,14 @@ export default {
         getNameList() {
             this.filter.pageNum = 1;
             this.getList();
+        },
+        jumpDetail(item) {
+            this.$router.push({
+                path: '/trainingDetail',
+                query: {
+                    id: item.id,
+                },
+            });
         },
     },
 };

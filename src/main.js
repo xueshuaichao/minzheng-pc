@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import './libs/iview';
+import './libs/format';
 
 import App from './app.vue';
 import router from './router';
