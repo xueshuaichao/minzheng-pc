@@ -16,9 +16,15 @@
                 <div class="left">
                     <div class="picture-wrapper">
                         <img
+                            v-if="!hasresourceURl"
                             :src="courseInfo.picUrl"
                             alt=""
                         >
+                        <div
+                            v-else
+                            id="player-con"
+                            style="height: 373px"
+                        />
                     </div>
                 </div>
                 <div class="right">
@@ -56,9 +62,10 @@
             </div>
             <div class="resource-info">
                 <course-info
-                    :course-intro="courseInfo.intro"
+                    :course-intro="courseInfo"
                     :catelog-list="catelogList"
-                    :zhjudge="courseInfo.stars"
+                    :zhjudge="3"
+                    @getrecourseId="getrecourseId"
                 />
             </div>
         </div>
@@ -83,16 +90,161 @@ export default {
             showBtn: true,
             btntext: '加入选学',
             courseName: '',
+            hasresourceURl: false,
+            resourceUrl: '',
+            player: null,
+            saveLearningParams: {
+                recordId: '',
+                detailId: '',
+                pollingTime: '15',
+                curSecond: '',
+            },
         };
     },
     computed: {},
     mounted() {
         this.courseDetail(this.$route.query.id);
     },
+    beforeDestroy() {
+        this.clearTimeing();
+    },
     methods: {
+        // 获取资源id
+        getrecourseId(val) {
+            this.saveLearningParams.detailId = val;
+            console.log(val);
+            api.getVideoPlayURLById({ id: val }).then((res) => {
+                // console.log(res);
+                if (res.success) {
+                    const { data } = res;
+                    [this.resourceUrl] = data;
+                    this.hasresourceURl = this.resourceUrl.length > 0;
+                    this.$nextTick(() => {
+                        this.getaliPlay(this.resourceUrl);
+                    });
+                }
+            });
+        },
+        // 保存课程进度
+        saveLearningLog() {
+            this.saveLearningParams.recordId = this.courseInfo.recordId;
+            this.saveLearningParams.curSecond = Math.round(
+                this.player.getCurrentTime(),
+            );
+            if (this.saveLearningParams.curSecond > 0) {
+                return api
+                    .saveLearningLog(this.saveLearningParams)
+                    .then((res) => {
+                        console.log(res);
+                    });
+            }
+            return true;
+        },
+        timing() {
+            this.IntervalName = setInterval(() => {
+                this.saveLearningLog();
+            }, 15000);
+        },
+        getaliPlay(courseUrl, seekTime, iscomplate) {
+            let contTime = seekTime;
+            if (!contTime) {
+                contTime = 0;
+            }
+            $('#player-con').height('373px');
+            if ($('#J_prismPlayer').length > 0) {
+                this.player.dispose();
+                $('#J_prismPlayer').remove();
+            }
+            const boarddiv = '<div id="J_prismPlayer"></div>';
+            $('#player-con').append(boarddiv);
+            $('#J_prismPlayer').height('100%');
+            this.$nextTick(() => {
+                // eslint-disable-next-line no-undef
+                this.player = new Aliplayer({
+                    id: 'J_prismPlayer',
+                    source: courseUrl,
+                    width: '100%',
+                    height: '500px',
+                    // seek: contTime,
+                    cover: '',
+                    /* To set an album art, you must set 'autoplay' and 'preload' to 'false' */
+                    autoplay: true,
+                    preload: false,
+                    isLive: false,
+                    useH5Prism: true,
+                });
+                this.player.on('error', () => {
+                    this.clearTimeing();
+                });
+                this.player.on('ready', () => {
+                    this.timing();
+                    contTime = contTime >= Math.round(this.player.getDuration())
+                        ? '0'
+                        : contTime;
+                    if (!iscomplate) {
+                        const video = document.querySelector('video');
+                        video.currentTime = contTime;
+                        let supposedCurrentTime = 0;
+                        let maxtime = contTime;
+                        // 监听当前的播放位置发送改变时触发。
+                        video.addEventListener('timeupdate', () => {
+                            if (video.currentTime > maxtime) {
+                                maxtime = video.currentTime;
+                            }
+                            if (!video.seeking) {
+                                supposedCurrentTime = video.currentTime;
+                            }
+                        });
+                        // prevent user from seeking
+                        // 寻址中（Seeking）指的是用户在音频/视频中移动/跳跃到新的位置。
+                        video.addEventListener('seeking', () => {
+                            if (maxtime < video.currentTime) {
+                                video.currentTime = supposedCurrentTime;
+                            }
+                        });
+                    }
+                    this.player.seek(contTime);
+                });
+                this.player.on('play', () => {
+                    this.videoplay = true;
+                });
+                this.player.on('pause', () => {
+                    this.videoplay = false;
+                    // this.saveLearningParams.courseId = localStorage.getItem(
+                    //     'courseId',
+                    // );
+                    this.saveLearningLog();
+                    this.clearTimeing();
+                });
+                this.player.on('ended', () => {
+                    for (let i = 0; i < this.catelogList.length; i += 1) {
+                        const item = this.catelogList[i];
+                        for (let j = 0; j < item.lessonList.length; j += 1) {
+                            if (
+                                this.saveLearningParams.lessId
+                                === item.lessonList[j].id
+                            ) {
+                                item.lessonList[j].complate = 1;
+                            }
+                        }
+                    }
+                    // 保存记录
+                    this.saveLearningLog();
+                    // this.getNextid();
+                });
+            });
+        },
+        // 清除定时器
+        clearTimeing() {
+            if (this.IntervalName) {
+                clearInterval(this.IntervalName);
+                this.IntervalName = null;
+                console.log('清楚定时器');
+            }
+        },
         // 加入选学
         startStudy(id) {
-            api.startStudy({ courseId: id, userId: 1 }).then((res) => {
+            api.startStudy(id).then((res) => {
                 if (res.success) {
                     this.btntext = '开始学习';
                 }
@@ -122,12 +274,15 @@ export default {
             return `${day}天${hour}小时${minute}分${second}秒`;
         },
         courseDetail(id) {
-            return api.findById({ id, userId: 1 }).then((res) => {
+            return api.findById(id).then((res) => {
                 if (res.success) {
                     const { data } = res;
                     this.courseInfo = data;
                     this.courseName = this.courseInfo.name;
                     this.findCourseItemByCourseId();
+                    this.btntext = this.courseInfo.recordId
+                        ? '开始学习'
+                        : '加入选学';
                 }
             });
         },
@@ -136,10 +291,10 @@ export default {
             const param = {
                 courseId: this.courseInfo.id,
                 recordId: this.courseInfo.recordId,
-                userId: 1,
             };
             api.findCourseItemByCourseId(param).then((res) => {
-                console.log(res);
+                const { data } = res;
+                this.catelogList = data;
             });
         },
     },
