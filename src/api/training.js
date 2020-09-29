@@ -4,11 +4,17 @@ import { axios } from '../libs/axios';
 export default {
     getTaskList(data) {
         return axios.request(
-            '/apis/rest/userTask/findTaskListAndUserApplyStatus',
+            '/train/v1/userTask/findTaskListAndUserApplyStatus',
             data,
         );
     },
     getTrainingDetail(data) {
-        return axios.get('/apis/rest/userTask/getTaskInfoByUserId', data);
+        return axios.get('/train/v1/userTask/getTaskInfoByUserId', data);
+    },
+    changeTaskApply(data) {
+        return axios.post(
+            `/train/v1/userTask/apply?taskId=${data.taskId}&isApply=${data.isApply}`,
+            data,
+        );
     },
 };

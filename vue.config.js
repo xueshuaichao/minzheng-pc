@@ -51,42 +51,50 @@ module.exports = {
         // 解决 Webpack "Invalid Host Header"
         disableHostCheck: true,
         proxy: {
-            '/apii': {
-                target:
-                    'http://mz-resource-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            '/api/train': {
+                target: 'http://task-server.testing1.svc.k8s.bjo.wdcloud.cc/',
                 ws: true,
                 changeOrigin: true,
                 pathRewrite: {
-                    '/apii': '',
+                    '/api/train': '',
                 },
             },
-            '/apis': {
-                target:
-                    'http://mz-course-server.testing1.svc.k8s.bjo.wdcloud.cc',
-                ws: true,
-                changeOrigin: true,
-                pathRewrite: {
-                    '/apis': '',
-                },
-            },
-            '/api/v1': {
-                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
-                ws: true,
-                changeOrigin: true,
-                pathRewrite: {},
-            },
-            '/\\w+/api/': {
-                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
-                ws: true,
-                changeOrigin: true,
-                pathRewrite: {},
-            },
-            '/user/': {
-                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
-                ws: true,
-                changeOrigin: true,
-                pathRewrite: {},
-            },
+            // '/apii': {
+            //     target:
+            //         'http://mz-resource-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '/apii': '',
+            //     },
+            // },
+            // '/apis': {
+            //     target:
+            //         'http://mz-course-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '/apis': '',
+            //     },
+            // },
+            // '/api/v1': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/\\w+/api/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/user/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
             // '/course/': {
             //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
             //     ws: true,
@@ -141,12 +149,12 @@ module.exports = {
             //     changeOrigin: true,
             //     pathRewrite: {},
             // },
-            '/\\w+/': {
-                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
-                ws: true,
-                changeOrigin: true,
-                pathRewrite: {},
-            },
+            // '/\\w+/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
         },
     },
 };

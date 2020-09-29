@@ -28,9 +28,10 @@
                     </p>
                     <button
                         class="join"
+                        :class="{ disable: disabled }"
                         @click="changeStaus"
                     >
-                        {{ detail.status ? "取消报名" : "立即报名" }}
+                        {{ detail.applyStatus ? "取消报名" : "立即报名" }}
                     </button>
                 </div>
             </div>
@@ -160,6 +161,7 @@ export default {
             getDefaultImg: require('../../assets/images/home/bg1.png'),
             taskId: 8,
             lackInfo: false,
+            disabled: 0, // 0报名中，1.报名未开始 2报名已结束
         };
     },
     created() {
@@ -188,6 +190,13 @@ export default {
                 (res) => {
                     this.loading = true;
                     if (res.success) {
+                        const time = new Date().getTime();
+                        if (time < res.data.applyStartTime) {
+                            this.disabled = 1;
+                        }
+                        if (time > res.data.trainStartTime) {
+                            this.disabled = 2;
+                        }
                         const trainEndTime = new Date(
                             res.data.trainEndTime,
                         ).toLocaleString();
@@ -226,6 +235,13 @@ export default {
             );
         },
         changeStaus() {
+            // if (this.disabled) {
+            //     const msg = this.disabled === 1 ? '报名未开始': '报名已结束';
+            //     this.$Message.warning({
+            //         content: msg,
+            //         duration: 5,
+            //     });
+            // } else {
             if (this.lackInfo) {
                 // 补全信息，并返回报名页面
                 this.$router.push({
@@ -240,6 +256,20 @@ export default {
                     isApply: this.detail.applyStatus ? 0 : 1,
                 });
             }
+            // }
+            // this.setModel();
+        },
+        setModel() {
+            this.$Modal.confirm({
+                title: '',
+                content: '<p><Icon type="ios-warning" />请补全个人信息</p>',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    console.log(121212);
+                },
+                onCancel: () => {},
+            });
         },
     },
 };
@@ -294,6 +324,10 @@ export default {
                 height: 37px;
                 outline: none;
                 border: none;
+                &.disable {
+                    background: #ccc;
+                    color: #888;
+                }
             }
         }
     }
