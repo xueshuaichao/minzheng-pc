@@ -77,6 +77,7 @@ export default {
     watch: {
         $route() {
             // this.routerParams = this.$routes.params;
+            this.mainBlock = this.$route.path !== '/';
             this.renderPage();
         },
     },

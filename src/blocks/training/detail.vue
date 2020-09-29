@@ -40,7 +40,7 @@
                     培训内容
                 </p>
                 <div
-                    v-for="(item, index) in list"
+                    v-for="(item, index) in stageDtos"
                     :key="index"
                     class="item"
                 >
@@ -72,30 +72,34 @@
                         </div>
 
                         <div
-                            v-if="subItem.type === 3"
+                            v-if="subItem.taskPaperId && subItem.scene"
                             class="exam-info"
                         >
                             <p>
                                 <span>考试时间：</span>
-                                <span class="red">60</span>
+                                <span class="red">{{
+                                    subItem.scene.duration
+                                }}</span>
                                 <span class="red">分钟</span>
                             </p>
                             <p>
                                 <span>题数：</span>
-                                <span class="red">60</span>
+                                <span class="red">{{
+                                    subItem.scene.totalCount
+                                }}</span>
                                 <span class="red">题</span>
                             </p>
                             <p>
                                 <span>满分：</span>
-                                <span class="red">60</span>
+                                <span class="red">{{
+                                    subItem.scene.totalScore
+                                }}</span>
                             </p>
                             <p>
                                 <span>难度：</span>
-                                <span class="red">简单</span>
-                            </p>
-                            <p>
-                                <span>剩余考试次数：</span>
-                                <span class="red">0</span>
+                                <span class="red">{{
+                                    difficults[subItem.scene.difficulty - 1]
+                                }}</span>
                             </p>
                         </div>
                     </div>
@@ -125,43 +129,14 @@ export default {
                 timeSchedule: 0,
                 allClass: 0,
                 taskSumUser: 0,
+                scene: null,
             },
             stageDtos: [],
-            list: [
-                {
-                    stageName: '1.1 大数据概论',
-                    taskItems: [
-                        {
-                            type: 1,
-                            label: '1.1 大数据的重新定义',
-                        },
-                    ],
-                },
-                {
-                    stageName: '1.1 大数据概论',
-                    taskItems: [
-                        {
-                            type: 3,
-                            label: '2.3 大数据的重新定义',
-                            info: {
-                                time: 60,
-                                num: 20,
-                                max: 100,
-                                difficut: '难',
-                                count: 0,
-                            },
-                        },
-                        {
-                            type: 2,
-                            label: '2.2 大数据实操1',
-                        },
-                    ],
-                },
-            ],
+            difficults: ['简单', '一般', '困难'],
             getDefaultImg: require('../../assets/images/home/bg1.png'),
             taskId: 8,
             lackInfo: false,
-            disabled: 1, // 0报名中，1.报名未开始 2报名已结束
+            disabled: 0, // 0报名中，1.报名未开始 2报名已结束
         };
     },
     created() {
@@ -215,7 +190,6 @@ export default {
                                 allClass += d.taskItems.length;
                             });
                         }
-                        console.log(allClass, 'allClass', this.stageDtos);
                         this.detail = {
                             ...this.detail,
                             ...res.data,
@@ -228,36 +202,28 @@ export default {
                         this.stageDtos = res.data.stageDtos;
                     }
                 },
-                (res) => {
-                    console.log(res);
+                (err) => {
+                    console.log(err);
                     this.loading = true;
                 },
             );
         },
         changeStaus() {
-            // if (this.disabled) {
-            //     const msg = this.disabled === 1 ? '报名未开始': '报名已结束';
-            //     this.$Message.warning({
-            //         content: msg,
-            //         duration: 5,
-            //     });
-            // } else {
-            //     if (this.lackInfo) {
-            //         // 补全信息，并返回报名页面
-            //         this.$router.push({
-            //             path: 'learnings1',
-            //             query: {
-            //                 from: 'taskDetail',
-            //             },
-            //         });
-            //     } else {
-            //         api.changeTaskApply({
-            //             taskId: this.taskId,
-            //             isApply: this.detail.applyStatus ? 0 : 1,
-            //         });
-            //     }
-            // }
-            this.setModel();
+            if (this.disabled) {
+                const msg = this.disabled === 1 ? '报名未开始' : '报名已结束';
+                this.$Message.warning({
+                    content: msg,
+                    duration: 5,
+                });
+            } else if (this.lackInfo) {
+                // 补全信息，并返回报名页面
+                this.setModel();
+            } else {
+                api.changeTaskApply({
+                    taskId: this.taskId,
+                    isApply: this.detail.applyStatus ? 0 : 1,
+                });
+            }
         },
         setModel() {
             this.$Modal.confirm({

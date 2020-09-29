@@ -33,42 +33,12 @@
         </div>
         <!--列表-->
         <div class="list-wrap">
-            <div
-                v-for="(item, index) in list"
-                :key="index"
-                class="item"
-                @click="jumpDetail(item)"
-            >
-                <img
-                    :src="item.iconUrl || getDefaultImg"
-                    class="cover"
-                >
-                <div class="btm">
-                    <p class="name">
-                        {{ item.name }}
-                    </p>
-                    <template v-if="item.status">
-                        <p class="time">
-                            培训开始时间：{{ item.trainStartTime }}
-                        </p>
-                        <p class="time">
-                            培训结束时间：{{ item.trainEndTime }}
-                        </p>
-                    </template>
-                    <template v-else>
-                        <p class="time">
-                            报名开始时间：{{ item.applyStartTime }}
-                        </p>
-                        <p class="time">
-                            报名结束时间：{{ item.applyEndTime }}
-                        </p>
-                    </template>
-                    <img
-                        v-if="item.userTaskDto"
-                        src="../../assets/images/training/hasjoin.png"
-                    >
-                </div>
-            </div>
+            <template v-for="(item, index) in list">
+                <task-card
+                    :key="index"
+                    :itemdetail="item"
+                />
+            </template>
         </div>
         <!--分页-->
         <Page
@@ -83,11 +53,13 @@
 </template>
 <script>
 import api from '../../api/training';
-// 周日需要让后段把时间作为必填 // 09.25 十一之后后台需要添加。
-// status为数组的时候，400 bad request [1,2,3]
+import taskCard from '../../view/components/task-card.vue';
 
 export default {
     name: 'Training',
+    components: {
+        taskCard,
+    },
     data() {
         return {
             serachStatus: [
@@ -119,25 +91,17 @@ export default {
                 },
             },
             list: [],
-            getDefaultImg: require('../../assets/images/home/bg1.png'),
         };
     },
     mounted() {
         [this.curItem] = this.serachStatus;
         this.getList();
+        // api.getEXcle();
     },
     methods: {
         getList() {
             api.getTaskList(this.filter).then((res) => {
-                console.log(res, 'getTaskList');
                 if (res.success) {
-                    // let list = res.data.list.map((d) => {
-                    //     d.applyEndTime = d.applyEndTime.slice(0, 16);
-                    //     d.applyStartTime = d.applyStartTime.slice(0, 16);
-                    //     d.trainEndTime = d.trainEndTime.slice(0, 16);
-                    //     d.trainStartTime = d.trainStartTime.slice(0, 16);
-                    //     return d;
-                    // })
                     this.list = res.data.list;
                     this.total = res.data.total;
                 }
@@ -230,54 +194,6 @@ export default {
     .list-wrap {
         display: flex;
         flex-wrap: wrap;
-        .item {
-            border-radius: 6px;
-            border: 1px solid #e6e6eb;
-            margin-bottom: 23px;
-            width: 284px;
-            margin: 0 10px 23px;
-            &:nth-child(4n + 1) {
-                margin-left: 0;
-            }
-            &:nth-child(4n) {
-                margin-right: 0;
-            }
-        }
-
-        .cover {
-            width: 100%;
-            height: 160px;
-            border-radius: 6px 6px 0 0;
-        }
-        .btm {
-            padding: 18px 13px 14px;
-            position: relative;
-            background: #fff;
-            border-radius: 0 0 6px 6px;
-            .name {
-                color: #272f55;
-                font-size: 18px;
-                line-height: 25px;
-                margin-bottom: 6px;
-                width: 100%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .time {
-                font-size: 12px;
-                color: #737386;
-                line-height: 17px;
-                margin-bottom: 6px;
-            }
-            img {
-                width: 50px;
-                height: 36px;
-                position: absolute;
-                bottom: 20px;
-                right: 13px;
-            }
-        }
     }
     .page-list {
         margin-bottom: 110px;
