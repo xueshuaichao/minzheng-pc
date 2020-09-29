@@ -171,11 +171,11 @@ export default {
             this.getCourselist();
         },
         // 获取二级分类
-        getChildren() {
-            // return api.getChildren(id).then((res) => {
-            //     const { data } = res;
-            //     this.secondCategory = data;
-            // });
+        getChildren(id) {
+            return api.getChildren({ categoryId: id }).then((res) => {
+                const { data } = res;
+                this.secondCategory = data;
+            });
         },
         courseDetail(id) {
             this.$router.push({
@@ -191,7 +191,8 @@ export default {
         setcondition(id, index) {
             console.log(index);
             if (index !== undefined) {
-                this.secondCategory = this.categories[index].children;
+                // this.secondCategory = this.categories[index].children;
+                this.getChildren(id);
             }
             this.listparam.categoryId = id;
             this.getCourselist();

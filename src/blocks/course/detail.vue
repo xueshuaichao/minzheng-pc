@@ -111,7 +111,7 @@ export default {
     methods: {
         // 获取资源id
         getrecourseId(val) {
-            this.saveLearningParams.detailId = val;
+            // this.saveLearningParams.detailId = val;
             console.log(val);
             api.getVideoPlayURLById({ id: val }).then((res) => {
                 // console.log(res);
@@ -127,6 +127,7 @@ export default {
         },
         // 保存课程进度
         saveLearningLog() {
+            this.saveLearningParams.detailId = this.courseInfo.courseItemDetailId;
             this.saveLearningParams.recordId = this.courseInfo.recordId;
             this.saveLearningParams.curSecond = Math.round(
                 this.player.getCurrentTime(),
