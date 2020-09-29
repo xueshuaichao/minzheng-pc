@@ -22,7 +22,7 @@ export default {
     //     return axios.post('/category/getChildren', sceneCategoryId);
     // },
     getChildren(categoryId) {
-        return axios.post(
+        return axios.get(
             `/resourceCenter/v1/category/getChildren?categoryId=${categoryId}`,
         );
     },
