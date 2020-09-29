@@ -24,8 +24,8 @@ const getPageConfigs = Promise.resolve([
         layout: [
             {
                 aid: 'aid_1',
-                block_id: [11, 12, 17],
-                block_instance_id: [111, 121, 171],
+                block_id: [11, 12, 17, 18],
+                block_instance_id: [111, 121, 171, 181],
             },
         ],
         name: '首页',

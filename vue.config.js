@@ -51,12 +51,110 @@ module.exports = {
         // 解决 Webpack "Invalid Host Header"
         disableHostCheck: true,
         proxy: {
-            '/api': {
-                target: 'http://mapi.testing1.wdeduc.com',
+            '/api/train': {
+                target: 'http://task-server.testing1.svc.k8s.bjo.wdcloud.cc/',
                 ws: true,
                 changeOrigin: true,
-                pathRewrite: { '^/api': '' },
+                pathRewrite: {
+                    '/api/train': '',
+                },
             },
+            // '/apii': {
+            //     target:
+            //         'http://mz-resource-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '/apii': '',
+            //     },
+            // },
+            // '/apis': {
+            //     target:
+            //         'http://mz-course-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '/apis': '',
+            //     },
+            // },
+            // '/api/v1': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/\\w+/api/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/user/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/course/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/courseItem/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/courseOrder/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/courseLearningLog/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/category/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/scene/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/job/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/notice/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/resource/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
+            // '/\\w+/': {
+            //     target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+            //     ws: true,
+            //     changeOrigin: true,
+            //     pathRewrite: {},
+            // },
         },
     },
 };
