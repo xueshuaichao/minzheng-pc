@@ -12,7 +12,7 @@ iView.LoadingBar.config({
 });
 
 const router = new Router({
-    mode: 'history',
+    mode: 'hash',
     routes,
 });
 

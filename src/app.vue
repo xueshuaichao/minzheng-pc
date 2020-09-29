@@ -103,7 +103,7 @@ const NAV = [
         excat: true,
     },
     {
-        to: { path: '/course/list' },
+        to: { path: '/exam' },
         label: '试题中心',
     },
     {

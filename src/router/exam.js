@@ -1,6 +1,6 @@
 export default [
     {
-        path: '/exam/list',
+        path: '/exam',
         name: 'examList',
         component: () => import('../view/exam/list.vue'),
     },

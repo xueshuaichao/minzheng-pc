@@ -1,6 +1,6 @@
 <template>
     <div class="exam-result-page m-container">
-        <i-breadcrumb
+        <!-- <i-breadcrumb
             class="g-breadcrumb"
             separator=">"
         >
@@ -13,7 +13,7 @@
             <i-breadcrumb-item v-if="examName != ''">
                 {{ examName }}
             </i-breadcrumb-item>
-        </i-breadcrumb>
+        </i-breadcrumb> -->
         <result @exam-name="getname" />
     </div>
 </template>

@@ -1,176 +1,134 @@
 <template>
     <div class="exam-detail-page m-container">
-        <i-breadcrumb
-            class="breadcrumb"
-            separator=">"
-        >
-            <i-breadcrumb-item to="/">
-                首页
-            </i-breadcrumb-item>
-            <i-breadcrumb-item :to="{ name: 'examList' }">
-                考试测评
-            </i-breadcrumb-item>
-            <i-breadcrumb-item>
-                {{ examDetail.name }}
-            </i-breadcrumb-item>
-        </i-breadcrumb>
-        <div class="exam-detail">
-            <div class="exam-top">
-                <p>
-                    价值管理-财务管理
-                </p>
-                <h1>
-                    {{ examDetail.name }}
-                </h1>
-                <p>
-                    考试时间：{{
-                        examDetail.duration
-                    }}分钟&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span
-                        v-if="saveData.purposeType == 1"
-                    >满分：{{ examDetail.totalScore }}分</span>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 题数：{{
-                        stList.length
-                    }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用途：
-                    <span v-if="examDetail.purposeType == 1">考试</span>
-                    <span v-else>问卷</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span
-                        v-if="saveData.purposeType == 1"
-                    >难度： <Rate
-                        v-model="examDetail.difficulty"
-                        disabled
-                    /></span>
-                </p>
-            </div>
-            <div class="exam-bottom">
-                <div class="exam-left">
-                    <div class="scroll">
-                        <div
-                            v-for="(item, index) in questionsList"
-                            :key="index"
-                        >
-                            <div class="test-questions">
-                                <div class="question-type">
-                                    <span
-                                        class="h1"
-                                    >{{ item.serialNum }}、{{
-                                        item.name
-                                    }}</span>&nbsp;&nbsp;&nbsp; 共{{ item.count }}小题
-                                    <span v-if="saveData.purposeType == 1">
-                                        ， 每小题{{ item.perMark }}分， 共{{
-                                            item.totalScore
-                                        }}分
-                                    </span>
-                                </div>
+        <div class="exam-detail clearfix">
+            <div class="exam-left fl">
+                <div class="exam-top">
+                    <p class="notice">
+                        <Icon
+                            type="ios-alert"
+                            size="14"
+                            color="#D14242"
+                        />
+                        <span>考试需知：进入考试后必须在{{
+                            examDetail.duration
+                        }}分钟内提交试卷，试卷截止后系统将自动交卷</span>
+                    </p>
+                    <h1>
+                        {{ examDetail.name }}
+                    </h1>
+                    <div class="bottom">
+                        <span>考试时间：{{ examDetail.duration }}分钟</span>
+                        <span>满分：{{ examDetail.totalScore }}分</span>
+                        <span>题数：{{ examDetail.totalCount }} </span>
+                        <span>
+                            难度：{{
+                                examDetail.difficulty == 1
+                                    ? "简单"
+                                    : examDetail.difficulty == 2
+                                        ? "一般"
+                                        : "困难"
+                            }}
+                        </span>
+                    </div>
+                    <p />
+                </div>
+                <div class="scroll">
+                    <div
+                        v-for="(item, index) in questionsList"
+                        :key="index"
+                        class="list"
+                    >
+                        <div class="test-questions">
+                            <div class="question-type">
+                                <span class="h1">
+                                    {{ item.serialNum }}、{{
+                                        item.type == 1
+                                            ? "单选题"
+                                            : item.type == 2
+                                                ? "多选题"
+                                                : "判断题"
+                                    }} </span>&nbsp;&nbsp;&nbsp;
+                                <span class="small">
+                                    共{{ item.count }}小题，每小题{{
+                                        item.perMark
+                                    }}分，共{{ item.totalMark }}分
+                                </span>
                             </div>
-                            <div
-                                v-for="(question, index1) in item.questionList"
-                                :key="index1"
-                                class="questions"
-                            >
-                                <ul class="cpStOption">
-                                    <h1 class="title">
-                                        <span v-if="index > 0">
-                                            {{
+                        </div>
+                        <div
+                            v-for="(question, index1) in item.questionList"
+                            :key="index1"
+                            class="questions"
+                        >
+                            <ul class="cpStOption">
+                                <h1 class="title">
+                                    <span v-if="index == 1">
+                                        {{
+                                            questionsList[index - 1]
+                                                .questionList.length +
+                                                index1 +
+                                                1
+                                        }}
+                                    </span>
+                                    <span v-else-if="index == 2">
+                                        {{
+                                            questionsList[index - 2]
+                                                .questionList.length +
                                                 questionsList[index - 1]
                                                     .questionList.length +
-                                                    index1 +
-                                                    1
-                                            }}
-                                        </span>
-                                        <span v-else>{{ index1 + 1 }}</span>
-                                        . {{ question.title }}
-                                    </h1>
-                                    <li
-                                        v-for="(option,
-                                                index2) in question.optionList"
-                                        :key="index2"
-                                        @click="
-                                            handleClickOption(
-                                                question,
-                                                question.optionList,
-                                                item.type,
-                                                option,
-                                                index1,
-                                                index2
-                                            )
-                                        "
-                                    >
-                                        <span
-                                            class="option-btn"
-                                            :class="{
-                                                active: option.isAnswers
-                                            }"
-                                        />
-                                        <span class="option-text">
-                                            {{ option.code }}、{{
-                                                option.value
-                                            }}
-                                        </span>
-                                    </li>
-                                </ul>
-                                <div
-                                    class="mark-btn"
-                                    :class="{ active: question.mark }"
+                                                index1 +
+                                                1
+                                        }}
+                                    </span>
+                                    <span v-else>{{ index1 + 1 }}</span>
+                                    . {{ question.title }}
+                                </h1>
+                                <li
+                                    v-for="(option,
+                                            index2) in question.contentItems"
+                                    :key="index2"
                                     @click="
-                                        markClick(question, index1, item.type)
+                                        handleClickOption(
+                                            question,
+                                            question.contentItems,
+                                            item.type,
+                                            option,
+                                            index1,
+                                            index2
+                                        )
                                     "
                                 >
-                                    <span v-if="!question.mark">标记本题</span>
-                                    <span v-else>取消标记</span>
-                                </div>
+                                    <span
+                                        class="option-btn"
+                                        :class="{
+                                            active: option.isAnswers
+                                        }"
+                                    />
+                                    <span class="option-text">
+                                        {{ option.code }}、{{ option.value }}
+                                    </span>
+                                </li>
+                            </ul>
+                            <div
+                                class="mark-btn"
+                                :class="{ active: question.mark }"
+                                @click="markClick(question, index1, item.type)"
+                            >
+                                <span v-if="!question.mark">标记</span>
+                                <span v-else>标记</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="exam-right">
+            </div>
+            <div class="exam-right fr">
+                <div class="r-top">
                     <div class="exam-time">
                         <p class="text">
-                            剩余时间
+                            倒计时
                         </p>
                         <p class="Time">
-                            <span>{{
-                                minutes.toString().substring(0, 1)
-                            }}</span>
-                            <span>{{
-                                minutes.toString().substring(1, 2)
-                            }}</span>
-                            <!-- <span v-show="secShow">{{ minute3 }}</span> -->
-                            分
-                            <span>{{
-                                seconds.toString().substring(0, 1)
-                            }}</span>
-                            <span>{{
-                                seconds.toString().substring(1, 2)
-                            }}</span>
-                            秒
-                        </p>
-                    </div>
-                    <div class="answer-box">
-                        <p class="text">
-                            答题卡
-                        </p>
-                        <div class="answer-mark">
-                            <span class="yida"> <i /> 已答</span>
-                            <span class="biaoji"><i />标记</span>
-                            <span class="weida"><i />未答</span>
-                        </div>
-                        <p
-                            ref="stCount"
-                            class="answer-num"
-                        >
-                            <a
-                                v-for="(item, index) in stList"
-                                :key="index"
-                                :class="[
-                                    'pointer',
-                                    item.markFlag ? 'bjt' : '',
-                                    item.result ? 'ydt' : ''
-                                ]"
-                            >{{ index + 1 }}</a>
-                            <!-- @click="goAnchor(&quot;#wdks&quot;+item.id)" -->
+                            {{ duration }}
                         </p>
                     </div>
                     <div class="submit-btn">
@@ -179,40 +137,131 @@
                         </Button>
                     </div>
                 </div>
+
+                <div class="answer-box">
+                    <p class="text">
+                        答题卡
+                    </p>
+                    <div class="answer-mark">
+                        <span class="yida"> <i /> 已答</span>
+                        <span class="biaoji"><i />标记</span>
+                        <span class="weida"><i />未答</span>
+                    </div>
+                    <div
+                        ref="stCount"
+                        class="answer-num"
+                    >
+                        <div
+                            v-for="(mark, index) in questionsList"
+                            :key="mark.id"
+                            class="list"
+                        >
+                            <h1>
+                                {{ mark.serialNum }}、{{
+                                    mark.type == 1
+                                        ? "单选题"
+                                        : mark.type == 2
+                                            ? "多选题"
+                                            : "判断题"
+                                }}
+                            </h1>
+                            <a
+                                v-for="(item, index1) in mark.questionList"
+                                :key="index1"
+                                :class="[
+                                    'pointer',
+                                    item.markFlag ? 'bjt' : '',
+                                    item.result ? 'ydt' : ''
+                                ]"
+                            >
+                                <span v-if="index == 1">
+                                    {{
+                                        questionsList[index - 1].questionList
+                                            .length +
+                                            index1 +
+                                            1
+                                    }}
+                                </span>
+                                <span v-else-if="index == 2">
+                                    {{
+                                        questionsList[index - 2].questionList
+                                            .length +
+                                            questionsList[index - 1]
+                                                .questionList.length +
+                                            index1 +
+                                            1
+                                    }}
+                                </span>
+                                <span v-else>{{ index1 + 1 }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <Modal
             v-model="modal2"
             width="400"
             class="exam-modal"
+            :closable="false"
         >
-            <p slot="header">
-                您正在结束作答
-            </p>
-            <div
-                style="text-align:center"
-                class="modal-content"
-            >
-                <img
-                    src="../../assets/images/exam/icon-warning.png"
-                    alt=""
+            <div v-if="iscodetime == 300">
+                <p slot="header">
+                    请输入验证码
+                </p>
+                <p class="text">
+                    为保证本人考试，系统已往15555555手机上发送了验证码，验证正确后可继续考试，验证错误将终止考试。
+                </p>
+                <div class="from">
+                    <i-input placeholder="请输入验证码">
+                        <i-icon
+                            slot="prepend"
+                            type="ios-lock-outline"
+                        />
+                    </i-input>
+                    <span class="seconds">{{ sms.seconds }} s</span>
+                </div>
+            </div>
+            <div v-else>
+                <p slot="header">
+                    您正在结束作答
+                </p>
+                <div
+                    style="text-align:center"
+                    class="modal-content"
                 >
-                <p>{{ prompt }}</p>
+                    <img
+                        src="../../assets/images/exam/icon-warning.png"
+                        alt=""
+                    >
+                    <p>{{ prompt }}</p>
+                </div>
+                <div slot="footer" />
             </div>
             <div slot="footer">
-                <Button
-                    v-show="questionnaire"
-                    class="submit button"
-                    @click="commitPaper()"
-                >
-                    立即提交
-                </Button>
-                <Button
-                    class="cancel button"
-                    @click="modal2 = false"
-                >
-                    继续作答
-                </Button>
+                <div v-if="iscodetime === 300">
+                    <Button
+                        class="submit button"
+                        @click="codeBtn"
+                    >
+                        确认
+                    </Button>
+                </div>
+                <div v-else>
+                    <Button
+                        class="cancel button"
+                        @click="modal2 = false"
+                    >
+                        {{ cancelText }}
+                    </Button>
+                    <Button
+                        v-show="questionnaire"
+                        class="submit button"
+                        @click="commitPaper()"
+                    >
+                        {{ submitText }}
+                    </Button>
+                </div>
             </div>
         </Modal>
     </div>
@@ -220,12 +269,16 @@
 
 <script>
 import api from '../../api/exam';
-import store from '../../store';
+// import store from '../../store';
+import { countdown } from '../../utils/helper';
+// import userApi from '../../api/user';
 
 export default {
     data() {
         return {
             prompt: '',
+            cancelText: '',
+            submitText: '',
             IndexNum: '',
             modal2: false,
             isAnswers: 0,
@@ -239,7 +292,8 @@ export default {
             questionsList: [], // 试题列表
             saveData: {
                 paperId: '', // 试卷id
-                userId: store.state.user.userInfo.id,
+                // store.state.user.userInfo.id
+                userId: null,
                 purposeType: 1, // 用途 1：考试 2：问卷
                 commitTime: '', // 提交时间
                 answerList: [], // 本试卷答题信息列表
@@ -247,6 +301,12 @@ export default {
             ms: 0, // 毫秒，记录答题时间
             time2: null,
             questionnaire: true,
+            duration: null,
+            iscodetime: 0,
+            sms: {
+                sending: false,
+                seconds: 120,
+            },
         };
     },
     created() {
@@ -254,15 +314,11 @@ export default {
             console.log(this.$route.params);
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
-            if (this.saveData.purposeType === 1) {
-                this.findQuestionInfo();
-            } else {
-                this.findQuestionPaper();
-            }
+            this.getScenePaper();
         }
 
         this.findById();
-        this.start();
+        // this.start();
     },
     beforeDestroy() {
         if (this.time) {
@@ -270,6 +326,47 @@ export default {
         }
     },
     methods: {
+        codeBtn() {
+            this.iscodetime = 0;
+            this.modal2 = false;
+        },
+        // 获取验证码
+        getCode() {
+            this.sms.sending = true;
+            // return userApi
+            //     .getSmsCode(this.form.mobile)
+            //     .then(() => {
+            //         // todo countdown
+            //         const destroyCountdown = countdown(120, {
+            //             onProgress: (s) => {
+            //                 this.sms.seconds = s;
+            //             },
+            //             onEnd: () => {
+            //                 this.sms.seconds = 0;
+            //                 this.sms.sending = false;
+            //                 this.$off('destroyed', destroyCountdown);
+            //             },
+            //         });
+            //         this.$on('destroyed', destroyCountdown);
+            //     })
+            //     .catch((e) => {
+            //         this.sms.sending = false;
+            //         console.log(e);
+            //     });
+
+            const destroyCountdown = countdown(120, {
+                onProgress: (s) => {
+                    console.log(s);
+                    this.sms.seconds = s;
+                },
+                onEnd: () => {
+                    this.sms.seconds = 0;
+                    this.sms.sending = false;
+                    this.$off('destroyed', destroyCountdown);
+                },
+            });
+            this.$on('destroyed', destroyCountdown);
+        },
         timer2() {
             // 定义计时函数
             this.ms = this.ms + 4; // 毫秒
@@ -283,53 +380,48 @@ export default {
             clearInterval(this.time2);
         },
         // 点击标记
-        markClick(question, index, type) {
+        markClick(question) {
             const question1 = question;
-            question1.mark = !question1.mark;
-            if (type === 1) {
-                this.stList[index].markFlag = !this.stList[index].markFlag;
-            } else {
-                this.stList[
-                    this.questionsList[0].questionList.length + index
-                ].markFlag = true;
-            }
+            this.$nextTick(() => {
+                question1.mark = !question1.mark;
+                question1.markFlag = !question1.markFlag;
+            });
         },
+        /* eslint-disable */
         // 选择
         handleClickOption(question, optionList, type, item, index, index2) {
             const item1 = item;
-            this.stop();
+            // this.stop();
             const myanswer = []; // 多选题答案
-            /* type  1  单选  2 多选 */
-            if (type === 1) {
+            /* type  1  单选  2 多选 3，判断 */
+            if (type === 1 || type === 3) {
                 optionList.forEach((item2, index3) => {
                     const item4 = item2;
                     if (index2 === index3) {
-                        this.$set(item1, 'isAnswers', true);
-                        this.$set(question, 'myAnswers', item1.code);
+                        this.$set(item1, "isAnswers", true);
+                        this.$set(question, "myAnswers", item1.code);
                     } else {
-                        this.$set(item4, 'isAnswers', false);
+                        this.$set(item4, "isAnswers", false);
                     }
                 });
-                this.stList[index].result = true;
+                question.result = true;
             } else {
                 item1.isAnswers = !item1.isAnswers;
-                optionList.forEach((item2) => {
+                optionList.forEach(item2 => {
                     if (item2.isAnswers) {
                         myanswer.push(item2.code);
                     }
                 });
-                this.$set(question, 'myAnswers', myanswer.join(','));
-                this.stList[
-                    this.questionsList[0].questionList.length + index
-                ].result = true;
+                this.$set(question, "myAnswers", myanswer.join(","));
+                question.result = true;
             }
 
-            if (question.timeUsed === undefined) {
-                this.$set(question, 'timeUsed', this.ms);
-            }
+            // if (question.timeUsed === undefined) {
+            //     this.$set(question, 'timeUsed', this.ms);
+            // }
 
-            this.ms = 0;
-            this.start();
+            // this.ms = 0;
+            // this.start();
         },
         // 时间转换
         dateFormat() {
@@ -338,57 +430,39 @@ export default {
             /* 在日期格式中，月份是从0开始的，因此要加0
              * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
              * */
-            const month = date.getMonth() + 1 < 10
-                ? `0${date.getMonth() + 1}`
-                : date.getMonth() + 1;
-            const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-            const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-            const minutes = date.getMinutes() < 10
-                ? `0${date.getMinutes()}`
-                : date.getMinutes();
-            const seconds = date.getSeconds() < 10
-                ? `0${date.getSeconds()}`
-                : date.getSeconds();
+            const month =
+                date.getMonth() + 1 < 10
+                    ? `0${date.getMonth() + 1}`
+                    : date.getMonth() + 1;
+            const day =
+                date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+            const hours =
+                date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+            const minutes =
+                date.getMinutes() < 10
+                    ? `0${date.getMinutes()}`
+                    : date.getMinutes();
+            const seconds =
+                date.getSeconds() < 10
+                    ? `0${date.getSeconds()}`
+                    : date.getSeconds();
             // 拼接
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         },
         // 试题列表
-        findQuestionInfo() {
+        getScenePaper() {
             return api
-                .findQuestionInfo({ sceneId: this.$route.params.id })
-                .then((list) => {
-                    this.questionsList = list.data;
-                    const serialNum = ['一', '二'];
+                .getScenePaper({ sceneId: this.$route.params.id })
+                .then(list => {
+                    this.questionsList = list.data.itemList;
+                    const serialNum = ["一", "二", "三"];
                     this.questionsList.forEach((item, index) => {
                         const item1 = item;
                         item1.serialNum = serialNum[index];
-                        item1.questionList.forEach((question) => {
+                        item1.questionList.forEach(question => {
                             const question1 = question;
                             question1.mark = 0;
-                            question.optionList.forEach((option) => {
-                                const option1 = option;
-                                option1.isAnswers = false;
-                            });
-                        });
-                        this.stList = item1.questionList.concat(this.stList);
-                    });
-                    // console.log(this.stList);
-                });
-        },
-        // 试题列表
-        findQuestionPaper() {
-            return api
-                .findQuestionPaper({ sceneId: this.$route.params.id })
-                .then((list) => {
-                    this.questionsList = list.data;
-                    const serialNum = ['一', '二'];
-                    this.questionsList.forEach((item, index) => {
-                        const item1 = item;
-                        item1.serialNum = serialNum[index];
-                        item1.questionList.forEach((question) => {
-                            const question1 = question;
-                            question1.mark = 0;
-                            question.optionList.forEach((option) => {
+                            question.contentItems.forEach(option => {
                                 const option1 = option;
                                 option1.isAnswers = false;
                             });
@@ -400,7 +474,7 @@ export default {
         },
         // 试卷信息
         findById() {
-            return api.findById({ id: this.$route.params.id }).then((list) => {
+            return api.findById({ id: this.$route.params.id }).then(list => {
                 this.examDetail = list.data;
                 this.maxtime = this.examDetail.duration;
                 console.log(this.maxtime);
@@ -418,31 +492,31 @@ export default {
             //             mark: '', // 标记:0 未标记，1 标记
             //         },
             //     ], // 本试卷答题信息列表
-            this.questionsList.forEach((item) => {
+            this.questionsList.forEach(item => {
                 const item1 = item;
-                item1.questionList.forEach((question) => {
+                item1.questionList.forEach(question => {
                     if (question.myAnswers !== undefined) {
                         this.saveData.answerList.push({
                             questionId: question.id,
                             answer: question.myAnswers,
-                            timeUsed: question.timeUsed,
+                            // timeUsed: question.timeUsed,
                             questionType: item1.type,
-                            mark: question.mark ? 1 : 0,
+                            mark: question.mark ? 1 : 0
                         });
                     }
                 });
             });
             this.modal2 = false;
-            return api.commitPaper(this.saveData).then((data) => {
+            return api.commitPaper(this.saveData).then(data => {
                 if (data.success) {
                     this.modal2 = false;
                     this.$router.push({
-                        name: 'examResult',
+                        name: "examResult",
                         params: {
-                            id: this.saveData.paperId,
-                            type: this.saveData.purposeType,
+                            id: this.saveData.paperId
+                            // type: this.saveData.purposeType,
                             // paperId: this.saveData.paperId,
-                        },
+                        }
                     });
                 }
             });
@@ -451,24 +525,27 @@ export default {
         submitExam() {
             this.modal2 = true;
             let num = 0;
-            this.stList.forEach((val) => {
-                if (val.result) {
-                    num += 1;
-                }
+            this.questionsList.forEach(val => {
+                val.questionList.forEach(val2 => {
+                    if (val2.result) {
+                        num += 1;
+                    }
+                });
             });
-            if (this.saveData.purposeType === 1) {
-                if (num === this.stList.length) {
-                    this.prompt = '您已完成所以试题作答，是否确定立即提交？';
-                } else {
-                    this.remainingNum = this.stList.length - num;
-                    this.prompt = `您还有${this.remainingNum}道题目未进行作答，是否确定立即提交？`;
-                }
-            } else if (num === this.stList.length) {
-                this.prompt = '您已完成所以试题作答，是否确定立即提交？';
+            // this.stList.forEach((val) => {
+            //     if (val.result) {
+            //         num += 1;
+            //     }
+            // });
+            if (num === this.stList.length) {
+                this.prompt = "提交后不能撤回，是否确认交卷？";
+                this.cancelText = "取消";
+                this.submitText = "提交";
             } else {
-                this.questionnaire = false;
                 this.remainingNum = this.stList.length - num;
-                this.prompt = `您还有${this.remainingNum}道题目未进行作答，不能提交？`;
+                this.prompt = `还有${this.remainingNum}道题目未作答，确认交卷？`;
+                this.cancelText = "继续答题";
+                this.submitText = "坚持提交";
             }
         },
         // 倒计时
@@ -479,19 +556,55 @@ export default {
 
             this.timer = setInterval(() => {
                 if (self.maxtime > 0) {
-                    const minutes = Math.floor(self.maxtime / 60);
-                    self.minutes = minutes < 10 ? `0${minutes}` : minutes;
+                    const hours = Math.floor(self.maxtime / 60 / 60);
+                    const minutes = Math.floor((self.maxtime / 60) % 60);
                     const seconds = Math.floor(self.maxtime % 60);
-                    self.seconds = seconds < 10 ? `0${seconds}` : seconds;
+                    const hours1 = hours < 10 ? `0${hours}` : hours;
+                    const minutes1 = minutes < 10 ? `0${minutes}` : minutes;
+                    const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
+                    this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
+                    if (self.iscodetime === 300) {
+                        self.iscodetime = 300;
+                        this.modal2 = true;
+                        // this.getCode();
+                    } else {
+                        self.iscodetime += 1;
+                    }
                 } else {
                     clearInterval(this.timer);
-                    this.prompt = '考试时间结束！';
+                    this.prompt = "已到答题时间，系统将为您提交试卷";
+                    setTimeout(() => {
+                        this.commitPaper();
+                    }, 3000);
                     this.modal2 = true;
                 }
             }, 1000);
-        },
-    },
+        }
+        // 倒计时
+        // countDown() {
+        //     // 定义函数 此函数名必须与触发事件的函数名一致
+        //     const self = this;
+        //     self.maxtime *= 60;
+
+        //     this.timer = setInterval(() => {
+        //         if (self.maxtime > 0) {
+        //             const minutes = Math.floor(self.maxtime / 60);
+        //             self.minutes = minutes < 10 ? `0${minutes}` : minutes;
+        //             const seconds = Math.floor(self.maxtime % 60);
+        //             self.seconds = seconds < 10 ? `0${seconds}` : seconds;
+        //             self.maxtime -= 1;
+        //         } else {
+        //             clearInterval(this.timer);
+        //             this.prompt = '已到答题时间，系统将为您提交试卷';
+        //             setTimeout(()=>{
+        //                 this.commitPaper()
+        //             },3000)
+        //             this.modal2 = true;
+        //         }
+        //     }, 1000);
+        // },
+    }
 };
 </script>
 
@@ -505,243 +618,256 @@ export default {
     padding-left: 30px;
 }
 .exam-detail {
-    width: 1140px;
-    margin: 14px auto 24px;
+    width: 1200px;
+    margin: 32px auto;
     box-sizing: border-box;
-    padding: 24px 16px;
-    background: @white;
-    box-shadow: 0px 0px 20px 0px rgba(43, 51, 59, 0.08);
-    border-radius: 6px;
-    .exam-top {
-        border-bottom: 1px solid rgba(220, 223, 230, 1);
-        p {
-            color: @textColor2;
-            font-size: 14px;
-            margin-bottom: 24px;
+    .exam-left {
+        .exam-top {
+            width: 849px;
+            box-sizing: border-box;
+            padding: 24px;
+            background: #fff;
+            margin-bottom: 40px;
+            .notice {
+                color: @primaryred;
+                font-size: 16px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                line-height: 22px;
+                margin-bottom: 16px;
+                span {
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-left: 5px;
+                }
+            }
+            h1 {
+                font-size: 30px;
+                font-weight: 600;
+                line-height: 42px;
+                color: @textColor1;
+                margin-bottom: 16px;
+            }
+            .bottom {
+                span {
+                    display: inline-block;
+                    margin-right: 40px;
+                    font-size: 16px;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    font-weight: 400;
+                    color: #919191;
+                    line-height: 22px;
+                }
+            }
         }
-        h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: @textColor1;
-            margin-bottom: 24px;
+        .scroll {
+            // max-height: 1050px;
+            // overflow-y: auto;
+            .list {
+                margin-bottom: 32px;
+            }
+        }
+        .test-questions {
+            width: 100%;
+            .question-type {
+                color: @textColor1;
+                font-weight: 600;
+                .h1 {
+                    font-size: 24px;
+                }
+                .small {
+                    font-size: 20px;
+                }
+            }
+        }
+        .questions {
+            margin-top: 16px;
+            padding: 24px;
+            border-radius: 6px;
+            background: #fff;
+            overflow: hidden;
+            .title {
+                font-size: 16px;
+                font-weight: 600;
+                color: @textColor1;
+                margin-bottom: 24px;
+            }
+            .cpStOption {
+                li {
+                    margin-bottom: 16px;
+                    .option-text {
+                        font-size: 14px;
+                        color: @textColor2;
+                        font-weight: 400;
+                        vertical-align: top;
+                        line-height: 24px;
+                        display: inline-block;
+                        width: 95%;
+                        cursor: pointer;
+                        &.active {
+                            color: @mainColor;
+                        }
+                    }
+
+                    .option-btn {
+                        display: inline-block;
+                        width: 14px;
+                        height: 14px;
+                        background: rgba(255, 255, 255, 1);
+                        border: 1px solid rgba(221, 223, 230, 1);
+                        border-radius: 50%;
+                        margin-right: 10px;
+                        margin-top: 5px;
+                        vertical-align: top;
+                        &.active {
+                            background: @mainColor;
+                            border: 1px solid @mainColor;
+                            text-align: center;
+                            line-height: 6px;
+                            &::after {
+                                content: "";
+                                width: 4px;
+                                height: 4px;
+                                background: #fff;
+                                border-radius: 50%;
+                                display: inline-block;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .mark-btn {
+            width: 76px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid #f2f2f1;
+            margin-top: 16px;
+            background: #f2f2f1;
+            text-align: center;
+            line-height: 32px;
+            font-size: 16px;
+            color: #919191;
+            float: right;
+            cursor: pointer;
+            &.active {
+                background: #f3b14f;
+                border: 1px solid #f3b14f;
+                color: #fff;
+            }
         }
     }
-    .exam-bottom {
-        margin-top: 24px;
-        overflow: hidden;
-        .exam-left {
-            float: left;
-            width: 734px;
-            .scroll {
-                max-height: 1050px;
-                overflow-y: auto;
+    .exam-right {
+        width: 328px;
+        .r-top {
+            background: #fff;
+            border-radius: 6px;
+            padding: 28px 32px 24px;
+            margin-bottom: 23px;
+        }
+        .exam-time {
+            .text {
+                color: @textColor1;
+                font-size: 20px;
+                font-family: PingFangSC-Semibold, PingFang SC;
+                font-weight: 600;
+                line-height: 28px;
+                margin-bottom: 12px;
             }
-            .test-questions {
-                width: 100%;
-                .question-type {
-                    box-sizing: border-box;
-                    padding: 15px;
-                    background: #f2f6fc;
-                    width: 100%;
+            .Time {
+                color: @textColor1;
+                font-size: 40px;
+                font-family: SFNSDisplay;
+                line-height: 36px;
+            }
+        }
+        .answer-box {
+            padding: 24px;
+            background: @white;
+            box-shadow: 0px 0px 8px 0px rgba(43, 51, 59, 0.08);
+            .text {
+                font-weight: 400;
+                color: @textColor1;
+                font-size: 16px;
+                margin-bottom: 16px;
+            }
+            .answer-mark {
+                span {
+                    display: inline-block;
+                    vertical-align: bottom;
+                    margin-right: 24px;
+                    i {
+                        display: inline-block;
+                        width: 24px;
+                        height: 19px;
+                        border-radius: 6px;
+                        vertical-align: bottom;
+                        margin-right: 6px;
+                    }
+                    &.yida i {
+                        background: #4a90e2;
+                    }
+                    &.biaoji i {
+                        background: #f3b14f;
+                    }
+                    &.weida i {
+                        background: #f2f2f1;
+                    }
+                }
+            }
+            .answer-num {
+                margin-top: 24px;
+                .list {
+                    margin-bottom: 20px;
+                    h1 {
+                        font-size: 16px;
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        font-weight: 400;
+                        color: @textColor1;
+                        line-height: 16px;
+                        margin-bottom: 12px;
+                    }
+                }
+                .pointer {
+                    display: inline-block;
+                    width: 24px;
+                    height: 19px;
+                    background: #f2f2f1;
+                    border-radius: 6px;
+                    text-align: center;
                     color: @textColor2;
                     font-size: 14px;
-                    border-radius: 6px;
-                    .h1 {
-                        font-weight: 600;
-                        color: @textColor1;
-                    }
-                }
-            }
-            .questions {
-                margin-top: 24px;
-                padding: 24px;
-                box-shadow: 0px 0px 8px 0px rgba(43, 51, 59, 0.08);
-                border-radius: 6px;
-                overflow: hidden;
-                .title {
-                    font-size: 16px;
                     font-weight: 600;
-                    color: @textColor1;
-                    margin-bottom: 24px;
-                }
-                .cpStOption {
-                    li {
-                        margin-bottom: 16px;
-                        .option-text {
-                            font-size: 14px;
-                            color: @textColor2;
-                            font-weight: 400;
-                            vertical-align: top;
-                            line-height: 24px;
-                            display: inline-block;
-                            width: 95%;
-                            cursor: pointer;
-                            &.active {
-                                color: @mainColor;
-                            }
-                        }
-
-                        .option-btn {
-                            display: inline-block;
-                            width: 14px;
-                            height: 14px;
-                            background: rgba(255, 255, 255, 1);
-                            border: 1px solid rgba(221, 223, 230, 1);
-                            border-radius: 50%;
-                            margin-right: 10px;
-                            margin-top: 5px;
-                            vertical-align: top;
-                            &.active {
-                                background: @mainColor;
-                                border: 1px solid @mainColor;
-                                text-align: center;
-                                line-height: 6px;
-                                &::after {
-                                    content: "";
-                                    width: 4px;
-                                    height: 4px;
-                                    background: #fff;
-                                    border-radius: 50%;
-                                    display: inline-block;
-                                }
-                            }
-                        }
+                    margin-right: 18px;
+                    margin-bottom: 13px;
+                    box-sizing: content-box;
+                    line-height: 19px;
+                    &:nth-child(8n) {
+                        margin-right: 0;
                     }
-                }
-            }
-            .mark-btn {
-                width: 76px;
-                height: 30px;
-                box-shadow: 0px 0px 8px 0px rgba(43, 51, 59, 0.08);
-                border-radius: 6px;
-                border: 1px solid @mainColor;
-                margin-top: 16px;
-                text-align: center;
-                line-height: 30px;
-                font-size: 14px;
-                color: @mainColor;
-                float: right;
-                cursor: pointer;
-                &.active {
-                    background: #e6a23d;
-                    border: 1px solid #e6a23d;
-                    color: #fff;
+
+                    &.ydt {
+                        background: #4a90e2;
+                        color: @white;
+                    }
+                    &.bjt {
+                        background: #f3b14f;
+                        color: @white;
+                    }
                 }
             }
         }
-        .exam-right {
-            float: right;
-            width: 354px;
-            .exam-time {
-                padding: 24px;
-                background: #f2f6fc;
+        .submit-btn {
+            margin-top: 29px;
+            text-align: center;
+            button {
+                width: 198px;
+                height: 40px;
+                background: @primaryred;
                 border-radius: 6px;
-                margin-bottom: 20px;
-                .text {
-                    color: @textColor1;
-                    font-size: 16px;
-                    margin-bottom: 16px;
-                }
-                .Time {
-                    color: @textColor2;
-                    font-size: 18px;
-                    span {
-                        display: inline-block;
-                        font-size: 36px;
-                        font-weight: 600;
-                        color: #fff;
-                        background: @blue;
-                        margin-right: 12px;
-                        border-radius: 6px;
-                        width: 48px;
-                        height: 48px;
-                        text-align: center;
-                        vertical-align: bottom;
-                        &:nth-child(4) {
-                            margin-left: 12px;
-                        }
-                    }
-                }
-            }
-            .answer-box {
-                padding: 24px;
-                background: @white;
-                box-shadow: 0px 0px 8px 0px rgba(43, 51, 59, 0.08);
-                .text {
-                    font-weight: 400;
-                    color: @textColor1;
-                    font-size: 16px;
-                    margin-bottom: 16px;
-                }
-                .answer-mark {
-                    span {
-                        display: inline-block;
-                        vertical-align: bottom;
-                        margin-right: 24px;
-                        i {
-                            display: inline-block;
-                            width: 24px;
-                            height: 24px;
-                            border-radius: 6px;
-                            vertical-align: bottom;
-                            margin-right: 6px;
-                        }
-                        &.yida i {
-                            background: @mainColor;
-                        }
-                        &.biaoji i {
-                            background: #e6a23d;
-                        }
-                        &.weida i {
-                            border: 2px solid rgba(220, 223, 230, 1);
-                        }
-                    }
-                }
-                .answer-num {
-                    margin-top: 24px;
-                    .pointer {
-                        display: inline-block;
-                        width: 24px;
-                        height: 24px;
-                        background: rgba(255, 255, 255, 1);
-                        border-radius: 6px;
-                        border: 2px solid rgba(220, 223, 230, 1);
-                        text-align: center;
-                        color: @textColor2;
-                        font-size: 14px;
-                        font-weight: 600;
-                        margin-right: 11px;
-                        margin-bottom: 16px;
-                        box-sizing: content-box;
-                        line-height: 24px;
-                        &:nth-child(8n) {
-                            margin-right: 0;
-                        }
-
-                        &.ydt {
-                            background: @mainColor;
-                            color: @white;
-                            border-color: @mainColor;
-                        }
-                        &.bjt {
-                            background: #e6a23d;
-                            color: @white;
-                            border-color: #e6a23d;
-                        }
-                    }
-                }
-            }
-            .submit-btn {
-                margin-top: 20px;
-                button {
-                    width: 100%;
-                    height: 40px;
-                    background: @mainColor;
-                    border-radius: 6px;
-                    color: #fff;
-                    font-size: 14px;
-                    font-weight: 400;
-                }
+                color: #fff;
+                font-size: 14px;
+                font-weight: 400;
             }
         }
     }
