@@ -1,5 +1,8 @@
 <template>
-    <div class="page-course-list page-container">
+    <div
+        class="page-course-list"
+        :class="{ 'page-container': mainBlock }"
+    >
         <named-layout :name="config.templateId">
             <template
                 v-for="item in layout"
@@ -31,6 +34,7 @@ export default {
         return {
             config: {},
             routerParams: {},
+            mainBlock: true,
         };
     },
     beforeRouteUpdate(to, from, next) {
@@ -77,6 +81,10 @@ export default {
         },
     },
     created() {
+        console.log(this.$route);
+        if (this.$route.path === '/') {
+            this.mainBlock = false;
+        }
         this.renderPage();
     },
 

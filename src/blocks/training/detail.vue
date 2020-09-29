@@ -161,7 +161,7 @@ export default {
             getDefaultImg: require('../../assets/images/home/bg1.png'),
             taskId: 8,
             lackInfo: false,
-            disabled: 0, // 0报名中，1.报名未开始 2报名已结束
+            disabled: 1, // 0报名中，1.报名未开始 2报名已结束
         };
     },
     created() {
@@ -242,22 +242,22 @@ export default {
             //         duration: 5,
             //     });
             // } else {
-            if (this.lackInfo) {
-                // 补全信息，并返回报名页面
-                this.$router.push({
-                    path: 'learnings1',
-                    query: {
-                        from: 'taskDetail',
-                    },
-                });
-            } else {
-                api.changeTaskApply({
-                    taskId: this.taskId,
-                    isApply: this.detail.applyStatus ? 0 : 1,
-                });
-            }
+            //     if (this.lackInfo) {
+            //         // 补全信息，并返回报名页面
+            //         this.$router.push({
+            //             path: 'learnings1',
+            //             query: {
+            //                 from: 'taskDetail',
+            //             },
+            //         });
+            //     } else {
+            //         api.changeTaskApply({
+            //             taskId: this.taskId,
+            //             isApply: this.detail.applyStatus ? 0 : 1,
+            //         });
+            //     }
             // }
-            // this.setModel();
+            this.setModel();
         },
         setModel() {
             this.$Modal.confirm({
@@ -266,7 +266,12 @@ export default {
                 okText: '确定',
                 cancelText: '取消',
                 onOk: () => {
-                    console.log(121212);
+                    this.$router.push({
+                        path: '/learnings1',
+                        query: {
+                            from: 'taskDetail',
+                        },
+                    });
                 },
                 onCancel: () => {},
             });

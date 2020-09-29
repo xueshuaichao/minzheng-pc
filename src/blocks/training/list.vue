@@ -15,16 +15,19 @@
                     </span>
                 </p>
                 <div class="input-wrap">
-                    <input
+                    <Input
                         v-model="filter.name"
                         placeholder="请输入关键字"
-                    >
-                    <Icon
+                        suffix="ios-search"
+                        @on-enter="getNameList"
+                        @on-click="getNameList"
+                    />
+                    <!-- <Icon
                         type="ios-search"
                         size="26"
                         :color="'#B4B6C2'"
                         @click="getNameList"
-                    />
+                    /> -->
                 </div>
             </div>
         </div>
@@ -80,7 +83,7 @@
 </template>
 <script>
 import api from '../../api/training';
-// 周日需要让后段把时间作为必填 // 09.25
+// 周日需要让后段把时间作为必填 // 09.25 十一之后后台需要添加。
 // status为数组的时候，400 bad request [1,2,3]
 
 export default {
@@ -93,11 +96,11 @@ export default {
                     title: '全部',
                 },
                 {
-                    status: 1,
+                    status: 2,
                     title: '报名中',
                 },
                 {
-                    status: 2,
+                    status: 1,
                     title: '报名未开始',
                 },
                 {
@@ -109,7 +112,7 @@ export default {
             total: 20,
             filter: {
                 name: '',
-                status: 1,
+                status: null,
                 queryString: {
                     pageNum: 1,
                     pageSize: 16,
@@ -136,7 +139,7 @@ export default {
                     //     return d;
                     // })
                     this.list = res.data.list;
-                    // this.total = res.data.total;
+                    this.total = res.data.total;
                 }
             });
         },
@@ -147,7 +150,6 @@ export default {
             this.curItem = item;
         },
         changePage(page) {
-            console.log(page, 'page--');
             this.filter.pageNum = page;
             this.getList();
         },
@@ -209,8 +211,8 @@ export default {
             .input-wrap {
                 width: 343px;
                 height: 45px;
-                border-radius: 26px;
-                border: 1px solid #e6e6e6;
+                // border-radius: 26px;
+                // border: 1px solid #e6e6e6;
                 font-size: 16px;
                 display: flex;
                 justify-content: space-between;
@@ -221,10 +223,6 @@ export default {
                     height: 100%;
                     text-indent: 22px;
                     background: transparent;
-                }
-                .ivu-icon {
-                    line-height: 45px;
-                    margin-right: 12px;
                 }
             }
         }

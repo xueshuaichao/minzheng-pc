@@ -202,6 +202,7 @@ export default {
         margin-top: 24px;
         width: 140px;
         height: 40px;
+        margin-right: 20px;
     }
     .active {
         background: #a32525;
