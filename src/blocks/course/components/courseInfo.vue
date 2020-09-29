@@ -20,37 +20,65 @@
                 v-if="changeInfo === '1'"
                 class="des"
             >
-                {{ courseIntro }}
+                {{ courseIntro.intro }}
             </div>
             <div
                 v-if="changeInfo === '2'"
                 class="catalog"
             >
                 <div class="chapter">
-                    <div
-                        v-for="item in catelogList"
-                        :key="item.id"
-                    >
-                        <div class="title">
-                            {{ item.title }}
-                        </div>
-                        <ul>
-                            <ol
-                                v-for="lesson in item.lessonList"
-                                :key="lesson.id"
-                            >
-                                {{
-                                    lesson.index
-                                }}：
-                                {{
-                                    lesson.title
-                                }}
-                                <i-button v-if="showBtn">
-                                    {{ btntext }}
-                                </i-button>
-                            </ol>
-                        </ul>
-                    </div>
+                    <Collapse simple>
+                        <Panel
+                            v-for="item in catelogList"
+                            :key="item.id"
+                        >
+                            <span>{{ item.title }}</span>
+                            <ul slot="content">
+                                <li
+                                    v-for="lesson1 in item.childrenList"
+                                    :key="lesson1.id"
+                                    class="firstli"
+                                >
+                                    <p
+                                        class="firstli-p"
+                                        @click="showresource(lesson1.detailId)"
+                                    >
+                                        {{ lesson1.title }}
+                                    </p>
+                                    <div
+                                        v-for="lesson2 in lesson1.childrenList"
+                                        :key="lesson2.id"
+                                        class="secondP"
+                                    >
+                                        <span
+                                            class="secondLi-span"
+                                            @click="
+                                                showresource(lesson2.detailId)
+                                            "
+                                        >
+                                            {{ lesson2.title }}
+                                        </span>
+                                        <p
+                                            v-for="lesson3 in lesson2.childrenList"
+                                            :key="lesson3.id"
+                                            class="thirdP"
+                                        >
+                                            <span
+                                                class="thirdSpan"
+                                                @click="
+                                                    showresource(
+                                                        lesson3.detailId
+                                                    )
+                                                "
+                                            >
+                                                {{ lesson3.title }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </Panel>
+                    </Collapse>
                 </div>
             </div>
             <div
@@ -68,13 +96,22 @@
                     </Rate>
                 </div>
                 <div class="judge-myjudge">
-                    <span>我的评分</span>
+                    <span class="pingfen">我的评分：</span>
                     <Rate
                         v-model="myjudge"
                         show-text
+                        @on-change="submitCourseRatingForm()"
                     >
                         <span style="color: #f5a623">{{ myjudge }}分</span>
                     </Rate>
+                    <span
+                        v-if="!isJudge"
+                        class="judgeNo"
+                    >请点击评分</span>
+                    <span
+                        v-else
+                        class="judgeyes"
+                    >您已评价，感谢您的评价！</span>
                 </div>
             </div>
         </div>
@@ -83,6 +120,8 @@
 </template>
 
 <script>
+import api from '../../../api/course';
+
 export default {
     components: {},
     props: ['catelogList', 'courseIntro', 'zhjudge'],
@@ -90,12 +129,36 @@ export default {
         return {
             changeInfo: '1',
             myjudge: 0,
+            isJudge: false,
+            playing: false,
+            judgeparam: {
+                courseId: null,
+                recordId: null,
+                stars: 0,
+                remark: '',
+            },
         };
     },
     mounted() {},
     methods: {
         changeTab(num) {
+            console.log(num);
             this.changeInfo = num;
+        },
+        submitCourseRatingForm() {
+            this.judgeparam.courseId = this.courseIntro.id;
+            this.judgeparam.recordId = this.courseIntro.recordId;
+            // console.log(this.courseIntro)
+            this.judgeparam.stars = this.myjudge;
+            api.submitCourseRatingForm(this.judgeparam).then((res) => {
+                console.log(res);
+                if (res.success) {
+                    this.isJudge = true;
+                }
+            });
+        },
+        showresource(resourceid) {
+            this.$emit('getrecourseId', resourceid);
         },
     },
 };
@@ -107,29 +170,28 @@ export default {
         width: 18px;
         height: 18px;
         content: "";
-        background-image: url("../../../assets/images/learning/icon-picture.png");
+        background-image: url("../../../assets/images/course/Star@2x(1).png");
         background-size: 18px 18px;
     }
-    .ivu-rate-star-content:before {
+    .ivu-rate-star-zero:before {
         width: 18px;
         height: 18px;
         content: "";
-        background-image: url("../../../assets/images/learning/pic.png");
+        background-image: url("../../../assets/images/course/Star@2x.png");
         background-size: 18px 18px;
     }
     .ivu-rate-star:before {
-        width: 18px;
-        height: 18px;
         content: "";
-        // background-image: url('../../../assets/images/exam/icon-warning.png');
-        // background-size: 18px 18px;
     }
     .ivu-rate {
         margin-top: -5px;
     }
     .ivu-rate-text {
+        span {
+            color: #58586b !important;
+        }
         font-size: 17px;
-        color: #58586b;
+
         margin-top: -7px;
     }
 }

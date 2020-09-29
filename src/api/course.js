@@ -13,8 +13,7 @@ export default {
     // 获取课程详情
     findById(param) {
         return axios.get(
-            '/apis/course/student/findStudentCourseInfoById',
-            param,
+            `/apis/course/student/findStudentCourseInfoById?id=${param}`,
         );
     },
     // 获取课程目录
@@ -24,25 +23,35 @@ export default {
     // 加入选学
     startStudy(data) {
         return axios.post(
-            `/apis/userCourseRecord/student/course/signup?courseId=${data.courseId}&userId=${data.userId}`,
+            `/apis/userCourseRecord/student/course/signup?courseId=${data}`,
         );
     },
-    // 预览视频文件
-    previewMedia(resourceId) {
-        return axios.get(
-            `/resource/previewUploadFile?resourceId=${resourceId}`,
+    // 提交评价
+    submitCourseRatingForm(data) {
+        return axios.post(
+            '/apis/courseRatingForm/student/submitCourseRatingForm',
+            data,
         );
     },
-    // // 获取视频播放地址
-    // getVideoPlayURL(videoId) {
-    //     return axios.get(`/resource/getVideoPlayURL?videoId=${videoId}`);
-    // },
+
+    // 课程视频播放 resource/getVideoPlayURLById
+    getVideoPlayURLById(data) {
+        return axios.get('/apii/resource/getVideoPlayURLById', data);
+    },
+    // 保存课程进度 /courseLearningLog/student/saveLearningLog
+    saveLearningLog(data) {
+        return axios.post(
+            '/apis/courseLearningLog/student/saveLearningLog',
+            data,
+        );
+    },
+
     // 通过resourceId获取视频
-    getVideoUrlByResourceId(resourceId) {
-        return axios.get(
-            `/resource/getVideoUrlByResourceId?resourceId=${resourceId}`,
-        );
-    },
+    // getVideoUrlByResourceId(resourceId) {
+    //     return axios.get(
+    //         `/resource/getVideoUrlByResourceId?resourceId=${resourceId}`,
+    //     );
+    // },
     // 检查用户是否上完此课程，并且标记 应用场景，当用户每次上完课程小节的时候可以调用。
     checkAndSignCompleteCourse(courseId) {
         return axios.post(
