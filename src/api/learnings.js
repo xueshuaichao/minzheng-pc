@@ -43,7 +43,7 @@ export default {
     },
     // 删除错题
     questionRemove(param) {
-        return axios.post('/apis/learnCenter/question/remove', param);
+        return axios.post('/learnCenter/question/remove', param);
     },
     // 消息列表
     messageFindByCondition(param) {
@@ -54,7 +54,7 @@ export default {
     },
     fileUpload(param) {
         console.log(param);
-        return axios.file('/apii/file/upload', param);
+        return axios.file('/resourceCenter/v1/resource/uploadImage', param);
     },
     // 获取验证码
     userSendSms(param) {
