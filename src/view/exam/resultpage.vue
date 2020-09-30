@@ -245,14 +245,17 @@
                             src="../../assets/images/exam/icon1.png"
                             alt=""
                         >
-                        <span>交卷时间：</span>
+                        <span>交卷时间：{{ examDetail.commitTime }}</span>
                     </p>
                     <p>
                         <img
                             src="../../assets/images/exam/icon2.png"
                             alt=""
                         >
-                        <span>答题用时：</span>
+                        <span>答题用时：{{
+                            examDetail.commitTime.split(" ")[0]
+                        }}
+                            {{ formatSeconds(examDetail.timeUsed) }}</span>
                     </p>
                 </div>
                 <div class="answer-box">
@@ -345,6 +348,21 @@ export default {
         }
     },
     methods: {
+        // 时间转换
+        // 补0
+        formatBit(val) {
+            return val > 9 ? val : `0${val}`;
+        },
+        // 秒转时分秒，求模很重要，数字的下舍入
+        formatSeconds(time) {
+            const min = Math.floor(time % 3600);
+            const val = `${this.formatBit(Math.floor(time / 3600))
+            }:${
+                this.formatBit(Math.floor(min / 60))
+            }:${
+                this.formatBit(time % 60)}`;
+            return val;
+        },
         // 试卷信息
         getExamResultDetail() {
             return api
