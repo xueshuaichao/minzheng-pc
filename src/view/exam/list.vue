@@ -184,16 +184,14 @@ export default {
                 // userId: store.state.user.userInfo ? store.state.user.userInfo.id : 1000,
             };
             return api.joinScene(params).then((data) => {
-                if (data.success) {
-                    this.$router.push({
-                        name: 'examDetail',
-                        params: {
-                            id: exam.id,
-                            paperId: data.data,
-                            // type: exam.purposeType,
-                        },
-                    });
-                }
+                this.$router.push({
+                    name: 'examDetail',
+                    params: {
+                        id: exam.id,
+                        paperId: data.data,
+                        // type: exam.purposeType,
+                    },
+                });
             });
         },
         handlePageChange() {

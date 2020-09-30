@@ -200,29 +200,42 @@
             </div>
         </div>
         <Modal
-            v-model="modal2"
-            width="400"
+            v-model="iscode"
+            width="640"
             class="exam-modal"
             :closable="false"
         >
-            <div v-if="iscodetime == 300">
-                <p slot="header">
-                    请输入验证码
-                </p>
-                <p class="text">
-                    为保证本人考试，系统已往15555555手机上发送了验证码，验证正确后可继续考试，验证错误将终止考试。
-                </p>
-                <div class="from">
-                    <i-input placeholder="请输入验证码">
-                        <i-icon
-                            slot="prepend"
-                            type="ios-lock-outline"
-                        />
-                    </i-input>
-                    <span class="seconds">{{ sms.seconds }} s</span>
-                </div>
+            <p slot="header">
+                请输入验证码
+            </p>
+            <p class="text">
+                为保证本人考试，系统已{{
+                    userMobile
+                }}手机上发送了验证码，验证正确后可继续考试，验证错误将终止考试。
+            </p>
+            <div class="from">
+                <i-input
+                    placeholder="请输入验证码"
+                    style="width:339px;"
+                />
+                <span class="seconds">{{ sms.seconds }} s</span>
             </div>
-            <div v-else>
+            <div slot="footer">
+                <Button
+                    class="codesubmit button"
+                    @click="codeBtn"
+                >
+                    确认
+                </Button>
+            </div>
+        </Modal>
+        <Modal
+            v-model="modal2"
+            width="640"
+            class="exam-modal"
+            :closable="false"
+        >
+            <div>
                 <p slot="header">
                     您正在结束作答
                 </p>
@@ -239,15 +252,7 @@
                 <div slot="footer" />
             </div>
             <div slot="footer">
-                <div v-if="iscodetime === 300">
-                    <Button
-                        class="submit button"
-                        @click="codeBtn"
-                    >
-                        确认
-                    </Button>
-                </div>
-                <div v-else>
+                <div>
                     <Button
                         class="cancel button"
                         @click="modal2 = false"
@@ -270,7 +275,7 @@
 <script>
 import api from '../../api/exam';
 // import store from '../../store';
-import { countdown } from '../../utils/helper';
+// import { countdown } from '../../utils/helper';
 // import userApi from '../../api/user';
 
 export default {
@@ -286,8 +291,10 @@ export default {
             seconds: 0,
             minutes: 0,
             maxtime: 0,
+            codetime: 120,
             time: null,
             secShow: false,
+            userMobile: '18235950405',
             stList: [], // 题号
             questionsList: [], // 试题列表
             saveData: {
@@ -299,13 +306,16 @@ export default {
                 answerList: [], // 本试卷答题信息列表
             },
             ms: 0, // 毫秒，记录答题时间
+            vcode: null,
+            isvcode: false,
+            iscode: false,
             time2: null,
             questionnaire: true,
             duration: null,
             iscodetime: 0,
             sms: {
-                sending: false,
-                seconds: 120,
+                sending: true,
+                seconds: 0,
             },
         };
     },
@@ -331,41 +341,40 @@ export default {
             this.modal2 = false;
         },
         // 获取验证码
-        getCode() {
-            this.sms.sending = true;
-            // return userApi
-            //     .getSmsCode(this.form.mobile)
-            //     .then(() => {
-            //         // todo countdown
-            //         const destroyCountdown = countdown(120, {
-            //             onProgress: (s) => {
-            //                 this.sms.seconds = s;
-            //             },
-            //             onEnd: () => {
-            //                 this.sms.seconds = 0;
-            //                 this.sms.sending = false;
-            //                 this.$off('destroyed', destroyCountdown);
-            //             },
-            //         });
-            //         this.$on('destroyed', destroyCountdown);
-            //     })
-            //     .catch((e) => {
-            //         this.sms.sending = false;
-            //         console.log(e);
-            //     });
-
-            const destroyCountdown = countdown(120, {
-                onProgress: (s) => {
-                    console.log(s);
-                    this.sms.seconds = s;
+        verify() {
+            api.verify({ userMobile: this.userMobile, platformId: 10001 }).then(
+                () => {
+                    const self = this;
+                    this.codetimer = setInterval(() => {
+                        if (self.codetime > 0) {
+                            self.codetime -= 1;
+                            this.$forceUpdate();
+                        } else {
+                            clearInterval(this.codetimer);
+                            self.codehandleConfirm();
+                        }
+                    }, 1000);
                 },
-                onEnd: () => {
-                    this.sms.seconds = 0;
-                    this.sms.sending = false;
-                    this.$off('destroyed', destroyCountdown);
+            );
+        },
+        codehandleConfirm() {
+            this.isvcode = false;
+            if (this.vcode === null || this.vcode === '') {
+                this.isvcode = true;
+                return;
+            }
+            clearInterval(this.codetimer);
+            api.check({ userMobile: this.userMobile, vcode: this.vcode }).then(
+                (res) => {
+                    if (res) {
+                        this.iscode = false;
+                    } else {
+                        this.iscode = false;
+                        this.$Message.info('验证码输入错误，系统将终止考试');
+                        this.$router.go(-1);
+                    }
                 },
-            });
-            this.$on('destroyed', destroyCountdown);
+            );
         },
         timer2() {
             // 定义计时函数
@@ -532,11 +541,6 @@ export default {
                     }
                 });
             });
-            // this.stList.forEach((val) => {
-            //     if (val.result) {
-            //         num += 1;
-            //     }
-            // });
             if (num === this.stList.length) {
                 this.prompt = "提交后不能撤回，是否确认交卷？";
                 this.cancelText = "取消";
@@ -564,12 +568,11 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
+                    self.iscodetime += 1;
                     if (self.iscodetime === 300) {
-                        self.iscodetime = 300;
-                        this.modal2 = true;
-                        // this.getCode();
-                    } else {
-                        self.iscodetime += 1;
+                        this.iscode = true;
+                        this.verify();
+                        // this.codetimebtn();
                     }
                 } else {
                     clearInterval(this.timer);
@@ -581,36 +584,12 @@ export default {
                 }
             }, 1000);
         }
-        // 倒计时
-        // countDown() {
-        //     // 定义函数 此函数名必须与触发事件的函数名一致
-        //     const self = this;
-        //     self.maxtime *= 60;
-
-        //     this.timer = setInterval(() => {
-        //         if (self.maxtime > 0) {
-        //             const minutes = Math.floor(self.maxtime / 60);
-        //             self.minutes = minutes < 10 ? `0${minutes}` : minutes;
-        //             const seconds = Math.floor(self.maxtime % 60);
-        //             self.seconds = seconds < 10 ? `0${seconds}` : seconds;
-        //             self.maxtime -= 1;
-        //         } else {
-        //             clearInterval(this.timer);
-        //             this.prompt = '已到答题时间，系统将为您提交试卷';
-        //             setTimeout(()=>{
-        //                 this.commitPaper()
-        //             },3000)
-        //             this.modal2 = true;
-        //         }
-        //     }, 1000);
-        // },
     }
 };
 </script>
 
 <style lang="less" scoped>
 @import "../../less/variables.less";
-
 .breadcrumb {
     margin-top: 32px;
     padding-bottom: 10px;
@@ -904,21 +883,58 @@ export default {
 }
 </style>
 <style lang="less">
+@import "../../less/variables.less";
 .exam-modal {
     .ivu-modal-header {
         border-bottom: 0 !important;
+        padding: 32px 0;
         p {
             text-align: center;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 500;
-            color: rgba(69, 96, 163, 1);
+            color: @textColor1;
             letter-spacing: 1px;
+            height: 33px;
+            line-height: 33px;
+        }
+    }
+    .ivu-modal-body {
+        .text {
+            width: 481px;
+            font-size: 18px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: @textColor1;
+            line-height: 28px;
+            margin: 0 auto;
+            margin-bottom: 32px;
+        }
+        .from {
+            text-align: center;
+            .seconds {
+                display: inline-block;
+                vertical-align: middle;
+                line-height: 40px;
+                font-size: 18px;
+                width: 110px;
+                height: 40px;
+                background: rgba(224, 224, 224, 0.4);
+                border-radius: 6px;
+                margin-left: 16px;
+            }
         }
     }
     .ivu-modal-footer {
         border-top: 0;
         text-align: center;
         padding-bottom: 18px;
+        .codesubmit {
+            width: 198px;
+            background: #d14242;
+            font-size: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
     }
 }
 </style>
