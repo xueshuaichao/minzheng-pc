@@ -53,7 +53,7 @@ export default {
     },
     // 根据父级分类id查询子类 /category/getChildren
     getChildren(data) {
-        return axios.get('/category/getChildren', data);
+        return axios.get('/resourceCenter/v1/category/getChildren', data);
     },
 
     // 通过resourceId获取视频
