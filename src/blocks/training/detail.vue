@@ -60,6 +60,7 @@
                         v-for="(subItem, idx) in item.taskItems"
                         :key="idx"
                         class="sub-item"
+                        @click="jumpRouter(subItem)"
                     >
                         <div class="sub-title-wrap">
                             <img
@@ -148,6 +149,18 @@ export default {
         this.getUserInfo();
     },
     methods: {
+        jumpRouter(item) {
+            if (item.taskCourseId) {
+                this.$router.push({
+                    name: 'courseDetail',
+                    query: {
+                        id: item.id,
+                    },
+                });
+            } else {
+                // 跳转试卷的详情页。
+            }
+        },
         getUserInfo() {
             learningsApi.userInfo({}).then((res) => {
                 if (

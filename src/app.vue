@@ -28,6 +28,12 @@
                                 </li>
                             </router-link>
                         </ul>
+                        <div
+                            class="fr admin"
+                            @click="jumpAdmin"
+                        >
+                            学习管理
+                        </div>
                         <div class="login-state fr">
                             <router-link
                                 v-if="username"
@@ -38,6 +44,26 @@
                                 {{ username }}
                             </router-link>
                             <span v-else>未登录</span>
+                        </div>
+                        <div class="mobile fr">
+                            <p class="btn">
+                                移动端
+                            </p>
+                            <div class="mobile-content">
+                                <div class="flex">
+                                    <div class="item">
+                                        <div class="qrcode" />
+                                        <p>APP下载</p>
+                                    </div>
+                                    <div class="item border" />
+                                    <div class="item">
+                                        <div class="qrcode" />
+                                        <p>手机版网站</p>
+                                    </div>
+                                </div>
+
+                                <div class="arror" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,6 +176,9 @@ export default {
         }, 100);
     },
     methods: {
+        jumpAdmin() {
+            window.open('http://madmin.testing1.wdeduc.com/');
+        },
         handleRouterchange(to) {
             this.currentRoute = to.path;
         },
@@ -198,11 +227,78 @@ export default {
     .login-state {
         float: right;
     }
+    .admin {
+        margin-left: 40px;
+        cursor: pointer;
+    }
     .logo {
         margin-top: 24px;
         width: 140px;
         height: 40px;
-        margin-right: 20px;
+        margin-right: 92px;
+    }
+    .mobile {
+        position: relative;
+        margin-right: 60px;
+        cursor: pointer;
+        .btn {
+            width: 123px;
+            height: 35px;
+            background: #fff;
+            color: #d14242;
+            border-radius: 20px;
+            line-height: 35px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        &:hover .mobile-content {
+            display: block;
+        }
+        .mobile-content {
+            display: none;
+            position: absolute;
+            bottom: -174px;
+            left: -100px;
+            background: #fff;
+            font-size: 16px;
+            color: #4a4a4a;
+            z-index: 10;
+            line-height: 34px;
+            border-radius: 6px;
+            box-shadow: 0px 4px 13px 0px rgba(0, 0, 0, 0.2);
+            .flex {
+                display: flex;
+            }
+            .arror {
+                position: absolute;
+                top: -10px;
+                left: 155px;
+                border-bottom: 10px solid #fff;
+                border-left: 11px solid transparent;
+                border-right: 11px solid transparent;
+            }
+            .qrcode {
+                width: 91px;
+                height: 91px;
+                background: #eee;
+            }
+            .item {
+                padding: 20px 38px 10px;
+                text-align: center;
+                &.border {
+                    padding: 0;
+                    position: relative;
+                    &::before {
+                        width: 2px;
+                        height: 94px;
+                        border-right: 1px solid #d8d8d8;
+                        content: "";
+                        display: block;
+                        margin-top: 30px;
+                    }
+                }
+            }
+        }
     }
     .active {
         background: #a32525;

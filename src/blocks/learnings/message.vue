@@ -63,10 +63,12 @@ export default {
     },
     methods: {
         messageFindByCondition() {
-            return learningsApi.messageFindByCondition({}).then((data) => {
-                console.log(data);
-                this.messageList = data.data.list;
-            });
+            return learningsApi
+                .messageFindByCondition({ pageSize: 10, pageNum: 1 })
+                .then((data) => {
+                    console.log(data);
+                    this.messageList = data.data.list;
+                });
         },
     },
 };
