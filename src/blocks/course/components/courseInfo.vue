@@ -152,6 +152,7 @@ export default {
         changeTab(num) {
             console.log(num);
             this.changeInfo = num;
+            this.$emit('changeInfo', num);
         },
         submitCourseRatingForm() {
             this.judgeparam.courseId = this.courseIntro.id;

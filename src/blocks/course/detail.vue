@@ -71,6 +71,7 @@
                     :catelog-list="catelogList"
                     :zhjudge="3"
                     @getrecourseId="getrecourseId"
+                    @changeInfo="changeInfo"
                 />
             </div>
         </div>
@@ -119,6 +120,11 @@ export default {
         this.clearTimeing();
     },
     methods: {
+        changeInfo(val) {
+            if (val === '2') {
+                this.findCourseItemByCourseId();
+            }
+        },
         getPDFandYinpin(val) {
             api.getAudioOrDocUrl({ id: val.detailId }).then((res) => {
                 if (res.success) {
@@ -327,7 +333,6 @@ export default {
                     const { data } = res;
                     this.courseInfo = data;
                     this.courseName = this.courseInfo.name;
-                    this.findCourseItemByCourseId();
                     this.btntext = this.courseInfo.recordId
                         ? '开始学习'
                         : '加入选学';

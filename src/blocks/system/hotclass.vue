@@ -8,12 +8,23 @@
                 热门分类指引，丰富最常用的知识
             </p>
             <div class="list-wrap clearfix">
-                <ul>
-                    <li>
+                <ul class="img">
+                    <li
+                        v-for="(item, index) in imglist"
+                        :key="index"
+                    >
                         <img
-                            src=""
+                            :src="item.url"
                             alt=""
                         >
+                    </li>
+                </ul>
+                <ul class="name">
+                    <li
+                        v-for="(item, index) in list"
+                        :key="index"
+                    >
+                        {{ item.categoryName }}
                     </li>
                 </ul>
             </div>
@@ -29,6 +40,13 @@ export default {
         return {
             list1: {},
             list: [],
+            imglist: [
+                { url: require('../../assets/images/course/book@2x.png') },
+                { url: require('../../assets/images/course/computer@2x.png') },
+                { url: require('../../assets/images/course/pen@2x.png') },
+                { url: require('../../assets/images/course/books@2x.png') },
+                { url: require('../../assets/images/course/book1@2x.png') },
+            ],
             listparam: {
                 pageNum: 1,
                 pageSize: 7,
@@ -43,10 +61,10 @@ export default {
     methods: {
         //  暂时用课程列表的数据， 精品课接口参数有问题
         getList() {
-            api.findBoutiqueCourseList({ pagSize: '7' }).then((res) => {
+            api.getHotCategoryList({ pageSize: '5' }).then((res) => {
                 if (res.success) {
-                    this.list = res.data.slice(1, 7);
-                    [this.list1] = res.data.slice(0, 1);
+                    this.list = res.data;
+                    // [this.list1] = res.data.slice(0, 1);
                 }
             });
         },
@@ -88,13 +106,32 @@ export default {
             margin-bottom: 68px;
         }
         .list-wrap {
-            img {
-                widows: 380px;
-                height: 503px;
-                margin-right: 30px;
-                display: inline-block;
-                &:last-child {
-                    margin-right: 0px;
+            .img {
+                li {
+                    img {
+                        width: 180px;
+                        height: 180px;
+                    }
+                    margin-right: 75px;
+                    display: inline-block;
+                    &:last-child {
+                        margin-right: 0px;
+                    }
+                }
+            }
+            .name {
+                padding-top: 15px;
+                li {
+                    width: 180px;
+                    text-align: center;
+                    margin-right: 75px;
+                    font-size: 21px;
+                    color: #272f55;
+                    font-weight: 550;
+                    display: inline-block;
+                    &:last-child {
+                        margin-right: 0px;
+                    }
                 }
             }
         }

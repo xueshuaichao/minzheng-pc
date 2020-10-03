@@ -70,4 +70,11 @@ export default {
     getChildren(data) {
         return axios.get('/resourceCenter/v1/category/getChildren', data);
     },
+    // 热门分类 /course/student/getHotCategoryList
+    getHotCategoryList(data) {
+        return axios.get(
+            '/courseCenter/v1/course/student/getHotCategoryList',
+            data,
+        );
+    },
 };
