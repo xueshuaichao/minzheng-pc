@@ -231,22 +231,21 @@
         </Modal>
         <Modal
             v-model="modal2"
-            width="640"
+            width="486"
             class="exam-modal"
             :closable="false"
         >
             <div>
-                <p slot="header">
-                    您正在结束作答
+                <p
+                    slot="header"
+                    class="header-text"
+                >
+                    {{ headerText }}
                 </p>
                 <div
                     style="text-align:center"
                     class="modal-content"
                 >
-                    <img
-                        src="../../assets/images/exam/icon-warning.png"
-                        alt=""
-                    >
                     <p>{{ prompt }}</p>
                 </div>
                 <div slot="footer" />
@@ -283,6 +282,7 @@ export default {
         return {
             prompt: '',
             cancelText: '',
+            headerText: '',
             submitText: '',
             IndexNum: '',
             modal2: false,
@@ -542,12 +542,14 @@ export default {
                 });
             });
             if (num === this.stList.length) {
-                this.prompt = "提交后不能撤回，是否确认交卷？";
+                this.headerText = "是否确认交卷？";
+                this.prompt = "提交后不能撤回";
                 this.cancelText = "取消";
                 this.submitText = "提交";
             } else {
                 this.remainingNum = this.stList.length - num;
-                this.prompt = `还有${this.remainingNum}道题目未作答，确认交卷？`;
+                this.headerText = "确认交卷吗？";
+                this.prompt = `还有${this.remainingNum}道题目未作答`;
                 this.cancelText = "继续答题";
                 this.submitText = "坚持提交";
             }
@@ -758,6 +760,7 @@ export default {
                 font-size: 40px;
                 font-family: SFNSDisplay;
                 line-height: 36px;
+                text-align: center;
             }
         }
         .answer-box {
@@ -852,13 +855,22 @@ export default {
     }
 }
 .exam-modal {
+    .header-text {
+        font-size: 24px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: @textColor1;
+        text-align: center;
+        line-height: 33px;
+        margin-top: 16px;
+    }
     .modal-content {
         p {
             font-size: 16px;
             font-weight: 400;
             color: @textColor1;
             line-height: 16px;
-            margin-top: 14px;
+            margin-top: 32px;
         }
         img {
             width: 46px;
@@ -873,12 +885,12 @@ export default {
         line-height: 40px;
     }
     .submit {
-        background: @mainColor;
-        color: #fff;
+        border: 1px solid #d14242;
+        color: #d14242;
     }
     .cancel {
-        border: 1px solid @mainColor;
-        color: @mainColor;
+        background: #d14242;
+        color: #fff;
     }
 }
 </style>
