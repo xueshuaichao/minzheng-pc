@@ -86,11 +86,13 @@ export default {
     },
     methods: {
         taskFindByCondition() {
-            return learningsApi.userCourseElective({}).then((data) => {
-                console.log(data);
-                this.taskList = data.data.list;
-                this.total = data.data.total;
-            });
+            return learningsApi
+                .userCourseElective(this.listparam)
+                .then((data) => {
+                    console.log(data);
+                    this.taskList = data.data.list;
+                    this.total = data.data.total;
+                });
         },
         handleRadio() {
             this.listparam.pageNum = 1;

@@ -160,7 +160,6 @@ getPageConfigs.then((data) => {
             return route;
         });
     router.addRoutes(routes);
-    console.log(router);
     new Vue({
         router,
         store,
