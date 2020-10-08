@@ -112,7 +112,7 @@
 <script>
 import api from '../../api/training';
 import learningsApi from '../../api/learnings';
-// api在浏览器上是无法打开的。
+
 export default {
     data() {
         return {
@@ -154,11 +154,14 @@ export default {
                 this.$router.push({
                     name: 'courseDetail',
                     query: {
-                        id: item.id,
+                        id: item.taskCourseId,
                     },
                 });
             } else {
-                // 跳转试卷的详情页。
+                // 跳转试卷。就是去考试的了
+                this.$router.push({
+                    path: `exam/detail/${item.taskPaperId}`,
+                });
             }
         },
         getUserInfo() {
