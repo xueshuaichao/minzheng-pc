@@ -2,6 +2,13 @@ import { axios } from '../libs/axios';
 
 // 课程相关
 export default {
+    // 首页查询精品课程（根据课程评论排名,展示排名靠前的7门课程）
+    findBoutiqueCourseList(param) {
+        return axios.get(
+            '/courseCenter/v1/course/student/findBoutiqueCourseList',
+            param,
+        );
+    },
     // 获取课程列表
     getCourselist(param) {
         return axios.get(
@@ -42,8 +49,16 @@ export default {
 
     // 课程视频播放 resource/getVideoPlayURLById
     getVideoPlayURLById(data) {
-        return axios.get('/resource/getVideoPlayURLById', data);
+        return axios.get(
+            '/resourceCenter/v1/resource/getVideoPlayURLById',
+            data,
+        );
     },
+    // 根据资源ID查询音频或文档地址
+    getAudioOrDocUrl(data) {
+        return axios.get('/resourceCenter/v1/resource/getAudioOrDocUrl', data);
+    },
+
     // 保存课程进度 /courseLearningLog/student/saveLearningLog
     saveLearningLog(data) {
         return axios.post(
@@ -55,44 +70,11 @@ export default {
     getChildren(data) {
         return axios.get('/resourceCenter/v1/category/getChildren', data);
     },
-
-    // 通过resourceId获取视频
-    // getVideoUrlByResourceId(resourceId) {
-    //     return axios.get(
-    //         `/resource/getVideoUrlByResourceId?resourceId=${resourceId}`,
-    //     );
-    // },
-    // // 检查用户是否上完此课程，并且标记 应用场景，当用户每次上完课程小节的时候可以调用。
-    // checkAndSignCompleteCourse(courseId) {
-    //     return axios.post(
-    //         `/courseOrder/student/checkAndSignCompleteCourse?courseId=${courseId}`,
-    //     );
-    // },
-    // // 查看用户是否学完必修课
-    // checkUserFinishRequiredClassHour() {
-    //     return axios.get(
-    //         '/courseUserHour/student/checkUserFinishRequiredClassHour',
-    //     );
-    // },
-    // // 保存上课记录  使用场景：用户在观看视频过程中，每隔一段时间（15s）或者视频看完，可以调用此接口
-    // saveUserCourseLearningLog(data) {
-    //     return axios.post(
-    //         '/courseLearningLog/student/saveUserCourseLearningLog',
-    //         data,
-    //     );
-    // },
-    // // 查询课程上课记录
-    // findLearningLog(courseId) {
-    //     return axios.get(
-    //         `/courseLearningLog/student/findUserCourseLearningLogByCourseId?courseId=${courseId}`,
-    //     );
-    // },
-    // // 根据用户Id列表，考试（问卷）个人中心的记录和任务列表
-    // findRecordByUserId(data) {
-    //     return axios.post('/api/v1/scene/findRecordByUserId', data);
-    // },
-    // // 获取二级节点
-    // getChildren(categoryId) {
-    //     return axios.post(`/category/getChildren?categoryId=${categoryId}`);
-    // },
+    // 热门分类 /course/student/getHotCategoryList
+    getHotCategoryList(data) {
+        return axios.get(
+            '/courseCenter/v1/course/student/getHotCategoryList',
+            data,
+        );
+    },
 };

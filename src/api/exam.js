@@ -69,4 +69,11 @@ export default {
     findRecordByUserId(data) {
         return axios.post('/exam/v1/scene/findRecordByUserId', data);
     },
+    // 验证码
+    verify(param) {
+        return axios.post('/ucenter/smsCode/verify', param);
+    },
+    check(param) {
+        return axios.post('/ucenter/vcode/check', param);
+    },
 };

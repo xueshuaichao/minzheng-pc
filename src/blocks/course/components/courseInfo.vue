@@ -32,7 +32,11 @@
                             v-for="item in catelogList"
                             :key="item.id"
                         >
-                            <span>{{ item.title }}</span>
+                            <span><Icon
+                                      v-if="!item.menuFlag"
+                                      type="md-arrow-dropright-circle"
+                                  />
+                                {{ item.title }}</span>
                             <ul slot="content">
                                 <li
                                     v-for="lesson1 in item.childrenList"
@@ -41,9 +45,13 @@
                                 >
                                     <p
                                         class="firstli-p"
-                                        @click="showresource(lesson1.detailId)"
+                                        @click="showresource(lesson1)"
                                     >
-                                        {{ lesson1.title }}
+                                        <Icon
+                                            v-if="!lesson1.menuFlag"
+                                            type="md-arrow-dropright-circle"
+                                        />
+                                        {{ lesson1.detailName }}
                                     </p>
                                     <div
                                         v-for="lesson2 in lesson1.childrenList"
@@ -52,11 +60,12 @@
                                     >
                                         <span
                                             class="secondLi-span"
-                                            @click="
-                                                showresource(lesson2.detailId)
-                                            "
-                                        >
-                                            {{ lesson2.title }}
+                                            @click="showresource(lesson2)"
+                                        ><Icon
+                                             v-if="!lesson2.menuFlag"
+                                             type="md-arrow-dropright-circle"
+                                         />
+                                            {{ lesson2.detailName }}
                                         </span>
                                         <p
                                             v-for="lesson3 in lesson2.childrenList"
@@ -65,13 +74,12 @@
                                         >
                                             <span
                                                 class="thirdSpan"
-                                                @click="
-                                                    showresource(
-                                                        lesson3.detailId
-                                                    )
-                                                "
-                                            >
-                                                {{ lesson3.title }}
+                                                @click="showresource(lesson3)"
+                                            ><Icon
+                                                 v-if="!lesson3.menuFlag"
+                                                 type="md-arrow-dropright-circle"
+                                             />
+                                                {{ lesson3.detailName }}
                                             </span>
                                         </p>
                                     </div>
@@ -144,6 +152,7 @@ export default {
         changeTab(num) {
             console.log(num);
             this.changeInfo = num;
+            this.$emit('changeInfo', num);
         },
         submitCourseRatingForm() {
             this.judgeparam.courseId = this.courseIntro.id;
@@ -157,8 +166,8 @@ export default {
                 }
             });
         },
-        showresource(resourceid) {
-            this.$emit('getrecourseId', resourceid);
+        showresource(item) {
+            this.$emit('getrecourseId', item);
         },
     },
 };

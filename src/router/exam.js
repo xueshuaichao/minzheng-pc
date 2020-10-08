@@ -14,4 +14,9 @@ export default [
         name: 'examResult',
         component: () => import('../view/exam/result.vue'),
     },
+    {
+        path: '/exam/ultimate/:id',
+        name: 'examUltimate',
+        component: () => import('../view/exam/ultimate-result.vue'),
+    },
 ];

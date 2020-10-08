@@ -10,7 +10,9 @@ const idMap = {
 
     11: () => import('./system/banner.vue'),
     12: () => import('./system/course.vue'),
+    20: () => import('./system/hotclass.vue'),
     17: () => import('./system/training.vue'),
+    19: () => import('./system/coursesystem.vue'),
     18: () => import('./system/process.vue'),
     13: () => import('./training/list.vue'),
     14: () => import('./training/detail.vue'),
