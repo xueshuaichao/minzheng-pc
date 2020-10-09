@@ -85,7 +85,9 @@
                                     src="../../assets/images/course/people@2x.png"
                                     alt=""
                                 >
-                                已报名
+                                {{
+                                    item.signUpCount ? item.signUpCount : "0"
+                                }}人已报名
                             </span>
                         </p>
                     </div>
