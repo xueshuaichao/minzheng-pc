@@ -152,8 +152,8 @@ export default {
             scene: {
                 // purposeType: 1, // 用途类型：1.考试，2.问卷
                 name: '', // 考试名称
-                difficulty: null, // 试题难度
-                categoryId: null, // 考试（问卷）分类ID
+                difficulty: '', // 试题难度
+                categoryId: '', // 考试（问卷）分类ID
             },
 
             examList: [],
