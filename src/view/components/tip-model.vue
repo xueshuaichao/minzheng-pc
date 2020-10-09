@@ -92,7 +92,6 @@ export default {
                     if (res.data.questionType && res.data.questionType.length) {
                         types = res.data.questionType.join('、');
                     }
-                    console.log(res);
                     this.detail = {
                         ...this.detail,
                         ...res,
