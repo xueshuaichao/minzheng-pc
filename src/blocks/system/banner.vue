@@ -90,26 +90,11 @@ export default {
 <style scoped lang="less">
 .banner {
     position: relative;
-    widows: 100%;
-    height: 482px;
     background: linear-gradient(90deg, #e4e2ed 0%, #bbbdc9 100%);
-    .ivu-carousel-track {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        transform: 0 !important;
-        width: 100% !important;
-        height: 482px !important;
-        .ivu-carousel-item {
-            width: 100%;
-            height: 482px !important;
-            text-align: center;
-            #bannerImage {
-                width: auto;
-                height: 100%;
-                vertical-align: middle;
-            }
-        }
+    text-align: center;
+    img {
+        width: auto;
+        height: 482px;
     }
 }
 </style>
