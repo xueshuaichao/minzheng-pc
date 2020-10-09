@@ -317,11 +317,13 @@ export default {
                 sending: true,
                 seconds: 0,
             },
+            examtype: null,
         };
     },
     created() {
         if (this.$route) {
             console.log(this.$route.params);
+            this.examtype = this.$route.query.examtype;
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
@@ -520,14 +522,25 @@ export default {
             return api.commitPaper(this.saveData).then(data => {
                 if (data.success) {
                     this.modal2 = false;
-                    this.$router.push({
-                        name: "examResult",
-                        params: {
-                            id: this.saveData.paperId
-                            // type: this.saveData.purposeType,
-                            // paperId: this.saveData.paperId,
-                        }
-                    });
+                    if (this.examtype) {
+                        this.$router.push({
+                            name: "examUltimate",
+                            params: {
+                                id: this.saveData.paperId
+                                // type: this.saveData.purposeType,
+                                // paperId: this.saveData.paperId,
+                            }
+                        });
+                    } else {
+                        this.$router.push({
+                            name: "examResult",
+                            params: {
+                                id: this.saveData.paperId
+                                // type: this.saveData.purposeType,
+                                // paperId: this.saveData.paperId,
+                            }
+                        });
+                    }
                 }
             });
         },
@@ -571,11 +584,13 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
-                    self.iscodetime += 1;
-                    if (self.iscodetime === 300) {
-                        this.iscode = true;
-                        this.verify();
-                        // this.codetimebtn();
+                    if (this.examtype) {
+                        self.iscodetime += 1;
+                        if (self.iscodetime === 300) {
+                            this.iscode = true;
+                            this.verify();
+                            // this.codetimebtn();
+                        }
                     }
                 } else {
                     clearInterval(this.timer);
