@@ -72,6 +72,7 @@ const create = () => {
         timeout: 10000,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
+            webhost: 'http://mpc.testing1.wdeduc.com',
             // token: '',
         },
         // 临时设置，上线后修改。2020/09/27

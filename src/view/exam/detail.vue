@@ -331,8 +331,9 @@ export default {
         // this.start();
     },
     beforeDestroy() {
-        if (this.time) {
-            clearInterval(this.time);
+        if (this.timer) {
+            clearInterval(this.timer);
+            clearInterval(this.codetimer);
         }
     },
     methods: {
