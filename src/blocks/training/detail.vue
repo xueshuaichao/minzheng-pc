@@ -11,12 +11,12 @@
                         {{ detail.name }}
                     </h4>
                     <p class="time">
-                        培训时间：{{ detail.trainEndTime }} ~
+                        培训时间：{{ detail.trainStartTime }} ~
                         {{ detail.trainEndTime }}
                     </p>
                     <p class="time">
-                        报名时间：{{ detail.trainEndTime }} ~
-                        {{ detail.trainEndTime }}
+                        报名时间：{{ detail.applyStartTime }} ~
+                        {{ detail.applyEndTime }}
                     </p>
                     <p class="infos infos-top">
                         <span>总课时：{{ detail.allClass }}</span>
@@ -204,9 +204,13 @@ export default {
                         if (time < res.data.applyStartTime) {
                             this.disabled = 1;
                         }
-                        if (time > res.data.trainStartTime) {
+                        if (time > res.data.applyEndTime) {
                             this.disabled = 2;
                         }
+                        console.log(new Date(time).toLocaleString());
+                        console.log(
+                            new Date(res.data.applyEndTime).toLocaleString(),
+                        );
                         const trainEndTime = new Date(
                             res.data.trainEndTime,
                         ).toLocaleString();
