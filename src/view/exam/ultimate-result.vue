@@ -80,7 +80,10 @@
                 </div>
             </div>
             <div class="btn-container">
-                <Button class="button">
+                <Button
+                    class="button"
+                    @click="showModel = true"
+                >
                     申请重考
                 </Button>
                 <p class="tip">
@@ -88,13 +91,22 @@
                 </p>
             </div>
         </div>
+        <tipModel
+            :show="showModel"
+            :scene-id="sceneId"
+            @closeing="closeing"
+        />
     </div>
 </template>
 
 <script>
 import api from '../../api/exam';
+import tipModel from '../components/tip-model.vue';
 
 export default {
+    components: {
+        tipModel,
+    },
     data() {
         return {
             tabIndex: 0,
@@ -104,6 +116,9 @@ export default {
             questionsList: [],
             filterType: 0,
             purposeType: null,
+            showModel: false,
+            selItem: null,
+            sceneId: 0,
         };
     },
     created() {

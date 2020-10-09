@@ -348,6 +348,22 @@ export default {
             // this.getExamResultOverview()
         }
     },
+    mounted() {
+        const that = this;
+        if (window.history && window.history.pushState) {
+            window.onpopstate = function () {
+                console.log('返回');
+                that.$router.push({
+                    path: '/exam',
+                });
+                // if(that.backEvent){
+
+                //     that.backEvent();
+
+                // }
+            };
+        }
+    },
     methods: {
         // 时间转换
         // 补0
