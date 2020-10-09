@@ -9,15 +9,15 @@
             </p>
             <div class="list-wrap clearfix">
                 <img
+                    src="../../assets/images/course/Mask2@2x.png"
+                    alt=""
+                >
+                <img
                     src="../../assets/images/course/Mask@2x.png"
                     alt=""
                 >
                 <img
                     src="../../assets/images/course/Mask1@2x.png"
-                    alt=""
-                >
-                <img
-                    src="../../assets/images/course/Mask2@2x.png"
                     alt=""
                 >
             </div>

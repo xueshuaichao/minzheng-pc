@@ -14,7 +14,7 @@
                         @click="goDetail(list1.id)"
                     >
                         <img
-                            :src="list1.picUrl"
+                            :src="list1.picUrl || getDefaultImg"
                             alt=""
                         >
                         <div class="li-content">
@@ -43,7 +43,7 @@
                             @click="goDetail(item.id)"
                         >
                             <img
-                                :src="item.picUrl"
+                                :src="item.picUrl || getDefaultImg"
                                 alt=""
                             >
                             <div class="li-content">
@@ -82,6 +82,7 @@ export default {
     components: {},
     data() {
         return {
+            getDefaultImg: require('../../assets/images/home/bg1.png'),
             list1: {},
             list: [],
             listparam: {

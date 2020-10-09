@@ -151,9 +151,9 @@ export default {
         };
     },
     mounted() {
-        if (this.$route.query.cate) {
-            this.listparam.course.firstCategoryId = this.$route.query.cate;
-            this.conditionid = this.$route.query.cate;
+        if (this.$route.query.id) {
+            this.listparam.categoryId = this.$route.query.id;
+            this.conditionid = this.$route.query.id;
         }
         this.getCourselist();
 

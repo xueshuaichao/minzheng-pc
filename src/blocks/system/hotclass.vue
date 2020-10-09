@@ -23,6 +23,7 @@
                     <li
                         v-for="(item, index) in list"
                         :key="index"
+                        @click="goDetail(item.categoryId)"
                     >
                         {{ item.categoryName }}
                     </li>
@@ -64,6 +65,7 @@ export default {
             api.getHotCategoryList({ pageSize: '5' }).then((res) => {
                 if (res.success) {
                     this.list = res.data;
+                    console.log(this.list);
                     // [this.list1] = res.data.slice(0, 1);
                 }
             });
@@ -75,7 +77,7 @@ export default {
         },
         goDetail(id) {
             this.$router.push({
-                name: 'courseDetail',
+                name: 'course',
                 query: {
                     id,
                 },
@@ -120,6 +122,7 @@ export default {
                 }
             }
             .name {
+                cursor: pointer;
                 padding-top: 15px;
                 li {
                     width: 180px;
@@ -134,22 +137,6 @@ export default {
                     }
                 }
             }
-        }
-        .btn {
-            cursor: pointer;
-            width: 243px;
-            height: 54px;
-            background: #d14242;
-            border-radius: 27px;
-            margin: 55px auto 20px;
-            text-align: center;
-            font-size: 17px;
-            font-weight: 500;
-            color: #ffffff;
-            line-height: 24px;
-            border: none;
-            outline: none;
-            display: block;
         }
     }
 }

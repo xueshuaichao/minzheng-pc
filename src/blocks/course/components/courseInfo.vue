@@ -51,22 +51,33 @@
                                             v-if="!lesson1.menuFlag"
                                             type="md-arrow-dropright-circle"
                                         />
-                                        {{ lesson1.detailName }}
+                                        <span class="namestyle">{{
+                                            lesson1.detailName
+                                        }}</span>
+                                        <span class="fr timestyle">
+                                            时间 {{ lesson1.duration }}
+                                        </span>
                                     </p>
                                     <div
                                         v-for="lesson2 in lesson1.childrenList"
                                         :key="lesson2.id"
                                         class="secondP"
                                     >
-                                        <span
+                                        <p
                                             class="secondLi-span"
                                             @click="showresource(lesson2)"
-                                        ><Icon
-                                             v-if="!lesson2.menuFlag"
-                                             type="md-arrow-dropright-circle"
-                                         />
-                                            {{ lesson2.detailName }}
-                                        </span>
+                                        >
+                                            <Icon
+                                                v-if="!lesson2.menuFlag"
+                                                type="md-arrow-dropright-circle"
+                                            />
+                                            <span class="namestyle">{{
+                                                lesson2.detailName
+                                            }}</span>
+                                            <span class="fr timestyle">
+                                                时间 {{ lesson2.duration }}
+                                            </span>
+                                        </p>
                                         <p
                                             v-for="lesson3 in lesson2.childrenList"
                                             :key="lesson3.id"
@@ -79,7 +90,12 @@
                                                  v-if="!lesson3.menuFlag"
                                                  type="md-arrow-dropright-circle"
                                              />
-                                                {{ lesson3.detailName }}
+                                                <span class="namestyle">{{
+                                                    lesson3.detailName
+                                                }}</span>
+                                                <span class="fr timestyle">
+                                                    时间 {{ lesson3.duration }}
+                                                </span>
                                             </span>
                                         </p>
                                     </div>
@@ -175,6 +191,24 @@ export default {
 
 <style lang="less">
 .infoLeft {
+    .ivu-collapse {
+        border: 0px !important;
+    }
+    .ivu-collapse-simple
+        > .ivu-collapse-item.ivu-collapse-item-active
+        > .ivu-collapse-header {
+        border-bottom: 1px solid #f0f0f2;
+        margin-bottom: 20px;
+    }
+    .ivu-icon {
+        vertical-align: middle !important;
+    }
+    .ivu-icon-md-arrow-dropright-circle:before {
+        font-size: 24px;
+        color: rgba(0, 0, 0, 0.3);
+        // line-height: 40px;
+        padding-right: 5px;
+    }
     .ivu-rate-star-full:before {
         width: 18px;
         height: 18px;
