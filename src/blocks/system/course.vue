@@ -99,7 +99,7 @@ export default {
     methods: {
         //  暂时用课程列表的数据， 精品课接口参数有问题
         getList() {
-            api.findBoutiqueCourseList({ pagSize: '7' }).then((res) => {
+            api.findBoutiqueCourseList({ pageSize: '7' }).then((res) => {
                 if (res.success) {
                     this.list = res.data.slice(1, 7);
                     [this.list1] = res.data.slice(0, 1);
