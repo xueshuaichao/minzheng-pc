@@ -2,6 +2,7 @@
     <Carousel
         v-if="bannerList"
         autoplay
+        loop
         class="banner"
     >
         <Carousel-item
