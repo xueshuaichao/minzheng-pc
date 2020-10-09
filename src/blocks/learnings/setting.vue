@@ -96,7 +96,7 @@
                             v-if="!isAvalible"
                             class="yanzhengma disable"
                         >
-                            {{ this.time }}(s)
+                            {{ time }}(s)
                         </div>
                     </div>
                 </FormItem>
@@ -322,19 +322,20 @@ export default {
             if (result) {
                 return;
             }
-            // learningsApi.userSendSms({phone: this.formValidate1.phone}).then((data) => {
-            //     console.log(data);
-            this.isAvalible = false;
-            clearInterval(this.setId);
-            this.setId = setInterval(() => {
-                this.time -= 1;
-                if (this.time === 0) {
-                    this.isAvalible = true;
+            learningsApi
+                .userSendSms({ phone: this.formValidate1.phone })
+                .then((data) => {
+                    console.log(data);
+                    this.isAvalible = false;
                     clearInterval(this.setId);
-                }
-            }, 1000);
-
-            // });
+                    this.setId = setInterval(() => {
+                        this.time -= 1;
+                        if (this.time === 0) {
+                            this.isAvalible = true;
+                            clearInterval(this.setId);
+                        }
+                    }, 1000);
+                });
         },
         // 对手机字段校验
         validatePhone(item) {
@@ -346,6 +347,8 @@ export default {
             });
         },
         handleSubmit(item) {
+            console.log('object');
+
             this.$refs[item].validate((valid) => {
                 if (valid) {
                     // this.$Message.success('Success!');

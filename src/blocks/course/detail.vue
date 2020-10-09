@@ -33,17 +33,19 @@
                     </div>
                 </div>
                 <div class="right">
-                    <a :title="courseInfo.name">
-                        {{ courseInfo.name }}
-                    </a>
-                    <ul class="info">
-                        <li class="info-classify">
-                            分类：{{ courseInfo.categoryName }}
-                        </li>
-                        <li class="info-classdiff">
-                            课程难度：初级
-                        </li>
-                    </ul>
+                    <div class="right-top">
+                        <a :title="courseInfo.name">
+                            {{ courseInfo.name }}
+                        </a>
+                        <ul class="info">
+                            <li class="info-classify">
+                                分类：{{ courseInfo.categoryName }}
+                            </li>
+                            <li class="info-classdiff">
+                                课程难度：{{ courseInfo.difficulty }}
+                            </li>
+                        </ul>
+                    </div>
                     <ul class="info1">
                         <li class="info1-keshi">
                             <span>课时：{{ courseInfo.classHour }}课时</span>
@@ -69,7 +71,8 @@
                 <course-info
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
-                    :zhjudge="3"
+                    :zhjudge="courseInfo.starAvg - 0"
+                    :myjudge="courseInfo.stars - 0"
                     @getrecourseId="getrecourseId"
                     @changeInfo="changeInfo"
                 />
@@ -151,11 +154,11 @@ export default {
         },
         getVideo(val) {
             api.getVideoPlayURLById({ id: val }).then((res) => {
-                // console.log(res);
                 if (res.success) {
                     const { data } = res;
                     [this.resourceUrl] = data;
                     this.ispdf = false;
+                    this.hasvideo = true;
                     this.hasresourceURl = this.resourceUrl.length > 0;
                     this.$nextTick(() => {
                         this.getaliPlay(this.resourceUrl, '1');
@@ -165,7 +168,6 @@ export default {
         },
         // 获取资源id
         getrecourseId(val) {
-            // this.saveLearningParams.detailId = val;
             if (!val.menuFlag) {
                 this.courseItemDetailId = val.courseItemDetailId;
                 // 视频
@@ -294,48 +296,60 @@ export default {
         },
         // 加入选学
         startStudy(id) {
-            if (this.courseInfo.recordId) {
-                return false;
+            // if (this.courseInfo.recordId) {
+            //     return false;
+            // }
+            if (this.btntext === '加入选学') {
+                api.startStudy(id).then((res) => {
+                    if (res.success) {
+                        this.btntext = '开始学习';
+                    }
+                    console.log(res);
+                });
+            } else if (this.btntext === '开始学习') {
+                // this.getlastPlay();
             }
-            api.startStudy(id).then((res) => {
-                if (res.success) {
-                    this.btntext = '开始学习';
-                }
-                console.log(res);
-            });
-            return true;
+
+            // return true;
         },
-        formatDate(inputTime) {
-            const date = new Date(inputTime);
-            const y = date.getFullYear();
-            let m = date.getMonth() + 1;
-            m = m < 10 ? `0${m}` : m;
-            let d = date.getDate();
-            d = d < 10 ? `0${d}` : d;
-            let h = date.getHours();
-            h = h < 10 ? `0${h}` : h;
-            let minute = date.getMinutes();
-            let second = date.getSeconds();
-            minute = minute < 10 ? `0${minute}` : minute;
-            second = second < 10 ? `0${second}` : second;
-            return `${y}-${m}-${d} ${h}:${minute}:${second}`;
-        },
-        secondsFormat(s) {
-            const day = Math.floor(s / (24 * 3600)); // Math.floor()向下取整
-            const hour = Math.floor((s - day * 24 * 3600) / 3600);
-            const minute = Math.floor((s - day * 24 * 3600 - hour * 3600) / 60);
-            const second = s - day * 24 * 3600 - hour * 3600 - minute * 60;
-            return `${day}天${hour}小时${minute}分${second}秒`;
-        },
+        // formatDate(inputTime) {
+        //     const date = new Date(inputTime);
+        //     const y = date.getFullYear();
+        //     let m = date.getMonth() + 1;
+        //     m = m < 10 ? `0${m}` : m;
+        //     let d = date.getDate();
+        //     d = d < 10 ? `0${d}` : d;
+        //     let h = date.getHours();
+        //     h = h < 10 ? `0${h}` : h;
+        //     let minute = date.getMinutes();
+        //     let second = date.getSeconds();
+        //     minute = minute < 10 ? `0${minute}` : minute;
+        //     second = second < 10 ? `0${second}` : second;
+        //     return `${y}-${m}-${d} ${h}:${minute}:${second}`;
+        // },
         courseDetail(id) {
             return api.findById(id).then((res) => {
                 if (res.success) {
                     const { data } = res;
                     this.courseInfo = data;
                     this.courseName = this.courseInfo.name;
-                    this.btntext = this.courseInfo.recordId
-                        ? '开始学习'
-                        : '加入选学';
+                    if (
+                        this.courseInfo.recordId
+                        && !this.courseInfo.learningRate
+                    ) {
+                        this.btntext = '开始学习';
+                    } else if (this.courseInfo.learningRate) {
+                        this.btntext = '继续学习';
+                    } else if (!this.courseInfo.recordId) {
+                        this.btntext = '加入选学';
+                    }
+                    if (this.courseInfo.difficulty === 0) {
+                        this.courseInfo.difficulty = '初阶';
+                    } else if (this.courseInfo.difficulty === 1) {
+                        this.courseInfo.difficulty = '进阶';
+                    } else if (this.courseInfo.difficulty === 2) {
+                        this.courseInfo.difficulty = '高阶';
+                    }
                 }
             });
         },
@@ -349,6 +363,23 @@ export default {
                 const { data } = res;
                 this.catelogList = data;
             });
+        },
+        // 继续上次播放
+        getlastPlay() {
+            console.log(111);
+            this.catelogList.forEach((item) => {
+                console.log(item);
+                if (item.childrenList) {
+                    this.getChildlast(item.childrenList);
+                }
+            });
+        },
+        getChildlast(child) {
+            if (child && child.studyProcess.isLastPlay === 1) {
+                console.log(child);
+                return child;
+            }
+            return true;
         },
     },
 };

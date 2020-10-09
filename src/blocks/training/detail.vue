@@ -11,12 +11,12 @@
                         {{ detail.name }}
                     </h4>
                     <p class="time">
-                        培训时间：{{ detail.trainEndTime }} ~
+                        培训时间：{{ detail.trainStartTime }} ~
                         {{ detail.trainEndTime }}
                     </p>
                     <p class="time">
-                        报名时间：{{ detail.trainEndTime }} ~
-                        {{ detail.trainEndTime }}
+                        报名时间：{{ detail.applyStartTime }} ~
+                        {{ detail.applyEndTime }}
                     </p>
                     <p class="infos infos-top">
                         <span>总课时：{{ detail.allClass }}</span>
@@ -107,13 +107,22 @@
                 </div>
             </div>
         </template>
+        <tipModel
+            :show="showModel"
+            :scene-id="sceneId"
+            @closeing="closeing"
+        />
     </div>
 </template>
 <script>
 import api from '../../api/training';
 import learningsApi from '../../api/learnings';
+import tipModel from '../../view/components/tip-model.vue';
 
 export default {
+    components: {
+        tipModel,
+    },
     data() {
         return {
             percent: 10,
@@ -138,17 +147,28 @@ export default {
             taskId: 8,
             lackInfo: false,
             disabled: 0, // 0报名中，1.报名未开始 2报名已结束
+            showModel: false,
+            selItem: null,
+            sceneId: 0,
         };
     },
     created() {
         if (this.$route.query.id !== undefined) {
             this.taskId = Number(this.$route.query.id);
         }
-
         this.getDetail();
         this.getUserInfo();
     },
     methods: {
+        closeing(arg) {
+            this.showModel = false;
+            if (arg) {
+                // 跳转试卷。就是去考试的了
+                this.$router.push({
+                    path: `exam/detail/${this.selItem.scene.id}?examtype=${this.selItem.scene.examType}`,
+                });
+            }
+        },
         jumpRouter(item) {
             if (item.taskCourseId) {
                 this.$router.push({
@@ -158,11 +178,10 @@ export default {
                     },
                 });
             } else {
-                // 跳转试卷。就是去考试的了
-                this.$router.push({
-                    path: `exam/detail/${item.taskPaperId}`,
-                });
+                this.showModel = true;
+                this.sceneId = item.scene.id;
             }
+            this.selItem = item;
         },
         getUserInfo() {
             learningsApi.userInfo({}).then((res) => {
@@ -185,9 +204,13 @@ export default {
                         if (time < res.data.applyStartTime) {
                             this.disabled = 1;
                         }
-                        if (time > res.data.trainStartTime) {
+                        if (time > res.data.applyEndTime) {
                             this.disabled = 2;
                         }
+                        console.log(new Date(time).toLocaleString());
+                        console.log(
+                            new Date(res.data.applyEndTime).toLocaleString(),
+                        );
                         const trainEndTime = new Date(
                             res.data.trainEndTime,
                         ).toLocaleString();

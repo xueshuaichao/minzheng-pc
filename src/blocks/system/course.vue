@@ -30,7 +30,7 @@
                                     人已学习</span>
                                 <span>课时：{{
                                     list1.classHour ? list1.classHour : 0
-                                }}小时</span>
+                                }}</span>
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                                         人已学习</span>
                                     <span>课时：{{
                                         item.classHour ? item.classHour : 0
-                                    }}小时</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </li>
@@ -70,7 +70,7 @@
                 class="btn"
                 @click="jumpMore"
             >
-                查看更多课程 >
+                查看更多 >
             </button>
         </div>
     </div>
@@ -172,8 +172,16 @@ export default {
                         .li-content-info {
                             font-size: 12px;
                             color: #737386;
+                            // display: inline-block;
                             span {
-                                padding-right: 46px;
+                                display: inline-block;
+                                width: 50%;
+                                &:first-child {
+                                    text-align: left;
+                                }
+                                &:last-child {
+                                    text-align: right;
+                                }
                             }
                         }
                     }
@@ -207,6 +215,9 @@ export default {
                                 font-weight: 550;
                                 line-height: 21px;
                                 padding-bottom: 6px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
                             }
                             .li-content-info {
                                 font-size: 12px;

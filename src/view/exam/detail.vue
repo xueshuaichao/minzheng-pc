@@ -215,15 +215,16 @@
             </p>
             <div class="from">
                 <i-input
+                    v-model="vcode"
                     placeholder="请输入验证码"
                     style="width:339px;"
                 />
-                <span class="seconds">{{ sms.seconds }} s</span>
+                <span class="seconds">{{ codetime }} s</span>
             </div>
             <div slot="footer">
                 <Button
                     class="codesubmit button"
-                    @click="codeBtn"
+                    @click="codehandleConfirm"
                 >
                     确认
                 </Button>
@@ -317,11 +318,13 @@ export default {
                 sending: true,
                 seconds: 0,
             },
+            examtype: null,
         };
     },
     created() {
         if (this.$route) {
             console.log(this.$route.params);
+            this.examtype = this.$route.query.examtype;
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
@@ -337,10 +340,6 @@ export default {
         }
     },
     methods: {
-        codeBtn() {
-            this.iscodetime = 0;
-            this.modal2 = false;
-        },
         // 获取验证码
         verify() {
             api.verify({ userMobile: this.userMobile, platformId: 10001 }).then(
@@ -361,7 +360,13 @@ export default {
         codehandleConfirm() {
             this.isvcode = false;
             if (this.vcode === null || this.vcode === '') {
+                this.$Message.info('验证码未填写，系统将中止考试。');
                 this.isvcode = true;
+                setTimeout(() => {
+                    this.iscode = false;
+                    this.$router.go(-1);
+                }, 5000);
+
                 return;
             }
             clearInterval(this.codetimer);
@@ -520,14 +525,25 @@ export default {
             return api.commitPaper(this.saveData).then(data => {
                 if (data.success) {
                     this.modal2 = false;
-                    this.$router.push({
-                        name: "examResult",
-                        params: {
-                            id: this.saveData.paperId
-                            // type: this.saveData.purposeType,
-                            // paperId: this.saveData.paperId,
-                        }
-                    });
+                    if (this.examtype) {
+                        this.$router.push({
+                            name: "examUltimate",
+                            params: {
+                                id: this.saveData.paperId
+                                // type: this.saveData.purposeType,
+                                // paperId: this.saveData.paperId,
+                            }
+                        });
+                    } else {
+                        this.$router.push({
+                            name: "examResult",
+                            params: {
+                                id: this.saveData.paperId
+                                // type: this.saveData.purposeType,
+                                // paperId: this.saveData.paperId,
+                            }
+                        });
+                    }
                 }
             });
         },
@@ -571,11 +587,13 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
-                    self.iscodetime += 1;
-                    if (self.iscodetime === 300) {
-                        this.iscode = true;
-                        this.verify();
-                        // this.codetimebtn();
+                    if (this.examtype) {
+                        self.iscodetime += 1;
+                        if (self.iscodetime === 10) {
+                            this.iscode = true;
+                            this.verify();
+                            // this.codetimebtn();
+                        }
                     }
                 } else {
                     clearInterval(this.timer);
