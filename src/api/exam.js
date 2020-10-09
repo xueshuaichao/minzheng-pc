@@ -8,9 +8,7 @@ export default {
     getExamList(pageNum, pageSize, scene) {
         return axios.post(
             `/exam/v1/scene/findByCondition?pageNum=${pageNum}&pageSize=${pageSize}`,
-            {
-                scene,
-            },
+            scene,
         );
     },
     // 一级分类列表
