@@ -25,15 +25,15 @@ export default {
     },
     // 测评列表
     examFindByCondition(param) {
-        return axios.post(
-            `/learn/v1/exam/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+        return axios.get(
+            `/exam/v1/paper/getMyExam?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 错题本信息
-    questionFindByCondition(param) {
+    errorBookFindByCondition(param) {
         return axios.post(
-            `/learn/v1/question/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+            `/exam/v1/errorBook/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
@@ -58,10 +58,7 @@ export default {
     },
     // 获取验证码
     userSendSms(param) {
-        return axios.get(
-            `/learn/v1/user/sendSms?phone=${param.phone}`,
-            param,
-        );
+        return axios.get(`/learn/v1/user/sendSms?phone=${param.phone}`, param);
     },
     // 试卷分类
     examGetCategoryTree() {

@@ -21,7 +21,10 @@
                 </Radio>
             </RadioGroup>
             <div class="search">
-                <input placeholder="请输入关键字">
+                <input
+                    v-model="listparam.name"
+                    placeholder="请输入关键字"
+                >
                 <img
                     src="@/assets/images/learnings/search-icon.png"
                     @click="handleSearch"
@@ -55,10 +58,9 @@
         <div style="margin-top:20px;">
             <Page
                 :total="total"
+                show-elevator
                 :current="listparam.pageNum"
                 :page-size="listparam.pageSize"
-                prev-text="上一页"
-                next-text="下一页"
                 @on-change="handlePagechange"
             />
         </div>
