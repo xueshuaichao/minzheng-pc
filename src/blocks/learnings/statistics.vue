@@ -35,14 +35,15 @@
             </div>
             <div class="item flex-row card3">
                 <div class="first-line">
-                    {{ statisticData.taskProgress }}
+                    {{ statisticData.taskProgress }}%
                 </div>
                 <div class="second-line">
                     任务进度
                 </div>
                 <div class="third-line">
                     <Progress
-                        :percent="25"
+                        hide-info
+                        :percent="statisticData.taskProgress"
                         stroke-color="#00B288"
                         :stroke-width="5"
                     />
@@ -50,14 +51,15 @@
             </div>
             <div class="item flex-row card4">
                 <div class="first-line">
-                    {{ statisticData.electiveProgress }}
+                    {{ statisticData.electiveProgress }}%
                 </div>
                 <div class="second-line">
                     选学进度
                 </div>
                 <div class="third-line">
                     <Progress
-                        :percent="25"
+                        hide-info
+                        :percent="statisticData.electiveProgress"
                         stroke-color="#00B288"
                         :stroke-width="5"
                     />

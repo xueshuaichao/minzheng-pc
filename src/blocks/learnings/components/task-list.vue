@@ -7,19 +7,19 @@
                 style="color: #D14242;"
                 @on-change="handleRadio"
             >
-                <Radio label="1">
+                <Radio label="">
                     全部
                 </Radio>
-                <Radio label="2">
+                <Radio label="0">
                     未开始
                 </Radio>
-                <Radio label="3">
+                <Radio label="1">
                     进行中
                 </Radio>
-                <Radio label="4">
+                <Radio label="2">
                     未通过
                 </Radio>
-                <Radio label="5">
+                <Radio label="3">
                     已通过
                 </Radio>
             </RadioGroup>
@@ -66,8 +66,7 @@
                 :total="total"
                 :current="listparam.pageNum"
                 :page-size="listparam.pageSize"
-                prev-text="上一页"
-                next-text="下一页"
+                show-elevator
                 @on-change="handlePagechange"
             />
         </div>
@@ -85,7 +84,7 @@ export default {
             listparam: {
                 pageNum: 1,
                 pageSize: 9,
-                status: '1',
+                status: '',
                 name: '',
             },
         };

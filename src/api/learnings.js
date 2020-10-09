@@ -8,47 +8,47 @@ export default {
     //     });
     // },
     statisticsLearn() {
-        return axios.get('/learnCenter/statistics/learn');
+        return axios.get('/learn/v1/statistics/learn');
     },
     taskFindByCondition(param) {
         return axios.post(
-            `/learnCenter/task/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+            `/learn/v1/task/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 选学列表
     userCourseElective(param) {
         return axios.post(
-            `/learnCenter/userCourse/elective?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+            `/learn/v1/userCourse/elective?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 测评列表
     examFindByCondition(param) {
-        return axios.post(
-            `/learnCenter/exam/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+        return axios.get(
+            `/exam/v1/paper/getMyExam?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 错题本信息
-    questionFindByCondition(param) {
+    errorBookFindByCondition(param) {
         return axios.post(
-            `/learnCenter/question/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+            `/exam/v1/errorBook/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
     // 用户基本信息
     userInfo(param) {
-        return axios.get('/learnCenter/user/info', param);
+        return axios.get('/learn/v1/user/info', param);
     },
     // 删除错题
     questionRemove(param) {
-        return axios.post('/learnCenter/question/remove', param);
+        return axios.post('/learn/v1/question/remove', param);
     },
     // 消息列表
     messageFindByCondition(param) {
         return axios.get(
-            `/learnCenter/message/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
+            `/learn/v1/message/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
             param,
         );
     },
@@ -58,13 +58,10 @@ export default {
     },
     // 获取验证码
     userSendSms(param) {
-        return axios.get(
-            `/learnCenter/user/sendSms?phone=${param.phone}`,
-            param,
-        );
+        return axios.get(`/learn/v1/user/sendSms?phone=${param.phone}`, param);
     },
     // 试卷分类
     examGetCategoryTree() {
-        return axios.get('/learnCenter/exam/getCategoryTree');
+        return axios.get('/learn/v1/exam/getCategoryTree');
     },
 };
