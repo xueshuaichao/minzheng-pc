@@ -37,7 +37,7 @@
                             v-for="child in secondCategory"
                             :key="child.id"
                             class="btnLi"
-                            :class="{ active: child.id == conditionid }"
+                            :class="{ active: child.id === conditionid }"
                             @click="setcondition(child.id)"
                         >
                             {{ child.name }}
@@ -191,7 +191,7 @@ export default {
         setcondition(id, index) {
             console.log(index);
             if (index !== undefined) {
-                // this.secondCategory = this.categories[index].children;
+                this.conditionid = id;
                 this.getChildren(id);
             }
             this.listparam.categoryId = id;

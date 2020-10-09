@@ -54,7 +54,7 @@ export default {
     },
     fileUpload(param) {
         console.log(param);
-        return axios.file('/resourceCenter/v1/resource/uploadImage', param);
+        return axios.file('/resource/v1/v1/resource/uploadImage', param);
     },
     // 获取验证码
     userSendSms(param) {

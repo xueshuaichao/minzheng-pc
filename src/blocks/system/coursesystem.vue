@@ -25,49 +25,13 @@
     </div>
 </template>
 <script>
-import api from '../../api/course';
-
 export default {
     components: {},
     data() {
-        return {
-            list1: {},
-            list: [],
-            listparam: {
-                pageNum: 1,
-                pageSize: 7,
-                categoryId: null,
-                type: 0,
-            },
-        };
+        return {};
     },
-    created() {
-        this.getList();
-    },
-    methods: {
-        //  暂时用课程列表的数据， 精品课接口参数有问题
-        getList() {
-            api.findBoutiqueCourseList({ pagSize: '7' }).then((res) => {
-                if (res.success) {
-                    this.list = res.data.slice(1, 7);
-                    [this.list1] = res.data.slice(0, 1);
-                }
-            });
-        },
-        jumpMore() {
-            this.$router.push({
-                path: '/course',
-            });
-        },
-        goDetail(id) {
-            this.$router.push({
-                name: 'courseDetail',
-                query: {
-                    id,
-                },
-            });
-        },
-    },
+    created() {},
+    methods: {},
 };
 </script>
 <style scoped lang="less">

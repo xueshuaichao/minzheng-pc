@@ -13,7 +13,7 @@ export default {
     },
     // 一级分类列表
     getCategoryList() {
-        return axios.get('/resourceCenter/v1/category/getTree');
+        return axios.get('/resource/v1/category/getTree');
     },
     // 二级分类列表
     // getCategoryList2(sceneCategoryId) {
@@ -21,7 +21,7 @@ export default {
     // },
     getChildren(categoryId) {
         return axios.get(
-            `/resourceCenter/v1/category/getChildren?categoryId=${categoryId}`,
+            `/resource/v1/category/getChildren?categoryId=${categoryId}`,
         );
     },
 
