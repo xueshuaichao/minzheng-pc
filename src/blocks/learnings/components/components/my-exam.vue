@@ -7,7 +7,7 @@
             >
             <img
                 src="@/assets/images/learnings/search-icon.png"
-                @click="handlePagechange"
+                @click="handlePagechange(1)"
             >
         </div>
         <div class="content-box">
@@ -17,24 +17,30 @@
                 class="content-item"
             >
                 <div class="title">
-                    {{ item.name }}
+                    {{ item.sceneName }}
                 </div>
                 <div class="time">
-                    {{ item.submitTime }}
+                    {{ item.commitTime }}
                 </div>
                 <div class="result">
                     <span style="color:#119C7B">对题数</span>/总题数：<span
                         style="color:#119C7B"
-                    >{{ item.rightNum }}</span>/{{ item.totalNum }}
+                    >{{ item.rightCount }}</span>/{{ item.totalCount }}
                 </div>
                 <div class="lesson">
                     <img src="@/assets/images/learnings/txt.png">
-                    {{ item.categoryName }}
+                    {{ item.sceneCategoryName }}
                 </div>
-                <div class="detail">
+                <div
+                    class="detail"
+                    @click="handleDetail"
+                >
                     查看详情
                 </div>
-                <div class="test">
+                <div
+                    class="test"
+                    @click="handleReTest(item.sceneId)"
+                >
                     重新测试
                 </div>
             </div>
@@ -70,8 +76,8 @@ export default {
         this.examFindByCondition(this.testParam);
     },
     methods: {
-        handlePagechange(page = 1) {
-            this.testParam.pageNum = page;
+        handlePagechange(page) {
+            this.testParam.pageNum = page || 1;
             this.examFindByCondition(this.testParam);
         },
         examFindByCondition(param) {
@@ -79,6 +85,12 @@ export default {
                 console.log(data);
                 this.testList = data.data.list;
                 this.total = data.data.total;
+            });
+        },
+        handleDetail() {},
+        handleReTest(id) {
+            this.$router.push({
+                path: `/exam/detail/${id}`,
             });
         },
     },
@@ -116,10 +128,11 @@ export default {
     margin-top: 20px;
     .content-item {
         height: 183px;
+        margin-bottom: 16px;
         font-size: 14px;
         background: #fff;
         position: relative;
-        padding: 24px;
+        padding: 24px 24px 15px;
         // div {
         //     position: absolute;
         // }
@@ -153,12 +166,14 @@ export default {
             top: 91px;
             right: 42px;
             color: #4a90e2;
+            cursor: pointer;
         }
         .test {
             position: absolute;
             top: 137px;
             right: 42px;
             color: #4a90e2;
+            cursor: pointer;
         }
     }
 }

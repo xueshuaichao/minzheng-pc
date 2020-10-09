@@ -37,12 +37,15 @@
                 v-for="item in taskList"
                 :key="item.id"
                 class="content-item"
+                @click="handleDetail(item.courseId)"
             >
-                <img
-                    :src="item.coverUrl"
-                    style="height:126px"
-                    alt="图片不存在"
-                >
+                <div style="height:126px">
+                    <img
+                        :src="item.coverUrl"
+                        style="height:126px"
+                        alt=""
+                    >
+                </div>
                 <div style="padding-left: 10px;">
                     <div class="title">
                         {{ item.name }}
@@ -78,7 +81,7 @@ export default {
             listparam: {
                 pageNum: 1,
                 pageSize: 9,
-                status: '1',
+                status: '',
                 name: '',
             },
         };
@@ -108,6 +111,11 @@ export default {
             console.log(page);
             this.listparam.pageNum = page;
             this.taskFindByCondition();
+        },
+        handleDetail(id) {
+            this.$router.push({
+                path: `/course/detail?id=${id}`,
+            });
         },
     },
 };
@@ -150,12 +158,14 @@ export default {
         display: flex;
         flex-wrap: wrap;
         margin-top: 20px;
+        justify-content: space-between;
         .content-item {
             width: 224px;
             height: 230px;
-            margin-right: 20px;
+            margin-bottom: 20px;
             font-size: 14px;
             background: #fff;
+            cursor: pointer;
             .title {
                 color: @textcolor100;
                 margin-top: 14px;

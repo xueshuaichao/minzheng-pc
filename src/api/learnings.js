@@ -25,10 +25,7 @@ export default {
     },
     // 测评列表
     examFindByCondition(param) {
-        return axios.get(
-            `/exam/v1/paper/getMyExam?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
-            param,
-        );
+        return axios.get('/exam/v1/paper/getMyExam', param);
     },
     // 错题本信息
     errorBookFindByCondition(param) {
@@ -47,10 +44,7 @@ export default {
     },
     // 消息列表
     messageFindByCondition(param) {
-        return axios.get(
-            `/learn/v1/message/findByCondition?pageNum=${param.pageNum}&pageSize=${param.pageSize}`,
-            param,
-        );
+        return axios.get('/learn/v1/message/findByCondition', param);
     },
     fileUpload(param) {
         console.log(param);
@@ -58,7 +52,7 @@ export default {
     },
     // 获取验证码
     userSendSms(param) {
-        return axios.get(`/learn/v1/user/sendSms?phone=${param.phone}`, param);
+        return axios.get('/learn/v1/user/sendSms', param);
     },
     // 试卷分类
     examGetCategoryTree() {
