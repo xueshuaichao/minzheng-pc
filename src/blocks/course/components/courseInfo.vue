@@ -44,18 +44,43 @@
                                     class="firstli"
                                 >
                                     <p
-                                        class="firstli-p"
+                                        :class="
+                                            lesson1.menuFlag
+                                                ? 'firsttitle'
+                                                : 'firstli-p'
+                                        "
                                         @click="showresource(lesson1)"
                                     >
                                         <Icon
-                                            v-if="!lesson1.menuFlag"
+                                            v-if="
+                                                !lesson1.menuFlag &&
+                                                    isvedio(lesson1.detailType)
+                                            "
                                             type="md-arrow-dropright-circle"
                                         />
+                                        <img
+                                            v-if="
+                                                !lesson1.menuFlag &&
+                                                    isPdf(lesson1.detailType)
+                                            "
+                                            class="pdficon"
+                                            src="../../../assets/images/course/ks.png"
+                                            alt=""
+                                        >
                                         <span class="namestyle">{{
-                                            lesson1.detailName
+                                            lesson1.title
                                         }}</span>
+                                        <span
+                                            v-if="islaststudy(lesson1)"
+                                            class="lastStudy"
+                                        >上次学到</span>
                                         <span class="fr timestyle">
-                                            时间 {{ lesson1.duration }}
+                                            {{
+                                                secondsFormat(
+                                                    lesson1,
+                                                    lesson1.duration
+                                                )
+                                            }}
                                         </span>
                                     </p>
                                     <div
@@ -64,40 +89,152 @@
                                         class="secondP"
                                     >
                                         <p
-                                            class="secondLi-span"
+                                            :class="
+                                                lesson2.menuFlag
+                                                    ? 'secondtitle'
+                                                    : 'secondLi-span'
+                                            "
                                             @click="showresource(lesson2)"
                                         >
                                             <Icon
-                                                v-if="!lesson2.menuFlag"
+                                                v-if="
+                                                    !lesson2.menuFlag &&
+                                                        isvedio(
+                                                            lesson2.detailType
+                                                        )
+                                                "
                                                 type="md-arrow-dropright-circle"
                                             />
+                                            <img
+                                                v-if="
+                                                    !lesson2.menuFlag &&
+                                                        isPdf(
+                                                            lesson2.detailType
+                                                        )
+                                                "
+                                                class="pdficon"
+                                                src="../../../assets/images/course/ks.png"
+                                                alt=""
+                                            >
                                             <span class="namestyle">{{
-                                                lesson2.detailName
+                                                lesson2.title
                                             }}</span>
+                                            <span
+                                                v-if="islaststudy(lesson2)"
+                                                class="lastStudy"
+                                            >上次学到</span>
                                             <span class="fr timestyle">
-                                                时间 {{ lesson2.duration }}
+                                                {{
+                                                    secondsFormat(
+                                                        lesson2,
+                                                        lesson2.duration
+                                                    )
+                                                }}
                                             </span>
                                         </p>
-                                        <p
+                                        <div
                                             v-for="lesson3 in lesson2.childrenList"
                                             :key="lesson3.id"
                                             class="thirdP"
                                         >
                                             <span
-                                                class="thirdSpan"
+                                                :class="
+                                                    lesson3.menuFlag
+                                                        ? 'thirdtitle'
+                                                        : 'thirdSpan'
+                                                "
                                                 @click="showresource(lesson3)"
                                             ><Icon
-                                                 v-if="!lesson3.menuFlag"
+                                                 v-if="
+                                                     !lesson3.menuFlag &&
+                                                         isvedio(
+                                                             lesson3.detailType
+                                                         )
+                                                 "
                                                  type="md-arrow-dropright-circle"
                                              />
+                                                <img
+                                                    v-if="
+                                                        !lesson3.menuFlag &&
+                                                            isPdf(
+                                                                lesson3.detailType
+                                                            )
+                                                    "
+                                                    class="pdficon"
+                                                    src="../../../assets/images/course/ks.png"
+                                                    alt=""
+                                                >
                                                 <span class="namestyle">{{
-                                                    lesson3.detailName
+                                                    lesson3.title
                                                 }}</span>
+                                                <span
+                                                    v-if="islaststudy(lesson3)"
+                                                    class="lastStudy"
+                                                >上次学到</span>
                                                 <span class="fr timestyle">
-                                                    时间 {{ lesson3.duration }}
+                                                    {{
+                                                        secondsFormat(
+                                                            lesson3,
+                                                            lesson3.duration
+                                                        )
+                                                    }}
                                                 </span>
                                             </span>
-                                        </p>
+                                            <div
+                                                v-for="lesson4 in lesson3.childrenList"
+                                                :key="lesson4.id"
+                                                class="fourP"
+                                            >
+                                                <p
+                                                    :class="
+                                                        lesson4.menuFlag
+                                                            ? 'fourtitle'
+                                                            : 'fourSpan'
+                                                    "
+                                                    @click="
+                                                        showresource(lesson4)
+                                                    "
+                                                >
+                                                    <Icon
+                                                        v-if="
+                                                            !lesson4.menuFlag &&
+                                                                isvedio(
+                                                                    lesson4.detailType
+                                                                )
+                                                        "
+                                                        type="md-arrow-dropright-circle"
+                                                    />
+                                                    <img
+                                                        v-if="
+                                                            !lesson4.menuFlag &&
+                                                                isPdf(
+                                                                    lesson4.detailType
+                                                                )
+                                                        "
+                                                        class="pdficon"
+                                                        src="../../../assets/images/course/ks.png"
+                                                        alt=""
+                                                    >
+                                                    <span class="namestyle">{{
+                                                        lesson4.title
+                                                    }}</span>
+                                                    <span
+                                                        v-if="
+                                                            islaststudy(lesson4)
+                                                        "
+                                                        class="lastStudy"
+                                                    >上次学到</span>
+                                                    <span class="fr timestyle">
+                                                        {{
+                                                            secondsFormat(
+                                                                lesson4,
+                                                                lesson4.duration
+                                                            )
+                                                        }}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </li>
                             </ul>
@@ -124,6 +261,7 @@
                     <Rate
                         v-model="myjudge"
                         show-text
+                        :disabled="noJudge"
                         @on-change="submitCourseRatingForm()"
                     >
                         <span style="color: #f5a623">{{ myjudge }}分</span>
@@ -145,37 +283,74 @@
 
 <script>
 import api from '../../../api/course';
-
+/* eslint-disable */
 export default {
     components: {},
-    props: ['catelogList', 'courseIntro', 'zhjudge'],
+    props: ["catelogList", "courseIntro", "zhjudge", "myjudge"],
     data() {
         return {
-            changeInfo: '1',
-            myjudge: 0,
+            changeInfo: "1",
+            noJudge: false,
             isJudge: false,
             playing: false,
             judgeparam: {
                 courseId: null,
                 recordId: null,
                 stars: 0,
-                remark: '',
-            },
+                remark: ""
+            }
         };
     },
+    computed: {},
     mounted() {},
     methods: {
+        isvedio(val) {
+            if (val === "1" || val === "2") {
+                return true;
+            }
+        },
+        isPdf(val) {
+            if (val === "3" || val === "4") {
+                return true;
+            }
+        },
+        islaststudy(val) {
+            if (val.studyProcess) {
+                return val.studyProcess.isLastPlay === 1;
+            }
+        },
+        secondsFormat(item, s) {
+            if (
+                !item.menuFlag &&
+                (item.detailType === "1" || item.detailType === "2")
+            ) {
+                const hour = Math.floor(s / 3600);
+                const minute = Math.floor((s - hour * 3600) / 60);
+                const second = s - hour * 3600 - minute * 60;
+                return `${hour}小时${minute}分${second}秒`;
+            }
+            if (!item.menuFlag && item.detailType === "3") {
+                return `${s}页`;
+            }
+        },
         changeTab(num) {
             console.log(num);
             this.changeInfo = num;
-            this.$emit('changeInfo', num);
+            this.$emit("changeInfo", num);
+            if (num === "3" && this.courseIntro.isEvaluate === 1) {
+                this.noJudge = true;
+                this.isJudge = true;
+                this.myjudge = this.courseIntro.stars - 0;
+            } else if (num === "3" && !this.courseIntro.recordId) {
+                this.noJudge = true;
+            }
+            console.log(this.courseIntro.stars - 0);
         },
         submitCourseRatingForm() {
             this.judgeparam.courseId = this.courseIntro.id;
             this.judgeparam.recordId = this.courseIntro.recordId;
-            // console.log(this.courseIntro)
             this.judgeparam.stars = this.myjudge;
-            api.submitCourseRatingForm(this.judgeparam).then((res) => {
+            api.submitCourseRatingForm(this.judgeparam).then(res => {
                 console.log(res);
                 if (res.success) {
                     this.isJudge = true;
@@ -183,9 +358,10 @@ export default {
             });
         },
         showresource(item) {
-            this.$emit('getrecourseId', item);
-        },
-    },
+            console.log(item);
+            this.$emit("getrecourseId", item);
+        }
+    }
 };
 </script>
 

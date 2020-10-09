@@ -17,4 +17,7 @@ export default {
             data,
         );
     },
+    getNote(param) {
+        return axios.get('/exam/v1/scene/getExamNote', param);
+    },
 };

@@ -19,8 +19,10 @@
                         v-model="filter.name"
                         placeholder="请输入关键字"
                         suffix="ios-search"
+                        icon
                         @on-enter="getNameList"
                         @on-click="getNameList"
+                        @on-blur="getNameList"
                     />
                     <!-- <Icon
                         type="ios-search"
@@ -32,22 +34,31 @@
             </div>
         </div>
         <!--列表-->
-        <div class="list-wrap">
-            <template v-for="(item, index) in list">
+        <div
+            v-if="list.length"
+            class="list-wrap"
+        >
+            <template v-for="item in list">
                 <task-card
-                    :key="index"
+                    :key="item.id"
                     :itemdetail="item"
                 />
             </template>
         </div>
+        <!--暂无数据-->
+        <p
+            v-else
+            class="no-data"
+        >
+            十分抱歉，您搜索的内容我们暂未收录，您可以尝试搜索其他内容
+        </p>
         <!--分页-->
         <Page
-            v-if="total > filter.queryString.pageSize"
             show-total
             :total="total"
             :page-size="16"
             class="page-list"
-            @change="changePage"
+            @on-change="changePage"
         />
     </div>
 </template>
@@ -64,7 +75,7 @@ export default {
         return {
             serachStatus: [
                 {
-                    status: null,
+                    status: 1,
                     title: '全部',
                 },
                 {
@@ -72,11 +83,11 @@ export default {
                     title: '报名中',
                 },
                 {
-                    status: 1,
+                    status: 3,
                     title: '报名未开始',
                 },
                 {
-                    status: 3,
+                    status: 4,
                     title: '报名已结束',
                 },
             ],
@@ -84,7 +95,7 @@ export default {
             total: 20,
             filter: {
                 name: '',
-                status: null,
+                applyStatus: 1,
                 queryString: {
                     pageNum: 1,
                     pageSize: 16,
@@ -96,10 +107,10 @@ export default {
     mounted() {
         [this.curItem] = this.serachStatus;
         this.getList();
-        // api.getEXcle();
     },
     methods: {
         getList() {
+            console.log(this.filter, 'getList');
             api.getTaskList(this.filter).then((res) => {
                 if (res.success) {
                     this.list = res.data.list;
@@ -108,17 +119,17 @@ export default {
             });
         },
         setFilter(item) {
-            this.filter.status = item.status;
-            this.filter.pageNum = 1;
+            this.filter.applyStatus = item.status;
+            this.filter.queryString.pageNum = 1;
             this.getList();
             this.curItem = item;
         },
         changePage(page) {
-            this.filter.pageNum = page;
+            this.filter.queryString.pageNum = page;
             this.getList();
         },
         getNameList() {
-            this.filter.pageNum = 1;
+            this.filter.queryString.pageNum = 1;
             this.getList();
         },
         jumpDetail(item) {
@@ -194,6 +205,10 @@ export default {
     .list-wrap {
         display: flex;
         flex-wrap: wrap;
+    }
+    .no-data {
+        font-size: 18px;
+        text-align: center;
     }
     .page-list {
         margin-bottom: 110px;
