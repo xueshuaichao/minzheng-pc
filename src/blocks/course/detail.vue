@@ -33,17 +33,19 @@
                     </div>
                 </div>
                 <div class="right">
-                    <a :title="courseInfo.name">
-                        {{ courseInfo.name }}
-                    </a>
-                    <ul class="info">
-                        <li class="info-classify">
-                            分类：{{ courseInfo.categoryName }}
-                        </li>
-                        <li class="info-classdiff">
-                            课程难度：{{ courseInfo.difficulty }}
-                        </li>
-                    </ul>
+                    <div class="right-top">
+                        <a :title="courseInfo.name">
+                            {{ courseInfo.name }}
+                        </a>
+                        <ul class="info">
+                            <li class="info-classify">
+                                分类：{{ courseInfo.categoryName }}
+                            </li>
+                            <li class="info-classdiff">
+                                课程难度：{{ courseInfo.difficulty }}
+                            </li>
+                        </ul>
+                    </div>
                     <ul class="info1">
                         <li class="info1-keshi">
                             <span>课时：{{ courseInfo.classHour }}课时</span>
@@ -70,6 +72,7 @@
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
                     :zhjudge="courseInfo.starAvg - 0"
+                    :myjudge="courseInfo.stars - 0"
                     @getrecourseId="getrecourseId"
                     @changeInfo="changeInfo"
                 />
