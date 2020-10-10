@@ -271,7 +271,7 @@ export default {
                 const msg = this.disabled === 1 ? '报名未开始' : '报名已结束';
                 this.$Message.warning({
                     content: msg,
-                    duration: 5,
+                    duration: 3,
                 });
             } else if (this.lackInfo) {
                 // 补全信息，并返回报名页面
@@ -288,7 +288,7 @@ export default {
                             : 1;
                         this.$Message.info({
                             content: '操作成功',
-                            duration: 5,
+                            duration: 3,
                         });
                     }
                 });
