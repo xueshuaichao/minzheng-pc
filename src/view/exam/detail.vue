@@ -215,15 +215,16 @@
             </p>
             <div class="from">
                 <i-input
+                    v-model="vcode"
                     placeholder="请输入验证码"
                     style="width:339px;"
                 />
-                <span class="seconds">{{ sms.seconds }} s</span>
+                <span class="seconds">{{ codetime }} s</span>
             </div>
             <div slot="footer">
                 <Button
                     class="codesubmit button"
-                    @click="codeBtn"
+                    @click="codehandleConfirm"
                 >
                     确认
                 </Button>
@@ -339,10 +340,6 @@ export default {
         }
     },
     methods: {
-        codeBtn() {
-            this.iscodetime = 0;
-            this.modal2 = false;
-        },
         // 获取验证码
         verify() {
             api.verify({ userMobile: this.userMobile, platformId: 10001 }).then(
@@ -363,7 +360,13 @@ export default {
         codehandleConfirm() {
             this.isvcode = false;
             if (this.vcode === null || this.vcode === '') {
+                this.$Message.info('验证码未填写，系统将中止考试。');
                 this.isvcode = true;
+                setTimeout(() => {
+                    this.iscode = false;
+                    this.$router.go(-1);
+                }, 5000);
+
                 return;
             }
             clearInterval(this.codetimer);
@@ -586,7 +589,7 @@ export default {
                     self.maxtime -= 1;
                     if (this.examtype) {
                         self.iscodetime += 1;
-                        if (self.iscodetime === 300) {
+                        if (self.iscodetime === 10) {
                             this.iscode = true;
                             this.verify();
                             // this.codetimebtn();

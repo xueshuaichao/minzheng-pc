@@ -63,6 +63,7 @@
                                                 !lesson1.menuFlag &&
                                                     isPdf(lesson1.detailType)
                                             "
+                                            class="pdficon"
                                             src="../../../assets/images/course/ks.png"
                                             alt=""
                                         >
@@ -111,6 +112,7 @@
                                                             lesson2.detailType
                                                         )
                                                 "
+                                                class="pdficon"
                                                 src="../../../assets/images/course/ks.png"
                                                 alt=""
                                             >
@@ -146,7 +148,7 @@
                                                  v-if="
                                                      !lesson3.menuFlag &&
                                                          isvedio(
-                                                             lesson2.detailType
+                                                             lesson3.detailType
                                                          )
                                                  "
                                                  type="md-arrow-dropright-circle"
@@ -158,6 +160,7 @@
                                                                 lesson3.detailType
                                                             )
                                                     "
+                                                    class="pdficon"
                                                     src="../../../assets/images/course/ks.png"
                                                     alt=""
                                                 >
@@ -208,6 +211,7 @@
                                                                     lesson4.detailType
                                                                 )
                                                         "
+                                                        class="pdficon"
                                                         src="../../../assets/images/course/ks.png"
                                                         alt=""
                                                     >
@@ -257,6 +261,7 @@
                     <Rate
                         v-model="myjudge"
                         show-text
+                        :disabled="noJudge"
                         @on-change="submitCourseRatingForm()"
                     >
                         <span style="color: #f5a623">{{ myjudge }}分</span>
@@ -281,11 +286,11 @@ import api from '../../../api/course';
 /* eslint-disable */
 export default {
     components: {},
-    props: ["catelogList", "courseIntro", "zhjudge"],
+    props: ["catelogList", "courseIntro", "zhjudge", "myjudge"],
     data() {
         return {
             changeInfo: "1",
-            myjudge: 0,
+            noJudge: false,
             isJudge: false,
             playing: false,
             judgeparam: {
@@ -332,6 +337,14 @@ export default {
             console.log(num);
             this.changeInfo = num;
             this.$emit("changeInfo", num);
+            if (num === "3" && this.courseIntro.isEvaluate === 1) {
+                this.noJudge = true;
+                this.isJudge = true;
+                this.myjudge = this.courseIntro.stars - 0;
+            } else if (num === "3" && !this.courseIntro.recordId) {
+                this.noJudge = true;
+            }
+            console.log(this.courseIntro.stars - 0);
         },
         submitCourseRatingForm() {
             this.judgeparam.courseId = this.courseIntro.id;
@@ -345,6 +358,7 @@ export default {
             });
         },
         showresource(item) {
+            console.log(item);
             this.$emit("getrecourseId", item);
         }
     }

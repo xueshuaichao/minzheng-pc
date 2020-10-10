@@ -40,6 +40,7 @@
                 v-for="item in taskList"
                 :key="item.id"
                 class="content-item"
+                @click="handleDetail(item.courseId)"
             >
                 <img
                     :src="item.coverUrl"
@@ -115,6 +116,11 @@ export default {
             this.listparam.pageNum = page;
             this.taskFindByCondition();
         },
+        handleDetail(id) {
+            this.$router.push({
+                path: `/trainingDetail?id=${id}`,
+            });
+        },
     },
 };
 </script>
@@ -163,6 +169,7 @@ export default {
             margin-bottom: 24px;
             font-size: 14px;
             background: #fff;
+            cursor: pointer;
             .title {
                 color: @textcolor100;
                 margin-top: 14px;

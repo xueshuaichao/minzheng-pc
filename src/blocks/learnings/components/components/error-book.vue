@@ -7,7 +7,7 @@
             >
             <img
                 src="@/assets/images/learnings/search-icon.png"
-                @click="handlePagechange"
+                @click="handlePagechange(1)"
             >
         </div>
         <div class="error-filter">
@@ -149,7 +149,14 @@ export default {
     methods: {
         examGetCategoryTree() {
             return learningsApi.examGetCategoryTree().then((data) => {
-                this.shijuanfenlei = data.data;
+                this.shijuanfenlei = [
+                    {
+                        children: null,
+                        id: '',
+                        name: '全部',
+                    },
+                    ...data.data,
+                ];
                 console.log(data, 'data123');
             });
         },
@@ -174,8 +181,8 @@ export default {
             this.errorBookparam.questionDifficulty = val;
             this.handlePagechange(1);
         },
-        handlePagechange(page = 1) {
-            this.errorBookparam.pageNum = page;
+        handlePagechange(page) {
+            this.errorBookparam.pageNum = page || 1;
             this.errorBookFindByCondition(this.errorBookparam);
         },
         handleRemoveError(id) {
