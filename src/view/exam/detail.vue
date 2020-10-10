@@ -378,12 +378,16 @@ export default {
             clearInterval(this.codetimer);
             api.check({ userMobile: this.userMobile, vcode: this.vcode }).then(
                 (res) => {
-                    if (res) {
+                    if (res.data) {
                         this.iscode = false;
-                    } else {
+                    } else if (this.codetime === 0) {
                         this.iscode = false;
-                        this.$Message.info('验证码输入错误，系统将终止考试');
+                        this.$Message.info(
+                            '验证码输入错误，系统将终止考试',
+                        );
                         this.$router.go(-1);
+                    } else {
+                        this.$Message.info('验证码输入错误，请重新填写');
                     }
                 },
             );
