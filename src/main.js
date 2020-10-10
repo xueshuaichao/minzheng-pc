@@ -176,7 +176,7 @@ function buildApp(userInfo) {
             store,
             i18n,
             render: h => h(App),
-        }).$mount('#app');
+        }).$mount('#wdc-app');
     });
 }
 Vue.prototype.$passport.checkCookie().then(
