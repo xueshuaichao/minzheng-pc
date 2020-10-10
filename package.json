@@ -15,6 +15,7 @@
     "echarts": "^4.8.0",
     "html2canvas": "^1.0.0-rc.5",
     "jquery": "^2.2.4",
+    "swiper": "^4.5.1",
     "view-design": "^4.2.0",
     "vue": "^2.5.10",
     "vue-i18n": "^7.8.0",
