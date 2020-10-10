@@ -43,7 +43,10 @@
                             >
                                 {{ username }}
                             </router-link>
-                            <span v-else>未登录</span>
+                            <span
+                                v-else
+                                @click="goLogin"
+                            >未登录</span>
                         </div>
                         <div class="mobile fr">
                             <p class="btn">
@@ -176,6 +179,9 @@ export default {
         }, 100);
     },
     methods: {
+        goLogin() {
+            this.$passport.goPcLogin();
+        },
         jumpAdmin() {
             window.open('http://madmin.testing1.wdeduc.com/');
         },
