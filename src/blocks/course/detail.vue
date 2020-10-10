@@ -25,11 +25,24 @@
                             id="player-con"
                             style="height: 373px"
                         />
-                        <iframe
+                        <!-- <iframe
                             v-if="ispdf"
                             src="https://mz-tet.oss-cn-beijing.aliyuncs.com/minzheng/doc/nginx课件v1.0.pdf"
                             style="width: 663px;height: 373px;position: absolute; left: 0px"
-                        />
+                        /> -->
+                        <div
+                            v-if="ispdf"
+                            class="playCon"
+                            style="position: relative;height:400px"
+                        >
+                            <!-- <iframe src="../../../static/js/pdfjs/web/viewer.html?file=https://zyzx-test.oss-cn-beijing.aliyuncs.com/zj/qxzx/documentation-output/2020/06/5734-1591769040115.pdf&.pdf" style="width: 100%;height: 100%;position: absolute;" id="aliyunPreview"></iframe> -->
+                            <iframe
+                                :src="
+                                    '/js/pdfjs/web/viewer.html?file=' + pdfurl
+                                "
+                                style="width: 100%;height: 100%;position: absolute;"
+                            />
+                        </div>
                     </div>
                 </div>
                 <div class="right">
@@ -48,8 +61,14 @@
                     </div>
                     <ul class="info1">
                         <li class="info1-keshi">
-                            <span>课时：{{ courseInfo.classHour }}课时</span>
-                            <span>学分：{{ courseInfo.credit }}</span>
+                            <span>课时：{{
+                                courseInfo.classHour
+                                    ? courseInfo.classHour
+                                    : 0
+                            }}课时</span>
+                            <span>学分：{{
+                                courseInfo.credit ? courseInfo.credit : 0
+                            }}</span>
                         </li>
                         <li class="info1-jindu">
                             已学完：
@@ -69,6 +88,7 @@
             </div>
             <div class="resource-info">
                 <course-info
+                    ref="courseInfo"
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
                     :zhjudge="courseInfo.starAvg - 0"
@@ -95,8 +115,9 @@ export default {
         return {
             hasvideo: false,
             ispdf: false,
-            pdfPage: 0,
+            pdfPage: 1,
             pdfurl: '',
+            lastCourse: {},
             // changeInfo: '1',
             courseInfo: {},
             catelogList: [],
@@ -106,6 +127,11 @@ export default {
             hasresourceURl: false,
             resourceUrl: '',
             player: null,
+            continueTime: 0,
+            detailparam: {
+                id: null,
+                taskId: null,
+            },
             saveLearningParams: {
                 recordId: '',
                 detailId: '',
@@ -117,7 +143,9 @@ export default {
     },
     computed: {},
     mounted() {
-        this.courseDetail(this.$route.query.id);
+        this.detailparam.id = this.$route.query.id;
+        this.detailparam.taskId = this.$route.query.taskId;
+        this.courseDetail(this.detailparam);
     },
     beforeDestroy() {
         this.clearTimeing();
@@ -145,7 +173,7 @@ export default {
                     } else if (val.detailType === '3') {
                         this.pdfurl = data;
                         this.ispdf = true;
-                        this.hasresourceURl = false;
+                        this.hasresourceURl = true;
                         this.hasvideo = false;
                         console.log(this.pdfurl);
                     }
@@ -170,6 +198,7 @@ export default {
         getrecourseId(val) {
             if (!val.menuFlag) {
                 this.courseItemDetailId = val.courseItemDetailId;
+                console.log(val.detailType);
                 // 视频
                 if (val.detailType === '1') {
                     this.getVideo(val.detailId);
@@ -296,21 +325,40 @@ export default {
         },
         // 加入选学
         startStudy(id) {
-            // if (this.courseInfo.recordId) {
-            //     return false;
-            // }
+            console.log(this.btntext);
             if (this.btntext === '加入选学') {
-                api.startStudy(id).then((res) => {
+                const param = {
+                    courseId: id,
+                    taskId: this.$route.query.taskId
+                        ? this.$route.query.taskId
+                        : '',
+                };
+                api.startStudy(param).then((res) => {
                     if (res.success) {
                         this.btntext = '开始学习';
                     }
                     console.log(res);
                 });
-            } else if (this.btntext === '开始学习') {
-                // this.getlastPlay();
-            }
+            } else {
+                // console.log(this.$refs.courseInfo.lastCourse);
+                // 如果有上次看过的记录  就继续播放上次的课程
+                // if (this.$refs.courseInfo.lastCourse.studyProcess) {
+                //     this.lastCourse = this.$refs.courseInfo.lastCourse;
+                //     // console.log(this.lastCourse)
+                //     this.continueTime = this.lastCourse.studyProcess.learningLength;
+                // } else {
+                // 没有记录  默认播放第一个
+                this.catelogList.forEach((item) => {
+                    if (item.menuFlag) {
+                        [this.lastCourse] = item.childrenList;
+                    } else {
+                        this.lastCourse = item;
+                    }
+                });
+                // }
 
-            // return true;
+                this.getrecourseId(this.lastCourse);
+            }
         },
         // formatDate(inputTime) {
         //     const date = new Date(inputTime);
@@ -342,6 +390,11 @@ export default {
                         this.btntext = '继续学习';
                     } else if (!this.courseInfo.recordId) {
                         this.btntext = '加入选学';
+                    } else if (
+                        !this.courseInfo.recordId
+                        && this.detailparam.taskId
+                    ) {
+                        this.btntext = '开始学习';
                     }
                     if (this.courseInfo.difficulty === 0) {
                         this.courseInfo.difficulty = '初阶';
@@ -362,25 +415,39 @@ export default {
             api.findCourseItemByCourseId(param).then((res) => {
                 const { data } = res;
                 this.catelogList = data;
+                // console.log(this.datachang());
             });
         },
-        // 继续上次播放
-        getlastPlay() {
-            console.log(111);
-            this.catelogList.forEach((item) => {
-                console.log(item);
-                if (item.childrenList) {
-                    this.getChildlast(item.childrenList);
-                }
-            });
-        },
-        getChildlast(child) {
-            if (child && child.studyProcess.isLastPlay === 1) {
-                console.log(child);
-                return child;
-            }
-            return true;
-        },
+        // datachang() {
+        //     const selfthis = this;
+        //     const returnData = [];
+        //     this.catelogList.forEach((val) => {
+        //         const child = val.childrenList;
+        //         child.studyProcess = val.studyProcess;
+        //         selfthis.loadOrgChildTree(val, child);
+        //         returnData.push(child);
+        //     });
+        //     return returnData;
+        // },
+        // // 加载组织机构的子树
+        // loadOrgChildTree(org, obj) {
+        //     const selfthis = this;
+        //     if (!org.children) {
+        //         org.children = [];
+        //     }
+        //     org.children.forEach((childOrg) => {
+        //         if (!childOrg.children) {
+        //             childOrg.children = [];
+        //         }
+        //         const childitem = {};
+        //         childitem.studyProcess = childOrg.studyProcess;
+        //         if (!obj.children) {
+        //             obj.children = [];
+        //         }
+        //         obj.children.push(childitem);
+        //         selfthis.loadOrgChildTree(childOrg, childitem);
+        //     });
+        // },
     },
 };
 </script>
