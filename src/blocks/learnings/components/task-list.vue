@@ -7,19 +7,19 @@
                 style="color: #D14242;"
                 @on-change="handleRadio"
             >
-                <Radio label="1">
+                <Radio label="">
                     全部
                 </Radio>
-                <Radio label="2">
+                <Radio label="0">
                     未开始
                 </Radio>
-                <Radio label="3">
+                <Radio label="1">
                     进行中
                 </Radio>
-                <Radio label="4">
+                <Radio label="2">
                     未通过
                 </Radio>
-                <Radio label="5">
+                <Radio label="3">
                     已通过
                 </Radio>
             </RadioGroup>
@@ -40,6 +40,7 @@
                 v-for="item in taskList"
                 :key="item.id"
                 class="content-item"
+                @click="handleDetail(item.courseId)"
             >
                 <img
                     :src="item.coverUrl"
@@ -66,8 +67,7 @@
                 :total="total"
                 :current="listparam.pageNum"
                 :page-size="listparam.pageSize"
-                prev-text="上一页"
-                next-text="下一页"
+                show-elevator
                 @on-change="handlePagechange"
             />
         </div>
@@ -85,7 +85,7 @@ export default {
             listparam: {
                 pageNum: 1,
                 pageSize: 9,
-                status: '1',
+                status: '',
                 name: '',
             },
         };
@@ -115,6 +115,11 @@ export default {
             console.log(page);
             this.listparam.pageNum = page;
             this.taskFindByCondition();
+        },
+        handleDetail(id) {
+            this.$router.push({
+                path: `/trainingDetail?id=${id}`,
+            });
         },
     },
 };
@@ -164,6 +169,7 @@ export default {
             margin-bottom: 24px;
             font-size: 14px;
             background: #fff;
+            cursor: pointer;
             .title {
                 color: @textcolor100;
                 margin-top: 14px;

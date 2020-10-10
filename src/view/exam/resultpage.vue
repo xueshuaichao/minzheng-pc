@@ -245,14 +245,17 @@
                             src="../../assets/images/exam/icon1.png"
                             alt=""
                         >
-                        <span>交卷时间：</span>
+                        <span>交卷时间：{{ examDetail.commitTime }}</span>
                     </p>
                     <p>
                         <img
                             src="../../assets/images/exam/icon2.png"
                             alt=""
                         >
-                        <span>答题用时：</span>
+                        <span>答题用时：{{
+                            examDetail.commitTime.split(" ")[0]
+                        }}
+                            {{ formatSeconds(examDetail.timeUsed) }}</span>
                     </p>
                 </div>
                 <div class="answer-box">
@@ -267,7 +270,7 @@
                         class="answer-num"
                     >
                         <div
-                            v-for="(mark, index) in questionsList"
+                            v-for="(mark, index) in questionsList2"
                             :key="mark.id"
                             class="list"
                         >
@@ -293,7 +296,7 @@
                             >
                                 <span v-if="index == 1">
                                     {{
-                                        questionsList[index - 1].questionList
+                                        questionsList2[index - 1].questionList
                                             .length +
                                             index1 +
                                             1
@@ -301,9 +304,9 @@
                                 </span>
                                 <span v-else-if="index == 2">
                                     {{
-                                        questionsList[index - 2].questionList
+                                        questionsList2[index - 2].questionList
                                             .length +
-                                            questionsList[index - 1]
+                                            questionsList2[index - 1]
                                                 .questionList.length +
                                             index1 +
                                             1
@@ -328,11 +331,12 @@ export default {
     data() {
         return {
             tab: ['查看错题', '查看标记题', '查看全部'],
-            tabIndex: 0,
+            tabIndex: 2,
             isAnswers: 0,
             paperId: null,
             examDetail: '',
             questionsList: [],
+            questionsList2: [],
             filterType: 0,
             purposeType: null,
         };
@@ -344,7 +348,38 @@ export default {
             // this.getExamResultOverview()
         }
     },
+    mounted() {
+        const that = this;
+        if (window.history && window.history.pushState) {
+            window.onpopstate = function () {
+                console.log('返回');
+                that.$router.push({
+                    path: '/exam',
+                });
+                // if(that.backEvent){
+
+                //     that.backEvent();
+
+                // }
+            };
+        }
+    },
     methods: {
+        // 时间转换
+        // 补0
+        formatBit(val) {
+            return val > 9 ? val : `0${val}`;
+        },
+        // 秒转时分秒，求模很重要，数字的下舍入
+        formatSeconds(time) {
+            const min = Math.floor(time % 3600);
+            const val = `${this.formatBit(
+                Math.floor(time / 3600),
+            )}:${this.formatBit(Math.floor(min / 60))}:${this.formatBit(
+                time % 60,
+            )}`;
+            return val;
+        },
         // 试卷信息
         getExamResultDetail() {
             return api
@@ -354,12 +389,16 @@ export default {
                 .then((list) => {
                     this.examDetail = list.data;
                     // this.$emit('exam-name', this.examDetail.scene.name);
-
+                    this.questionsList2 = JSON.parse(
+                        JSON.stringify(list.data.sceneQuestionInfoList),
+                    );
                     this.questionsList = list.data.sceneQuestionInfoList;
+
                     const serialNum = ['一', '二', '三'];
                     this.questionsList.forEach((item, index) => {
                         const item1 = item;
                         item1.serialNum = serialNum[index];
+                        this.questionsList2[index].serialNum = serialNum[index];
                     });
                 });
         },
@@ -373,7 +412,29 @@ export default {
         tabClick(index) {
             this.tabIndex = index;
             this.filterType = index;
-            this.getExamResultDetail();
+            this.questionsList = JSON.parse(
+                JSON.stringify(this.questionsList2),
+            );
+            // console.log(index, 'index-----');
+            if (index === 0) {
+                this.questionsList.forEach((item) => {
+                    const item1 = item;
+                    item1.answerList = item1.answerList.filter((item2) => {
+                        const item3 = item2;
+                        return item3.rightAnswer !== item3.userAnswer;
+                    });
+                });
+            }
+            if (index === 1) {
+                this.questionsList.forEach((item) => {
+                    const item1 = item;
+                    item1.answerList = item1.answerList.filter((item2) => {
+                        const item3 = item2;
+                        return item3.mark === 1;
+                    });
+                });
+            }
+            // console.log(this.questionsList, 'questionsList-----');
         },
     },
 };
@@ -477,6 +538,7 @@ export default {
                     color: #71777d;
                     line-height: 40px;
                     text-align: center;
+                    cursor: pointer;
                     &:nth-child(2) {
                         margin: 17px 0 15px;
                     }

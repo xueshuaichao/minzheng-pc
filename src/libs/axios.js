@@ -73,6 +73,8 @@ const create = () => {
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
             webhost: location.origin
+
+            // token: '',
         },
         // 临时设置，上线后修改。2020/09/27
         crossDomain: true,

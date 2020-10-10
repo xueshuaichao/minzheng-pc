@@ -21,7 +21,10 @@
                 </Radio>
             </RadioGroup>
             <div class="search">
-                <input placeholder="请输入关键字">
+                <input
+                    v-model="listparam.name"
+                    placeholder="请输入关键字"
+                >
                 <img
                     src="@/assets/images/learnings/search-icon.png"
                     @click="handleSearch"
@@ -34,12 +37,15 @@
                 v-for="item in taskList"
                 :key="item.id"
                 class="content-item"
+                @click="handleDetail(item.courseId)"
             >
-                <img
-                    :src="item.coverUrl"
-                    style="height:126px"
-                    alt="图片不存在"
-                >
+                <div style="height:126px">
+                    <img
+                        :src="item.coverUrl"
+                        style="height:126px"
+                        alt=""
+                    >
+                </div>
                 <div style="padding-left: 10px;">
                     <div class="title">
                         {{ item.name }}
@@ -55,10 +61,9 @@
         <div style="margin-top:20px;">
             <Page
                 :total="total"
+                show-elevator
                 :current="listparam.pageNum"
                 :page-size="listparam.pageSize"
-                prev-text="上一页"
-                next-text="下一页"
                 @on-change="handlePagechange"
             />
         </div>
@@ -76,7 +81,7 @@ export default {
             listparam: {
                 pageNum: 1,
                 pageSize: 9,
-                status: '1',
+                status: '',
                 name: '',
             },
         };
@@ -86,11 +91,13 @@ export default {
     },
     methods: {
         taskFindByCondition() {
-            return learningsApi.userCourseElective({}).then((data) => {
-                console.log(data);
-                this.taskList = data.data.list;
-                this.total = data.data.total;
-            });
+            return learningsApi
+                .userCourseElective(this.listparam)
+                .then((data) => {
+                    console.log(data);
+                    this.taskList = data.data.list;
+                    this.total = data.data.total;
+                });
         },
         handleRadio() {
             this.listparam.pageNum = 1;
@@ -104,6 +111,11 @@ export default {
             console.log(page);
             this.listparam.pageNum = page;
             this.taskFindByCondition();
+        },
+        handleDetail(id) {
+            this.$router.push({
+                path: `/course/detail?id=${id}`,
+            });
         },
     },
 };
@@ -146,12 +158,14 @@ export default {
         display: flex;
         flex-wrap: wrap;
         margin-top: 20px;
+        justify-content: space-between;
         .content-item {
             width: 224px;
             height: 230px;
-            margin-right: 20px;
+            margin-bottom: 20px;
             font-size: 14px;
             background: #fff;
+            cursor: pointer;
             .title {
                 color: @textcolor100;
                 margin-top: 14px;

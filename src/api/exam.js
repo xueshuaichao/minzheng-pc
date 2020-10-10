@@ -8,14 +8,12 @@ export default {
     getExamList(pageNum, pageSize, scene) {
         return axios.post(
             `/exam/v1/scene/findByCondition?pageNum=${pageNum}&pageSize=${pageSize}`,
-            {
-                scene,
-            },
+            scene,
         );
     },
     // 一级分类列表
     getCategoryList() {
-        return axios.get('/resourceCenter/v1/category/getTree');
+        return axios.get('/resource/v1/category/getTree');
     },
     // 二级分类列表
     // getCategoryList2(sceneCategoryId) {
@@ -23,7 +21,7 @@ export default {
     // },
     getChildren(categoryId) {
         return axios.get(
-            `/resourceCenter/v1/category/getChildren?categoryId=${categoryId}`,
+            `/resource/v1/category/getChildren?categoryId=${categoryId}`,
         );
     },
 
@@ -68,5 +66,12 @@ export default {
     // 个人中心考试列表
     findRecordByUserId(data) {
         return axios.post('/exam/v1/scene/findRecordByUserId', data);
+    },
+    // 验证码
+    verify(param) {
+        return axios.post('/ucenter/smsCode/verify', param);
+    },
+    check(param) {
+        return axios.post('/ucenter/vcode/check', param);
     },
 };

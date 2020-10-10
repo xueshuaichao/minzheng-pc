@@ -55,7 +55,41 @@ module.exports = {
                 target: 'http://mapi.testing1.wdeduc.com',
                 ws: true,
                 changeOrigin: true,
-                pathRewrite: { '^/api': '' },
+                pathRewrite: {
+                    '/apii': '',
+                },
+            },
+            '/apis': {
+                target: 'http://mapi.testing1.wdeduc.com',
+                ws: true,
+                changeOrigin: true,
+                pathRewrite: {
+                    '/apis': '',
+                },
+            },
+            '/api/v1': {
+                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+                ws: true,
+                changeOrigin: true,
+                pathRewrite: {},
+            },
+            '/\\w+/api/': {
+                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+                ws: true,
+                changeOrigin: true,
+                pathRewrite: {},
+            },
+            '/user/': {
+                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+                ws: true,
+                changeOrigin: true,
+                pathRewrite: {},
+            },
+            '/\\w+/': {
+                target: 'http://gateway-server.testing1.svc.k8s.bjo.wdcloud.cc',
+                ws: true,
+                changeOrigin: true,
+                pathRewrite: {},
             },
         },
     },

@@ -37,7 +37,7 @@
                             v-for="child in secondCategory"
                             :key="child.id"
                             class="btnLi"
-                            :class="{ active: child.id == conditionid }"
+                            :class="{ active: child.id === conditionid }"
                             @click="setcondition(child.id)"
                         >
                             {{ child.name }}
@@ -85,7 +85,9 @@
                                     src="../../assets/images/course/people@2x.png"
                                     alt=""
                                 >
-                                已报名
+                                {{
+                                    item.signUpCount ? item.signUpCount : "0"
+                                }}人已报名
                             </span>
                         </p>
                     </div>
@@ -151,9 +153,9 @@ export default {
         };
     },
     mounted() {
-        if (this.$route.query.cate) {
-            this.listparam.course.firstCategoryId = this.$route.query.cate;
-            this.conditionid = this.$route.query.cate;
+        if (this.$route.query.id) {
+            this.listparam.categoryId = this.$route.query.id;
+            this.conditionid = this.$route.query.id;
         }
         this.getCourselist();
 
@@ -191,7 +193,7 @@ export default {
         setcondition(id, index) {
             console.log(index);
             if (index !== undefined) {
-                // this.secondCategory = this.categories[index].children;
+                this.conditionid = id;
                 this.getChildren(id);
             }
             this.listparam.categoryId = id;

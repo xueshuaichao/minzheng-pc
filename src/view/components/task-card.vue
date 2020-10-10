@@ -28,7 +28,7 @@
                 </p>
             </template>
             <img
-                v-if="item.userTaskDto && !this.from"
+                v-if="item.userApplyTaskDto && from"
                 src="../../assets/images/training/hasjoin.png"
             >
         </div>
@@ -92,6 +92,7 @@ export default {
     margin-bottom: 23px;
     width: 284px;
     margin: 0 10px 23px;
+    cursor: pointer;
     &:nth-child(4n + 1) {
         margin-left: 0;
     }

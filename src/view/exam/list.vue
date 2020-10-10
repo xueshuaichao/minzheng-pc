@@ -152,8 +152,8 @@ export default {
             scene: {
                 // purposeType: 1, // 用途类型：1.考试，2.问卷
                 name: '', // 考试名称
-                difficulty: 0, // 试题难度
-                sceneCategoryId: 0, // 考试（问卷）分类ID
+                difficulty: '', // 试题难度
+                categoryId: '', // 考试（问卷）分类ID
             },
 
             examList: [],
@@ -184,16 +184,14 @@ export default {
                 // userId: store.state.user.userInfo ? store.state.user.userInfo.id : 1000,
             };
             return api.joinScene(params).then((data) => {
-                if (data.success) {
-                    this.$router.push({
-                        name: 'examDetail',
-                        params: {
-                            id: exam.id,
-                            paperId: data.data,
-                            // type: exam.purposeType,
-                        },
-                    });
-                }
+                this.$router.push({
+                    name: 'examDetail',
+                    params: {
+                        id: exam.id,
+                        paperId: data.data,
+                        // type: exam.purposeType,
+                    },
+                });
             });
         },
         handlePageChange() {
@@ -226,19 +224,19 @@ export default {
         },
         setSelectedDirection(id) {
             this.directionIndex = id;
-            this.scene.sceneCategoryId = id;
+            this.scene.categoryId = id;
             this.classifyIndex = 0;
             this.getChildren(id);
             if (this.directionIndex === 0) {
-                this.scene.sceneCategoryId = null;
+                this.scene.categoryId = null;
             }
             this.getExamList();
         },
         setSelectedClassify(id) {
             this.classifyIndex = id;
-            this.scene.sceneCategoryId = id;
+            this.scene.categoryId = id;
             if (this.classifyIndex === 0) {
-                this.scene.sceneCategoryId = null;
+                this.scene.categoryId = null;
             }
             this.getExamList();
         },

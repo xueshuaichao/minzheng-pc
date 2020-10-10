@@ -200,54 +200,59 @@
             </div>
         </div>
         <Modal
-            v-model="modal2"
-            width="400"
+            v-model="iscode"
+            width="640"
             class="exam-modal"
             :closable="false"
         >
-            <div v-if="iscodetime == 300">
-                <p slot="header">
-                    请输入验证码
-                </p>
-                <p class="text">
-                    为保证本人考试，系统已往15555555手机上发送了验证码，验证正确后可继续考试，验证错误将终止考试。
-                </p>
-                <div class="from">
-                    <i-input placeholder="请输入验证码">
-                        <i-icon
-                            slot="prepend"
-                            type="ios-lock-outline"
-                        />
-                    </i-input>
-                    <span class="seconds">{{ sms.seconds }} s</span>
-                </div>
+            <p slot="header">
+                请输入验证码
+            </p>
+            <p class="text">
+                为保证本人考试，系统已{{
+                    userMobile
+                }}手机上发送了验证码，验证正确后可继续考试，验证错误将终止考试。
+            </p>
+            <div class="from">
+                <i-input
+                    v-model="vcode"
+                    placeholder="请输入验证码"
+                    style="width:339px;"
+                />
+                <span class="seconds">{{ codetime }} s</span>
             </div>
-            <div v-else>
-                <p slot="header">
-                    您正在结束作答
+            <div slot="footer">
+                <Button
+                    class="codesubmit button"
+                    @click="codehandleConfirm"
+                >
+                    确认
+                </Button>
+            </div>
+        </Modal>
+        <Modal
+            v-model="modal2"
+            width="486"
+            class="exam-modal"
+            :closable="false"
+        >
+            <div>
+                <p
+                    slot="header"
+                    class="header-text"
+                >
+                    {{ headerText }}
                 </p>
                 <div
                     style="text-align:center"
                     class="modal-content"
                 >
-                    <img
-                        src="../../assets/images/exam/icon-warning.png"
-                        alt=""
-                    >
                     <p>{{ prompt }}</p>
                 </div>
                 <div slot="footer" />
             </div>
             <div slot="footer">
-                <div v-if="iscodetime === 300">
-                    <Button
-                        class="submit button"
-                        @click="codeBtn"
-                    >
-                        确认
-                    </Button>
-                </div>
-                <div v-else>
+                <div>
                     <Button
                         class="cancel button"
                         @click="modal2 = false"
@@ -270,7 +275,7 @@
 <script>
 import api from '../../api/exam';
 // import store from '../../store';
-import { countdown } from '../../utils/helper';
+// import { countdown } from '../../utils/helper';
 // import userApi from '../../api/user';
 
 export default {
@@ -278,6 +283,7 @@ export default {
         return {
             prompt: '',
             cancelText: '',
+            headerText: '',
             submitText: '',
             IndexNum: '',
             modal2: false,
@@ -286,8 +292,10 @@ export default {
             seconds: 0,
             minutes: 0,
             maxtime: 0,
+            codetime: 120,
             time: null,
             secShow: false,
+            userMobile: '18235950405',
             stList: [], // 题号
             questionsList: [], // 试题列表
             saveData: {
@@ -299,19 +307,24 @@ export default {
                 answerList: [], // 本试卷答题信息列表
             },
             ms: 0, // 毫秒，记录答题时间
+            vcode: null,
+            isvcode: false,
+            iscode: false,
             time2: null,
             questionnaire: true,
             duration: null,
             iscodetime: 0,
             sms: {
-                sending: false,
-                seconds: 120,
+                sending: true,
+                seconds: 0,
             },
+            examtype: null,
         };
     },
     created() {
         if (this.$route) {
             console.log(this.$route.params);
+            this.examtype = this.$route.query.examtype;
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
@@ -321,51 +334,59 @@ export default {
         // this.start();
     },
     beforeDestroy() {
-        if (this.time) {
-            clearInterval(this.time);
+        if (this.timer) {
+            clearInterval(this.timer);
+            clearInterval(this.codetimer);
         }
     },
     methods: {
-        codeBtn() {
-            this.iscodetime = 0;
-            this.modal2 = false;
-        },
         // 获取验证码
-        getCode() {
-            this.sms.sending = true;
-            // return userApi
-            //     .getSmsCode(this.form.mobile)
-            //     .then(() => {
-            //         // todo countdown
-            //         const destroyCountdown = countdown(120, {
-            //             onProgress: (s) => {
-            //                 this.sms.seconds = s;
-            //             },
-            //             onEnd: () => {
-            //                 this.sms.seconds = 0;
-            //                 this.sms.sending = false;
-            //                 this.$off('destroyed', destroyCountdown);
-            //             },
-            //         });
-            //         this.$on('destroyed', destroyCountdown);
-            //     })
-            //     .catch((e) => {
-            //         this.sms.sending = false;
-            //         console.log(e);
-            //     });
+        verify() {
+            api.verify({ userMobile: this.userMobile, platformId: 10001 }).then(
+                () => {
+                    const self = this;
+                    this.codetimer = setInterval(() => {
+                        if (self.codetime > 0) {
+                            self.codetime -= 1;
+                            this.$forceUpdate();
+                        } else {
+                            clearInterval(this.codetimer);
+                            self.codehandleConfirm();
+                        }
+                    }, 1000);
+                },
+            );
+        },
+        codehandleConfirm() {
+            this.isvcode = false;
+            if (this.vcode === null || this.vcode === '') {
+                console.log(this.codetime);
+                if (this.codetime === 0) {
+                    this.$Message.info('验证码未填写，系统将中止考试。');
+                    this.isvcode = true;
+                    setTimeout(() => {
+                        this.iscode = false;
+                        this.$router.go(-1);
+                    }, 5000);
+                } else {
+                    this.$Message.info('验证码未填写，请先填写。');
+                    this.isvcode = true;
+                }
 
-            const destroyCountdown = countdown(120, {
-                onProgress: (s) => {
-                    console.log(s);
-                    this.sms.seconds = s;
+                return;
+            }
+            clearInterval(this.codetimer);
+            api.check({ userMobile: this.userMobile, vcode: this.vcode }).then(
+                (res) => {
+                    if (res) {
+                        this.iscode = false;
+                    } else {
+                        this.iscode = false;
+                        this.$Message.info('验证码输入错误，系统将终止考试');
+                        this.$router.go(-1);
+                    }
                 },
-                onEnd: () => {
-                    this.sms.seconds = 0;
-                    this.sms.sending = false;
-                    this.$off('destroyed', destroyCountdown);
-                },
-            });
-            this.$on('destroyed', destroyCountdown);
+            );
         },
         timer2() {
             // 定义计时函数
@@ -415,7 +436,7 @@ export default {
                 this.$set(question, "myAnswers", myanswer.join(","));
                 question.result = true;
             }
-
+            // console.log(optionList,'optionList------')
             // if (question.timeUsed === undefined) {
             //     this.$set(question, 'timeUsed', this.ms);
             // }
@@ -483,6 +504,7 @@ export default {
         },
         commitPaper() {
             this.saveData.commitTime = this.dateFormat();
+            this.saveData.answerList = [];
             // answerList: [
             //         {
             //             questionId: '', // 试题id
@@ -495,6 +517,7 @@ export default {
             this.questionsList.forEach(item => {
                 const item1 = item;
                 item1.questionList.forEach(question => {
+                    console.log(question.myAnswers);
                     if (question.myAnswers !== undefined) {
                         this.saveData.answerList.push({
                             questionId: question.id,
@@ -510,14 +533,25 @@ export default {
             return api.commitPaper(this.saveData).then(data => {
                 if (data.success) {
                     this.modal2 = false;
-                    this.$router.push({
-                        name: "examResult",
-                        params: {
-                            id: this.saveData.paperId
-                            // type: this.saveData.purposeType,
-                            // paperId: this.saveData.paperId,
-                        }
-                    });
+                    if (this.examtype) {
+                        this.$router.push({
+                            name: "examUltimate",
+                            params: {
+                                id: this.saveData.paperId
+                                // type: this.saveData.purposeType,
+                                // paperId: this.saveData.paperId,
+                            }
+                        });
+                    } else {
+                        this.$router.push({
+                            name: "examResult",
+                            params: {
+                                id: this.saveData.paperId
+                                // type: this.saveData.purposeType,
+                                // paperId: this.saveData.paperId,
+                            }
+                        });
+                    }
                 }
             });
         },
@@ -532,18 +566,15 @@ export default {
                     }
                 });
             });
-            // this.stList.forEach((val) => {
-            //     if (val.result) {
-            //         num += 1;
-            //     }
-            // });
             if (num === this.stList.length) {
-                this.prompt = "提交后不能撤回，是否确认交卷？";
+                this.headerText = "是否确认交卷？";
+                this.prompt = "提交后不能撤回";
                 this.cancelText = "取消";
                 this.submitText = "提交";
             } else {
                 this.remainingNum = this.stList.length - num;
-                this.prompt = `还有${this.remainingNum}道题目未作答，确认交卷？`;
+                this.headerText = "确认交卷吗？";
+                this.prompt = `还有${this.remainingNum}道题目未作答`;
                 this.cancelText = "继续答题";
                 this.submitText = "坚持提交";
             }
@@ -564,12 +595,13 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
-                    if (self.iscodetime === 300) {
-                        self.iscodetime = 300;
-                        this.modal2 = true;
-                        // this.getCode();
-                    } else {
+                    if (this.examtype) {
                         self.iscodetime += 1;
+                        if (self.iscodetime === 300) {
+                            this.iscode = true;
+                            this.verify();
+                            // this.codetimebtn();
+                        }
                     }
                 } else {
                     clearInterval(this.timer);
@@ -581,36 +613,12 @@ export default {
                 }
             }, 1000);
         }
-        // 倒计时
-        // countDown() {
-        //     // 定义函数 此函数名必须与触发事件的函数名一致
-        //     const self = this;
-        //     self.maxtime *= 60;
-
-        //     this.timer = setInterval(() => {
-        //         if (self.maxtime > 0) {
-        //             const minutes = Math.floor(self.maxtime / 60);
-        //             self.minutes = minutes < 10 ? `0${minutes}` : minutes;
-        //             const seconds = Math.floor(self.maxtime % 60);
-        //             self.seconds = seconds < 10 ? `0${seconds}` : seconds;
-        //             self.maxtime -= 1;
-        //         } else {
-        //             clearInterval(this.timer);
-        //             this.prompt = '已到答题时间，系统将为您提交试卷';
-        //             setTimeout(()=>{
-        //                 this.commitPaper()
-        //             },3000)
-        //             this.modal2 = true;
-        //         }
-        //     }, 1000);
-        // },
     }
 };
 </script>
 
 <style lang="less" scoped>
 @import "../../less/variables.less";
-
 .breadcrumb {
     margin-top: 32px;
     padding-bottom: 10px;
@@ -779,6 +787,7 @@ export default {
                 font-size: 40px;
                 font-family: SFNSDisplay;
                 line-height: 36px;
+                text-align: center;
             }
         }
         .answer-box {
@@ -873,13 +882,22 @@ export default {
     }
 }
 .exam-modal {
+    .header-text {
+        font-size: 24px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: @textColor1;
+        text-align: center;
+        line-height: 33px;
+        margin-top: 16px;
+    }
     .modal-content {
         p {
             font-size: 16px;
             font-weight: 400;
             color: @textColor1;
             line-height: 16px;
-            margin-top: 14px;
+            margin-top: 32px;
         }
         img {
             width: 46px;
@@ -894,31 +912,68 @@ export default {
         line-height: 40px;
     }
     .submit {
-        background: @mainColor;
-        color: #fff;
+        border: 1px solid #d14242;
+        color: #d14242;
     }
     .cancel {
-        border: 1px solid @mainColor;
-        color: @mainColor;
+        background: #d14242;
+        color: #fff;
     }
 }
 </style>
 <style lang="less">
+@import "../../less/variables.less";
 .exam-modal {
     .ivu-modal-header {
         border-bottom: 0 !important;
+        padding: 32px 0;
         p {
             text-align: center;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 500;
-            color: rgba(69, 96, 163, 1);
+            color: @textColor1;
             letter-spacing: 1px;
+            height: 33px;
+            line-height: 33px;
+        }
+    }
+    .ivu-modal-body {
+        .text {
+            width: 481px;
+            font-size: 18px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: @textColor1;
+            line-height: 28px;
+            margin: 0 auto;
+            margin-bottom: 32px;
+        }
+        .from {
+            text-align: center;
+            .seconds {
+                display: inline-block;
+                vertical-align: middle;
+                line-height: 40px;
+                font-size: 18px;
+                width: 110px;
+                height: 40px;
+                background: rgba(224, 224, 224, 0.4);
+                border-radius: 6px;
+                margin-left: 16px;
+            }
         }
     }
     .ivu-modal-footer {
         border-top: 0;
         text-align: center;
         padding-bottom: 18px;
+        .codesubmit {
+            width: 198px;
+            background: #d14242;
+            font-size: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
     }
 }
 </style>

@@ -20,7 +20,7 @@
                 class="btn"
                 @click="jumpMore"
             >
-                查看更多课程 >
+                查看更多 >
             </button>
         </div>
     </div>
