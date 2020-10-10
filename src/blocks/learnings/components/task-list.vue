@@ -109,7 +109,8 @@ export default {
                 .taskFindByCondition(this.listparam)
                 .then((data) => {
                     console.log(data);
-                    this.taskList = data.data.list;
+                    this.taskList = data.data.list || [];
+                    console.log(this.taskList, 'this.taskList11');
                     this.total = data.data.total;
                 });
         },

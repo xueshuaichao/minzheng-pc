@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </FormItem>
-                <FormItem
+                <!-- <FormItem
                     label="养老机构"
                     prop="selectedList"
                 >
@@ -122,7 +122,7 @@
                     >
                         {{ selectedLabels }}
                     </div>
-                </FormItem>
+                </FormItem> -->
             </Form>
         </div>
         <div class="button">
@@ -305,17 +305,71 @@ export default {
         },
         // 请求用户基本信息
         userInfo() {
-            return learningsApi.userInfo({}).then((data) => {
-                console.log(data);
-                const userInfo = data.data;
-                this.formValidate1.name = userInfo.name;
-                this.formValidate1.phone = userInfo.phone;
-                this.initPhone = userInfo.phone;
-                this.formValidate1.selectedList = userInfo.selectedList;
-                this.selectedLabels = userInfo.selectedLabels.join('/');
-                this.organizations = userInfo.organizations;
-                this.portrait = userInfo.portrait;
-            });
+            return learningsApi
+                .userInfo({ userId: '1000118612570987' })
+                .then((data) => {
+                    console.log(data);
+                    const userInfo = data.data;
+                    this.formValidate1.name = userInfo.username;
+                    this.formValidate1.phone = userInfo.userMobile;
+                    this.initPhone = userInfo.phone;
+                    this.formValidate1.selectedList = userInfo.selectedList;
+                    // this.selectedLabels = userInfo.selectedLabels.join('/');
+                    const abc = [JSON.parse(userInfo.extensionInfo).areaUnit];
+                    abc[0].children.children = null;
+                    this.organizations = [
+                        {
+                            value: 'beijing',
+                            label: '北京',
+                            children: [
+                                {
+                                    value: 'gugong',
+                                    label: '故宫',
+                                },
+                                {
+                                    value: 'tiantan',
+                                    label: '天坛',
+                                },
+                                {
+                                    value: 'wangfujing',
+                                    label: '王府井',
+                                },
+                            ],
+                        },
+                        {
+                            value: 'jiangsu',
+                            label: '江苏',
+                            children: [
+                                {
+                                    value: 'nanjing',
+                                    label: '南京',
+                                    children: [
+                                        {
+                                            value: 'fuzimiao',
+                                            label: '夫子庙',
+                                        },
+                                    ],
+                                },
+                                {
+                                    value: 'suzhou',
+                                    label: '苏州',
+                                    children: [
+                                        {
+                                            value: 'zhuozhengyuan',
+                                            label: '拙政园',
+                                        },
+                                        {
+                                            value: 'shizilin',
+                                            label: '狮子林',
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ];
+                    console.log(this.organizations, 'sdfs');
+                    this.portrait = userInfo.portrait;
+                });
         },
         // 手动上传图片
         handleBeforeUpload(data) {

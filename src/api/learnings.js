@@ -36,7 +36,8 @@ export default {
     },
     // 用户基本信息
     userInfo(param) {
-        return axios.get('/learn/v1/user/info', param);
+        // return axios.get('/learn/v1/user/info', param);
+        return axios.post('/ucenter/userInfo', param);
     },
     // 删除错题
     questionRemove(param) {
