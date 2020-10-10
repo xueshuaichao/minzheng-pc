@@ -72,11 +72,11 @@ const create = () => {
         timeout: 10000,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
-            // token: '',
+            webhost: location.origin
         },
         // 临时设置，上线后修改。2020/09/27
         crossDomain: true,
-        withCredentials: false,
+        withCredentials: true,
     };
     return Axios.create(conf);
 };
