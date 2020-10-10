@@ -318,13 +318,10 @@ export default {
                 sending: true,
                 seconds: 0,
             },
-            examtype: null,
         };
     },
     created() {
         if (this.$route) {
-            console.log(this.$route.params);
-            this.examtype = this.$route.query.examtype;
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
@@ -382,9 +379,7 @@ export default {
                         this.iscode = false;
                     } else if (this.codetime === 0) {
                         this.iscode = false;
-                        this.$Message.info(
-                            '验证码输入错误，系统将终止考试',
-                        );
+                        this.$Message.info('验证码输入错误，系统将终止考试');
                         this.$router.go(-1);
                     } else {
                         this.$Message.info('验证码输入错误，请重新填写');
@@ -599,7 +594,7 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
-                    if (this.examtype) {
+                    if (this.$route.query.examType) {
                         self.iscodetime += 1;
                         if (self.iscodetime === 300) {
                             this.iscode = true;
