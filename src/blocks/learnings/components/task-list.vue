@@ -42,11 +42,13 @@
                 class="content-item"
                 @click="handleDetail(item.courseId)"
             >
-                <img
-                    :src="item.coverUrl"
-                    style="height:126px"
-                    alt="图片不存在"
-                >
+                <div style="height:126px">
+                    <img
+                        :src="item.coverUrl"
+                        style="height:126px"
+                        alt=""
+                    >
+                </div>
                 <div style="padding-left: 10px;">
                     <div class="title">
                         {{ item.name }}
@@ -84,7 +86,7 @@ export default {
             total: 0,
             listparam: {
                 pageNum: 1,
-                pageSize: 9,
+                pageSize: 12,
                 status: '',
                 name: '',
             },
@@ -160,15 +162,17 @@ export default {
     }
     .content-box {
         display: flex;
-        justify-content: space-between;
+        // justify-content: space-between;
         flex-wrap: wrap;
         margin-top: 20px;
+        width: 108%;
         .content-item {
             width: 224px;
             height: 230px;
             margin-bottom: 24px;
             font-size: 14px;
             background: #fff;
+            margin-right: 17px;
             cursor: pointer;
             .title {
                 color: @textcolor100;

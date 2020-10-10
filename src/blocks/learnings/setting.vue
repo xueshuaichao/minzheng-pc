@@ -4,7 +4,7 @@
             个人设置
             <div
                 class="password"
-                @click="visible1 = true"
+                @click="visible = true"
             >
                 修改密码
             </div>
@@ -63,8 +63,10 @@
                     >
                         <Input
                             v-model="formValidate1.phone"
+                            :avalible="phoneAvalible"
                             style="width:272px;margin-right:5px;"
                             placeholder="Enter your e-mail"
+                            @on-blur="handlePhoneBlur"
                         />
                     </div>
                     <div
@@ -88,6 +90,7 @@
                         <div
                             v-if="isAvalible"
                             class="yanzhengma"
+                            :class="{ disable: isSendCodeAvalible }"
                             @click="handleyanzhengma"
                         >
                             发送验证码
@@ -142,86 +145,19 @@
             >
                 取消
             </div>
-            <!-- <Button type="primary">Submit</Button> -->
-            <!-- <Button style="margin-left: 8px">Cancel</Button> -->
         </div>
-        <Modal
-            v-model="visible1"
-            title="修改密码"
-        >
-            <Form
-                ref="formValidate4"
-                :model="formValidate4"
-                :rules="ruleValidate4"
-                :label-width="80"
-            >
-                <FormItem
-                    label="密码"
-                    prop="pasword"
-                >
-                    <Input
-                        v-model="formValidate4.pasword"
-                        placeholder="请输入密码"
-                    />
-                </FormItem>
-                <FormItem
-                    label="新密码"
-                    prop="newPassword"
-                >
-                    <Input
-                        v-model="formValidate4.newPassword"
-                        placeholder="请输入新密码"
-                    />
-                </FormItem>
-                <FormItem
-                    label="确认密码"
-                    prop="confirmPass"
-                >
-                    <Input
-                        v-model="formValidate4.confirmPass"
-                        placeholder="请再次输入新密码"
-                    />
-                </FormItem>
-            </Form>
-            <div slot="footer">
-                <Button @click="cancel">
-                    取消
-                </Button>
-                <Button
-                    type="primary"
-                    :loading="modal_loading"
-                    @click="asyncok('formValidate4')"
-                >
-                    确认
-                </Button>
-            </div>
-        </Modal>
+        <passwordChange v-model="visible" />
     </div>
 </template>
 
 <script>
 import learningsApi from '../../api/learnings';
+import passwordChange from './components/passwordChange.vue';
 
-const passwordvalidator = {
-    validator: (rule, value) => {
-        if (!value) {
-            return true;
-        }
-        if (value.length < 6) {
-            // eslint-disable-next-line
-            rule.message = "密码位数不得小于6位";
-            return false;
-        }
-        if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(value)) {
-            // eslint-disable-next-line
-            rule.message = "请输入字母和数字的组合";
-            return false;
-        }
-        return true;
-    },
-    trigger: 'blur',
-};
 export default {
+    components: {
+        passwordChange,
+    },
     filters: {
         formatephone(phone) {
             return `${phone.substr(0, 3)}****${phone.substr(7)}`;
@@ -229,39 +165,7 @@ export default {
     },
     data() {
         return {
-            visible1: false,
-            modal_loading: false,
-            formValidate4: {
-                pasword: '',
-                newPassword: '',
-                confirmPass: '',
-            },
-            ruleValidate4: {
-                pasword: [
-                    {
-                        required: true,
-                        message: '请输入密码',
-                        trigger: 'blur',
-                    },
-                    passwordvalidator,
-                ],
-                newPassword: [
-                    {
-                        required: true,
-                        message: '请输入新密码',
-                        trigger: 'blur',
-                    },
-                    passwordvalidator,
-                ],
-                confirmPass: [
-                    {
-                        required: true,
-                        message: '请再次输入新密码',
-                        trigger: 'blur',
-                    },
-                    passwordvalidator,
-                ],
-            },
+            visible: false,
             formValidate1: {
                 name: '',
                 phone: '',
@@ -298,7 +202,11 @@ export default {
                     },
                 ],
                 code: [
-                    { required: true, message: '请输入验证码', trigger: 'blur' },
+                    {
+                        required: false,
+                        message: '请输入验证码',
+                        trigger: 'blur',
+                    },
                 ],
             },
             isEdit: true,
@@ -309,6 +217,9 @@ export default {
             isAvalible: true,
             time: 60,
             setId: '',
+            initPhone: '',
+            phoneAvalible: true,
+            isSendCodeAvalible: true,
         };
     },
     created() {
@@ -316,6 +227,20 @@ export default {
         this.userInfo();
     },
     methods: {
+        async handlePhoneBlur() {
+            console.log('blue');
+            const result = await this.validatePhone('formValidate1');
+            console.log(result, 'abc');
+            if (result) {
+                return;
+            }
+
+            if (this.initPhone === this.formValidate1.phone) {
+                this.isSendCodeAvalible = true;
+            } else {
+                this.isSendCodeAvalible = false;
+            }
+        },
         async handleyanzhengma() {
             const result = await this.validatePhone('formValidate1');
             console.log(result, 'abc');
@@ -346,49 +271,51 @@ export default {
                 });
             });
         },
+        // 用户信息保存
         handleSubmit(item) {
             console.log('object');
-
-            this.$refs[item].validate((valid) => {
-                if (valid) {
-                    // this.$Message.success('Success!');
-                } else {
-                    // this.$Message.error('Fail!');
-                }
-            });
+            if (this.initPhone === this.formValidate1.phone) {
+                // 如果手机号未改动
+                this.$refs[item].validate((valid) => {
+                    console.log(valid, 'valid手机号未改ian');
+                    if (valid) {
+                        this.$Message.success('Success!');
+                        // learningsApi.abc(this.formValidate1).then((data) => {
+                        //     console.log(data);
+                        // });
+                    } else {
+                        this.$Message.error('Fail!');
+                    }
+                });
+            } else {
+                this.ruleValidate1.code[0].required = true;
+                this.$refs[item].validate((valid) => {
+                    console.log(valid, '手机号改动了');
+                    if (valid) {
+                        this.$Message.success('Success!');
+                        learningsApi.abc(this.formValidate1).then((data) => {
+                            console.log(data);
+                        });
+                    } else {
+                        // this.$Message.error('Fail!');
+                    }
+                });
+            }
+            this.ruleValidate1.code[0].required = false;
         },
+        // 请求用户基本信息
         userInfo() {
             return learningsApi.userInfo({}).then((data) => {
                 console.log(data);
                 const userInfo = data.data;
                 this.formValidate1.name = userInfo.name;
                 this.formValidate1.phone = userInfo.phone;
+                this.initPhone = userInfo.phone;
                 this.formValidate1.selectedList = userInfo.selectedList;
                 this.selectedLabels = userInfo.selectedLabels.join('/');
                 this.organizations = userInfo.organizations;
-                // this.organizations = [{
-                //     children: [{value: 5, label: "养老机构", selected: true, parent: 1,children:null}],
-                //     label: "省级",
-                //     parent: 0,
-                //     selected: true,
-                //     value: 1
-                // }]
                 this.portrait = userInfo.portrait;
             });
-        },
-        asyncok(item) {
-            this.$refs[item].validate((valid) => {
-                if (valid) {
-                    this.$Message.success('Success!');
-                } else {
-                    this.$Message.error('Fail!');
-                }
-            });
-        },
-        cancel() {
-            console.log('cancel');
-            this.$refs.formValidate4.resetFields();
-            this.visible1 = false;
         },
         // 手动上传图片
         handleBeforeUpload(data) {
@@ -397,6 +324,7 @@ export default {
             });
             return false;
         },
+        // 验证图片是否合适
         checkFile(data) {
             return new Promise((resolve, reject) => {
                 if (data.size > this.maxSize) {
@@ -417,7 +345,6 @@ export default {
             learningsApi
                 .fileUpload({
                     file,
-                    // file_type: '1',
                 })
                 .then(({ data }) => {
                     this.loading = false;
@@ -425,12 +352,23 @@ export default {
                         name: file.name,
                         url: data.path,
                     });
+                    this.userUpdate({ portrait: data });
                     this.$Message.success('上传成功');
                 })
                 .catch(() => {
                     this.loading = false;
                     this.$Message.error('上传失败');
                 });
+        },
+        // 更新用户信息
+        userUpdate(param) {
+            learningsApi
+                .userUpdate(param)
+                .then(({ data }) => {
+                    console.log(data);
+                    this.userInfo();
+                })
+                .catch(() => {});
         },
     },
 };

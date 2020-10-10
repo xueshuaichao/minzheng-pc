@@ -5,4 +5,4 @@ import exam from './exam';
 // import service from './service';
 import course from './course';
 // export default [...home, ...job, ...error, ...exam, ...service, ...learning];
-export default [...error, ...course, ...exam];
+export default [...course, ...exam, ...error];

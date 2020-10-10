@@ -82,7 +82,23 @@
                     {{ item.title }}
                 </div>
                 <div class="xuanxiang">
-                    <RadioGroup v-model="item.userAnswer">
+                    <CheckboxGroup
+                        v-if="item.type === 2"
+                        :value="item.userAnswer | splitUserAnswer"
+                    >
+                        <Checkbox
+                            v-for="item1 in item.contentItems"
+                            :key="item1.id"
+                            :label="item1.code"
+                            disabled
+                        >
+                            <span>{{ item1.value }}</span>
+                        </Checkbox>
+                    </CheckboxGroup>
+                    <RadioGroup
+                        v-else
+                        v-model="item.userAnswer"
+                    >
                         <Radio
                             v-for="item1 in item.contentItems"
                             :key="item1.id"
@@ -124,6 +140,11 @@ import learningsApi from '../../../../api/learnings';
 import category from '../../const/category';
 
 export default {
+    filters: {
+        splitUserAnswer(val) {
+            return val.split('');
+        },
+    },
     data() {
         return {
             total: 0,
