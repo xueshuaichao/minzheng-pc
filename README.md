@@ -21,4 +21,11 @@ build 项目：`npm run build`
 -   状态管理： [vuex](https://www.npmjs.com/package/vuex)
 -   UI 组件： [iview](https://www.npmjs.com/package/iview)
 
+## 本地开发
 
+配置 host
+127.0.0.1 mpc.dev.wdeduc.com
+
+Windows 的 host 对应文件 C:\Windows\System32\drivers\etc
+
+http://muser.testing1.wdeduc.com/organization/manage 新增个管理员账号，学员不能登录管理员端。
