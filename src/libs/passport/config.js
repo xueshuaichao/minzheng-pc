@@ -6,7 +6,7 @@ const URL = {
         PassportHost: 'http://mlogin.testing1.wdeduc.com',
     },
     production: {
-        PassportHost: 'http://mlogin.testing2.wdeduc.com',
+        PassportHost: 'http://mlogin.testing1.wdeduc.com',
     },
 };
 
