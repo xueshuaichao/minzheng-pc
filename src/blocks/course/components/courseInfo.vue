@@ -293,6 +293,7 @@ export default {
             noJudge: false,
             isJudge: false,
             playing: false,
+            lastCourse: {},
             judgeparam: {
                 courseId: null,
                 recordId: null,

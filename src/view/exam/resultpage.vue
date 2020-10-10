@@ -415,21 +415,26 @@ export default {
             this.questionsList = JSON.parse(
                 JSON.stringify(this.questionsList2),
             );
-            if (index !== 2) {
+            // console.log(index, 'index-----');
+            if (index === 0) {
                 this.questionsList.forEach((item) => {
-                    item.answerList.forEach((item2, index2) => {
-                        if (index === 0) {
-                            if (item2.rightAnswer === item2.userAnswer) {
-                                item.answerList.splice(index2, 1);
-                            }
-                        } else if (!item2.mark) {
-                            item.answerList.splice(index2, 1);
-                        }
+                    const item1 = item;
+                    item1.answerList = item1.answerList.filter((item2) => {
+                        const item3 = item2;
+                        return item3.rightAnswer !== item3.userAnswer;
                     });
                 });
             }
-
-            // this.getExamResultDetail();
+            if (index === 1) {
+                this.questionsList.forEach((item) => {
+                    const item1 = item;
+                    item1.answerList = item1.answerList.filter((item2) => {
+                        const item3 = item2;
+                        return item3.mark === 1;
+                    });
+                });
+            }
+            // console.log(this.questionsList, 'questionsList-----');
         },
     },
 };

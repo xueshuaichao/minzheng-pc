@@ -34,11 +34,11 @@
                             全部
                         </li>
                         <li
-                            v-for="child in secondCategory"
-                            :key="child.id"
+                            v-for="(child, index) in secondCategory"
+                            :key="index"
                             class="btnLi"
                             :class="{ active: child.id === conditionid }"
-                            @click="setcondition(child.id)"
+                            @click="setcondition(child.id, index, '1')"
                         >
                             {{ child.name }}
                         </li>
@@ -190,11 +190,14 @@ export default {
         handleSeach() {
             this.getCourselist();
         },
-        setcondition(id, index) {
-            console.log(index);
+        setcondition(id, index, type) {
             if (index !== undefined) {
                 this.conditionid = id;
-                this.getChildren(id);
+                if (type !== '1') {
+                    this.getChildren(id);
+                }
+            } else {
+                this.conditionid = null;
             }
             this.listparam.categoryId = id;
             this.getCourselist();
@@ -205,7 +208,7 @@ export default {
                 if (res.success === true) {
                     this.courseList = data.list;
                     this.total = data.total;
-                    console.log(this.total);
+                    // console.log(this.total);
                 }
             });
         },

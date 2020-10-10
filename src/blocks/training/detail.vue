@@ -118,6 +118,7 @@
 import api from '../../api/training';
 import learningsApi from '../../api/learnings';
 import tipModel from '../../view/components/tip-model.vue';
+import examApi from '../../api/exam';
 
 export default {
     components: {
@@ -164,8 +165,26 @@ export default {
             this.showModel = false;
             if (arg) {
                 // 跳转试卷。就是去考试的了
-                this.$router.push({
-                    path: `exam/detail/${this.selItem.scene.id}?examtype=${this.selItem.scene.examType}`,
+                // this.$router.push({
+                //     path: `exam/detail/${this.selItem.scene.id}?examtype=${this.selItem.scene.examType}`,
+                // });
+                const params = {
+                    sceneId: this.selItem.scene.id,
+                    businessId: 1, //
+                    businessType: 1,
+                };
+                examApi.joinScene(params).then((data) => {
+                    this.$router.push({
+                        name: 'examDetail',
+                        params: {
+                            id: this.selItem.scene.id,
+                            paperId: data.data,
+                            // type: exam.purposeType,
+                        },
+                        query: {
+                            examType: this.selItem.scene.examType,
+                        },
+                    });
                 });
             }
         },
@@ -252,15 +271,26 @@ export default {
                 const msg = this.disabled === 1 ? '报名未开始' : '报名已结束';
                 this.$Message.warning({
                     content: msg,
-                    duration: 5,
+                    duration: 3,
                 });
             } else if (this.lackInfo) {
                 // 补全信息，并返回报名页面
                 this.setModel();
             } else {
+                const status = this.detail.applyStatus ? 0 : 1;
                 api.changeTaskApply({
                     taskId: this.taskId,
-                    isApply: this.detail.applyStatus ? 0 : 1,
+                    isApply: status,
+                }).then((res) => {
+                    if (res.success) {
+                        this.detail.applyStatus = this.detail.applyStatus
+                            ? 0
+                            : 1;
+                        this.$Message.info({
+                            content: '操作成功',
+                            duration: 3,
+                        });
+                    }
                 });
             }
         },

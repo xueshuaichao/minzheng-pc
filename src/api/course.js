@@ -21,9 +21,10 @@ export default {
         return axios.get('/course/v1/course/student/getCourseCategory');
     },
     // 获取课程详情
-    findById(param) {
+    findById(data) {
         return axios.get(
-            `/course/v1/course/student/findStudentCourseInfoById?id=${param}`,
+            '/course/v1/course/student/findStudentCourseInfoById',
+            data,
         );
     },
     // 获取课程目录
@@ -36,7 +37,7 @@ export default {
     // 加入选学
     startStudy(data) {
         return axios.post(
-            `/course/v1/userCourseRecord/student/course/signup?courseId=${data}`,
+            `/course/v1/userCourseRecord/student/course/signup?courseId=${data.courseId}&taskId=${data.taskId}`,
         );
     },
     // 提交评价

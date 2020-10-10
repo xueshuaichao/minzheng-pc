@@ -318,13 +318,10 @@ export default {
                 sending: true,
                 seconds: 0,
             },
-            examtype: null,
         };
     },
     created() {
         if (this.$route) {
-            console.log(this.$route.params);
-            this.examtype = this.$route.query.examtype;
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
@@ -360,24 +357,32 @@ export default {
         codehandleConfirm() {
             this.isvcode = false;
             if (this.vcode === null || this.vcode === '') {
-                this.$Message.info('验证码未填写，系统将中止考试。');
-                this.isvcode = true;
-                setTimeout(() => {
-                    this.iscode = false;
-                    this.$router.go(-1);
-                }, 5000);
+                console.log(this.codetime);
+                if (this.codetime === 0) {
+                    this.$Message.info('验证码未填写，系统将中止考试。');
+                    this.isvcode = true;
+                    setTimeout(() => {
+                        this.iscode = false;
+                        this.$router.go(-1);
+                    }, 5000);
+                } else {
+                    this.$Message.info('验证码未填写，请先填写。');
+                    this.isvcode = true;
+                }
 
                 return;
             }
             clearInterval(this.codetimer);
             api.check({ userMobile: this.userMobile, vcode: this.vcode }).then(
                 (res) => {
-                    if (res) {
+                    if (res.data) {
                         this.iscode = false;
-                    } else {
+                    } else if (this.codetime === 0) {
                         this.iscode = false;
                         this.$Message.info('验证码输入错误，系统将终止考试');
                         this.$router.go(-1);
+                    } else {
+                        this.$Message.info('验证码输入错误，请重新填写');
                     }
                 },
             );
@@ -430,7 +435,7 @@ export default {
                 this.$set(question, "myAnswers", myanswer.join(","));
                 question.result = true;
             }
-
+            // console.log(optionList,'optionList------')
             // if (question.timeUsed === undefined) {
             //     this.$set(question, 'timeUsed', this.ms);
             // }
@@ -498,6 +503,7 @@ export default {
         },
         commitPaper() {
             this.saveData.commitTime = this.dateFormat();
+            this.saveData.answerList = [];
             // answerList: [
             //         {
             //             questionId: '', // 试题id
@@ -510,6 +516,7 @@ export default {
             this.questionsList.forEach(item => {
                 const item1 = item;
                 item1.questionList.forEach(question => {
+                    console.log(question.myAnswers);
                     if (question.myAnswers !== undefined) {
                         this.saveData.answerList.push({
                             questionId: question.id,
@@ -587,9 +594,9 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
-                    if (this.examtype) {
+                    if (this.$route.query.examType) {
                         self.iscodetime += 1;
-                        if (self.iscodetime === 10) {
+                        if (self.iscodetime === 300) {
                             this.iscode = true;
                             this.verify();
                             // this.codetimebtn();

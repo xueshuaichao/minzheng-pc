@@ -10,6 +10,8 @@ import config from './config';
 
 import './app.less';
 // import api from './api/home';
+import URL from './config/url';
+import { Passport } from './libs/passport/passport';
 
 Vue.config.productionTip = process.env.NODE_ENV === 'development';
 
@@ -17,6 +19,10 @@ Vue.config.productionTip = process.env.NODE_ENV === 'development';
  * @description 全局注册应用配置
  */
 Vue.prototype.$config = config;
+Vue.prototype.$passport = new Passport(URL.API, {
+    // eslint-disable-next-line
+    header: { webhost: location.origin }
+});
 
 const getPageConfigs = Promise.resolve([
     {
@@ -135,35 +141,109 @@ const getPageConfigs = Promise.resolve([
         ],
     },
 ]);
+function buildApp(userInfo) {
+    if (userInfo) {
+        store.commit('setUserInfo', userInfo);
+    }
 
-getPageConfigs.then((data) => {
-    // todo
-    data.forEach((v) => {
-        // eslint-disable-next-line no-param-reassign
-        v.layout = JSON.stringify(v.layout);
-    });
-
-    store.commit('setPageConfigs', data);
-    // 根据后端pages定义路由
-    const routes = data
-        .filter(page => !!page.uri && page.uri[0] === '/')
-        .map((page) => {
-            const route = {
-                path: page.uri,
-                name: page.name,
-                component: () => import('./view/common_page.vue'),
-                meta: {
-                    moduleId: page.moduleId,
-                    name: page.name,
-                },
-            };
-            return route;
+    getPageConfigs.then((data) => {
+        // todo
+        data.forEach((v) => {
+            // eslint-disable-next-line no-param-reassign
+            v.layout = JSON.stringify(v.layout);
         });
-    router.addRoutes(routes);
-    new Vue({
-        router,
-        store,
-        i18n,
-        render: h => h(App),
-    }).$mount('#wdc-app');
-});
+
+        store.commit('setPageConfigs', data);
+        // 根据后端pages定义路由
+        const routes = data
+            .filter(page => !!page.uri && page.uri[0] === '/')
+            .map((page) => {
+                const route = {
+                    path: page.uri,
+                    name: page.name,
+                    component: () => import('./view/common_page.vue'),
+                    meta: {
+                        moduleId: page.moduleId,
+                        name: page.name,
+                    },
+                };
+                return route;
+            });
+        router.addRoutes(routes);
+
+        new Vue({
+            router,
+            store,
+            i18n,
+            render: h => h(App),
+        }).$mount('#wdc-app');
+    });
+}
+buildApp();
+
+// Vue.prototype.$passport.checkCookie().then(
+//     (res) => {
+//         if (res) {
+//             buildApp(res.data);
+//         }
+//     },
+//     () => {
+//         // if ()
+//         const Token = Vue.prototype.$passport.getToken();
+//         if (Token) {
+//             Vue.prototype.$passport.setToken(Token).then(
+//                 (res) => {
+//                     if (res.code === 0 && res.data) {
+//                         Vue.prototype.$passport.checkCookie().then((res) => {
+//                             if (res) {
+//                                 buildApp(res.data);
+//                             } else {
+//                                 buildApp();
+//                             }
+//                         });
+//                     } else {
+//                         buildApp();
+//                     }
+//                 },
+//                 () => {
+//                     buildApp();
+//                 },
+//             );
+//         } else {
+//             buildApp();
+//         }
+//     },
+// );
+
+// getPageConfigs.then((data) => {
+//     // todo
+//     data.forEach((v) => {
+//         // eslint-disable-next-line no-param-reassign
+//         v.layout = JSON.stringify(v.layout);
+//     });
+
+//     store.commit('setPageConfigs', data);
+//     // 根据后端pages定义路由
+//     const routes = data
+//         .filter(page => !!page.uri && page.uri[0] === '/')
+//         .map((page) => {
+//             const route = {
+//                 path: page.uri,
+//                 name: page.name,
+//                 component: () => import('./view/common_page.vue'),
+//                 meta: {
+//                     moduleId: page.moduleId,
+//                     name: page.name,
+//                 },
+//             };
+//             return route;
+//         });
+//     router.addRoutes(routes);
+//     console.log(router);
+//     new Vue({
+//         router,
+//         store,
+//         i18n,
+//         render: h => h(App),
+//     }).$mount('#wdc-app');
+// });
