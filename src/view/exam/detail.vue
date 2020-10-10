@@ -360,12 +360,18 @@ export default {
         codehandleConfirm() {
             this.isvcode = false;
             if (this.vcode === null || this.vcode === '') {
-                this.$Message.info('验证码未填写，系统将中止考试。');
-                this.isvcode = true;
-                setTimeout(() => {
-                    this.iscode = false;
-                    this.$router.go(-1);
-                }, 5000);
+                console.log(this.codetime);
+                if (this.codetime === 0) {
+                    this.$Message.info('验证码未填写，系统将中止考试。');
+                    this.isvcode = true;
+                    setTimeout(() => {
+                        this.iscode = false;
+                        this.$router.go(-1);
+                    }, 5000);
+                } else {
+                    this.$Message.info('验证码未填写，请先填写。');
+                    this.isvcode = true;
+                }
 
                 return;
             }
@@ -430,7 +436,7 @@ export default {
                 this.$set(question, "myAnswers", myanswer.join(","));
                 question.result = true;
             }
-
+            // console.log(optionList,'optionList------')
             // if (question.timeUsed === undefined) {
             //     this.$set(question, 'timeUsed', this.ms);
             // }
@@ -498,6 +504,7 @@ export default {
         },
         commitPaper() {
             this.saveData.commitTime = this.dateFormat();
+            this.saveData.answerList = [];
             // answerList: [
             //         {
             //             questionId: '', // 试题id
@@ -510,6 +517,7 @@ export default {
             this.questionsList.forEach(item => {
                 const item1 = item;
                 item1.questionList.forEach(question => {
+                    console.log(question.myAnswers);
                     if (question.myAnswers !== undefined) {
                         this.saveData.answerList.push({
                             questionId: question.id,
@@ -589,7 +597,7 @@ export default {
                     self.maxtime -= 1;
                     if (this.examtype) {
                         self.iscodetime += 1;
-                        if (self.iscodetime === 10) {
+                        if (self.iscodetime === 300) {
                             this.iscode = true;
                             this.verify();
                             // this.codetimebtn();
