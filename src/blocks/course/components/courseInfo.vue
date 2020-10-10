@@ -331,7 +331,7 @@ export default {
                 return `${hour}小时${minute}分${second}秒`;
             }
             if (!item.menuFlag && item.detailType === "3") {
-                return `${s}页`;
+                return "";
             }
         },
         changeTab(num) {
@@ -359,8 +359,12 @@ export default {
             });
         },
         showresource(item) {
-            console.log(item);
-            this.$emit("getrecourseId", item);
+            if (this.courseIntro.recordId) {
+                console.log(item);
+                this.$emit("getrecourseId", item);
+            } else {
+                this.$Message.info("请先报名该课程");
+            }
         }
     }
 };
