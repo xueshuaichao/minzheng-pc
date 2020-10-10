@@ -258,9 +258,20 @@ export default {
                 // 补全信息，并返回报名页面
                 this.setModel();
             } else {
+                const status = this.detail.applyStatus ? 0 : 1;
                 api.changeTaskApply({
                     taskId: this.taskId,
-                    isApply: this.detail.applyStatus ? 0 : 1,
+                    isApply: status,
+                }).then((res) => {
+                    if (res.success) {
+                        this.detail.applyStatus = this.detail.applyStatus
+                            ? 0
+                            : 1;
+                        this.$Message.info({
+                            content: '操作成功',
+                            duration: 5,
+                        });
+                    }
                 });
             }
         },
