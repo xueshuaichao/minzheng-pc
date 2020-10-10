@@ -162,9 +162,11 @@ export default {
     watch: {
         '$store.state.user.userInfo': {
             handler(newval) {
+                console.log(newval);
                 this.username = newval.username;
             },
             deep: true,
+            immediate: true,
         },
     },
     created() {

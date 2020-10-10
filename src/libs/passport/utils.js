@@ -3,7 +3,7 @@
 export const getQueryString = function getQueryString(str) {
     // eslint-disable-next-line no-restricted-globals
     const url = str || location.search;
-    const result = url.match(new RegExp('[\?\&][^\?\&]+=[^\?\&]+', 'g'));
+    const result = url.match(new RegExp('[?&][^?&]+=[^?&]+', 'g'));
 
     if (result == null) {
         return '';
@@ -17,16 +17,14 @@ export const getQueryString = function getQueryString(str) {
     return result;
 };
 
-export const getQueryByName = function getQueryByName(url,name) {
-    var url = url || location.search;
-    var result = url.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
-    
-    if (result == null || result.length < 1) {
-
-        return "";
-
-    }
-
-    return result[1];
-}
-
+export const getQueryByName = function getQueryByName(url, name) {
+    // eslint-disable-next-line
+    if (!url) url = window.location.href;
+    // eslint-disable-next-line
+    name = name.replace(/[\[\]]/g, "\\$&");
+    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+};
