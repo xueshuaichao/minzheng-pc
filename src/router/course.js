@@ -9,4 +9,9 @@ export default [
         name: 'courseDetail',
         component: () => import('../blocks/course/detail.vue'),
     },
+    {
+        path: '/course/showpdf',
+        name: 'courseshowpdf',
+        component: () => import('../view/course/showpdf.vue'),
+    },
 ];

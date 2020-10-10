@@ -42,6 +42,7 @@
                 <task-card
                     :key="item.id"
                     :itemdetail="item"
+                    :from="'list'"
                 />
             </template>
         </div>

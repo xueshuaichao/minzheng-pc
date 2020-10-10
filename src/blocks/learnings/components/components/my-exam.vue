@@ -33,7 +33,7 @@
                 </div>
                 <div
                     class="detail"
-                    @click="handleDetail"
+                    @click="handleDetail(item.paperId)"
                 >
                     查看详情
                 </div>
@@ -87,7 +87,11 @@ export default {
                 this.total = data.data.total;
             });
         },
-        handleDetail() {},
+        handleDetail(id) {
+            this.$router.push({
+                path: `/exam/result/${id}`,
+            });
+        },
         handleReTest(id) {
             this.$router.push({
                 path: `/exam/detail/${id}`,

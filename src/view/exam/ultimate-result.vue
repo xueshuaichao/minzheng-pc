@@ -128,6 +128,25 @@ export default {
         }
     },
     methods: {
+        // 开始考试
+        joinScene(exam) {
+            const params = {
+                sceneId: exam.id,
+                businessId: 1, //
+                businessType: 1,
+                // userId: store.state.user.userInfo ? store.state.user.userInfo.id : 1000,
+            };
+            return api.joinScene(params).then((data) => {
+                this.$router.push({
+                    name: 'examDetail',
+                    params: {
+                        id: exam.id,
+                        paperId: data.data,
+                        // type: exam.purposeType,
+                    },
+                });
+            });
+        },
         // 试卷信息
         getExamResultOverview() {
             return api

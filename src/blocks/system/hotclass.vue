@@ -23,7 +23,7 @@
                     <li
                         v-for="(item, index) in list"
                         :key="index"
-                        @click="goDetail(item.categoryId)"
+                        @click="goDetail(item)"
                     >
                         {{ item.categoryName }}
                     </li>
@@ -34,7 +34,7 @@
 </template>
 <script>
 import api from '../../api/course';
-
+/* eslint-disable */
 export default {
     components: {},
     data() {
@@ -42,18 +42,18 @@ export default {
             list1: {},
             list: [],
             imglist: [
-                { url: require('../../assets/images/course/book@2x.png') },
-                { url: require('../../assets/images/course/computer@2x.png') },
-                { url: require('../../assets/images/course/pen@2x.png') },
-                { url: require('../../assets/images/course/books@2x.png') },
-                { url: require('../../assets/images/course/book1@2x.png') },
+                { url: require("../../assets/images/course/book@2x.png") },
+                { url: require("../../assets/images/course/computer@2x.png") },
+                { url: require("../../assets/images/course/pen@2x.png") },
+                { url: require("../../assets/images/course/books@2x.png") },
+                { url: require("../../assets/images/course/book1@2x.png") }
             ],
             listparam: {
                 pageNum: 1,
                 pageSize: 7,
                 categoryId: null,
-                type: 0,
-            },
+                type: 0
+            }
         };
     },
     created() {
@@ -62,7 +62,7 @@ export default {
     methods: {
         //  暂时用课程列表的数据， 精品课接口参数有问题
         getList() {
-            api.getHotCategoryList({ pageSize: '5' }).then((res) => {
+            api.getHotCategoryList({ pageSize: "5" }).then(res => {
                 if (res.success) {
                     this.list = res.data;
                     console.log(this.list);
@@ -72,18 +72,26 @@ export default {
         },
         jumpMore() {
             this.$router.push({
-                path: '/course',
+                path: "/course"
             });
         },
-        goDetail(id) {
+        goDetail(item) {
+            console.log(item);
+            let data = null;
+            item.categoryList.find(val => {
+                if (val.id === item.categoryId) {
+                    data = val;
+                }
+            });
             this.$router.push({
-                name: 'course',
+                name: "course",
                 query: {
-                    id,
-                },
+                    parentId: data.parentId,
+                    id: data.id
+                }
             });
-        },
-    },
+        }
+    }
 };
 </script>
 <style scoped lang="less">

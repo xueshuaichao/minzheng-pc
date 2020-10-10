@@ -80,7 +80,7 @@ export default {
             total: 0,
             listparam: {
                 pageNum: 1,
-                pageSize: 9,
+                pageSize: 12,
                 status: '',
                 name: '',
             },
@@ -158,13 +158,15 @@ export default {
         display: flex;
         flex-wrap: wrap;
         margin-top: 20px;
-        justify-content: space-between;
+        // justify-content: space-between;
+        width: 108%;
         .content-item {
             width: 224px;
             height: 230px;
             margin-bottom: 20px;
             font-size: 14px;
             background: #fff;
+            margin-right: 17px;
             cursor: pointer;
             .title {
                 color: @textcolor100;

@@ -25,16 +25,16 @@
                     {{ item.typeName }}
                 </div>
                 <div
-                    v-if="show"
+                    v-if="item.show"
                     class="third-line"
                 >
                     {{ item.content }}
                 </div>
                 <div
                     class="button"
-                    @click="show = !show"
+                    @click="item.show = !item.show"
                 >
-                    <template v-if="show">
+                    <template v-if="item.show">
                         <img src="@/assets/images/learnings/up-arrow.png">
                         收起
                     </template>
@@ -67,7 +67,10 @@ export default {
                 .messageFindByCondition({ pageSize: 10, pageNum: 1 })
                 .then((data) => {
                     console.log(data);
-                    this.messageList = data.data.list;
+                    this.messageList = data.data.list.map(item => ({
+                        ...item,
+                        show: false,
+                    }));
                 });
         },
     },
@@ -114,11 +117,12 @@ export default {
         color: @textcolor100;
         .content-item {
             // width: 224px;
-            height: 169px;
+            // height: 169px;
             // margin-right: 20px;
             font-size: 14px;
             border-bottom: 1px solid #e6e6e6;
             position: relative;
+            padding-bottom: 20px;
             & > div {
                 margin-left: 16px;
             }
@@ -156,10 +160,11 @@ export default {
             }
             .button {
                 position: absolute;
-                top: 70px;
+                top: 34px;
                 right: 36px;
                 color: #d14242;
                 cursor: pointer;
+                user-select: none;
                 img {
                     width: 7px;
                     height: 12px;

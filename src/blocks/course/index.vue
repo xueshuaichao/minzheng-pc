@@ -28,17 +28,17 @@
                     <ul class="condition-btn">
                         <li
                             class="btnLi"
-                            :class="{ active: conditionid === null }"
-                            @click="setcondition()"
+                            :class="{ active: conditionid1 === null }"
+                            @click="setcondition1()"
                         >
                             全部
                         </li>
                         <li
-                            v-for="child in secondCategory"
-                            :key="child.id"
+                            v-for="(child, index) in secondCategory"
+                            :key="index"
                             class="btnLi"
-                            :class="{ active: child.id === conditionid }"
-                            @click="setcondition(child.id)"
+                            :class="{ active: child.id === conditionid1 }"
+                            @click="setcondition1(child.id, index)"
                         >
                             {{ child.name }}
                         </li>
@@ -144,9 +144,11 @@ export default {
                 categoryId: null,
                 type: 0,
             },
+            firstId: null,
             secondCategory: [], // 二级分类
             typeconditionid: null,
             conditionid: null,
+            conditionid1: null,
             courseType: [],
             categories: [],
             courseList: [],
@@ -156,6 +158,11 @@ export default {
         if (this.$route.query.id) {
             this.listparam.categoryId = this.$route.query.id;
             this.conditionid = this.$route.query.id;
+        }
+        if (this.$route.query.parentId) {
+            this.getChildren(this.$route.query.parentId);
+            this.conditionid = this.$route.query.parentId;
+            this.conditionid1 = this.$route.query.id;
         }
         this.getCourselist();
 
@@ -191,12 +198,29 @@ export default {
             this.getCourselist();
         },
         setcondition(id, index) {
-            console.log(index);
             if (index !== undefined) {
                 this.conditionid = id;
+                this.firstId = id;
                 this.getChildren(id);
+            } else {
+                this.conditionid = null;
+                this.conditionid1 = null;
             }
+
             this.listparam.categoryId = id;
+            this.getCourselist();
+        },
+        setcondition1(id, index) {
+            console.log(index);
+            if (index !== undefined) {
+                this.conditionid1 = id;
+                this.listparam.categoryId = id;
+                // console.log(id);
+                this.getChildren(this.firstId);
+            } else {
+                this.conditionid1 = null;
+                this.listparam.categoryId = this.firstId;
+            }
             this.getCourselist();
         },
         getCourselist() {
@@ -205,7 +229,7 @@ export default {
                 if (res.success === true) {
                     this.courseList = data.list;
                     this.total = data.total;
-                    console.log(this.total);
+                    // console.log(this.total);
                 }
             });
         },

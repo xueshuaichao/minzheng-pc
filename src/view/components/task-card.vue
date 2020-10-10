@@ -28,7 +28,7 @@
                 </p>
             </template>
             <img
-                v-if="item.userTaskDto && !this.from"
+                v-if="item.userApplyTaskDto && from"
                 src="../../assets/images/training/hasjoin.png"
             >
         </div>
