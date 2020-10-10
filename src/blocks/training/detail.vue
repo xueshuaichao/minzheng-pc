@@ -118,6 +118,7 @@
 import api from '../../api/training';
 import learningsApi from '../../api/learnings';
 import tipModel from '../../view/components/tip-model.vue';
+import examApi from '../../api/exam';
 
 export default {
     components: {
@@ -164,8 +165,26 @@ export default {
             this.showModel = false;
             if (arg) {
                 // 跳转试卷。就是去考试的了
-                this.$router.push({
-                    path: `exam/detail/${this.selItem.scene.id}?examtype=${this.selItem.scene.examType}`,
+                // this.$router.push({
+                //     path: `exam/detail/${this.selItem.scene.id}?examtype=${this.selItem.scene.examType}`,
+                // });
+                const params = {
+                    sceneId: this.selItem.scene.id,
+                    businessId: 1, //
+                    businessType: 1,
+                };
+                examApi.joinScene(params).then((data) => {
+                    this.$router.push({
+                        name: 'examDetail',
+                        params: {
+                            id: this.selItem.scene.id,
+                            paperId: data.data,
+                            // type: exam.purposeType,
+                        },
+                        query: {
+                            examType: this.selItem.scene.examType,
+                        },
+                    });
                 });
             }
         },
