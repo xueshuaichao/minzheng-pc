@@ -66,8 +66,8 @@
                     <ul class="info1">
                         <li class="info1-keshi">
                             <span>课时：{{
-                                courseInfo.classHour
-                                    ? courseInfo.classHour
+                                courseInfo.lessonCount
+                                    ? courseInfo.lessonCount
                                     : 0
                             }}课时</span>
                             <span>学分：{{
