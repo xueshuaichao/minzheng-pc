@@ -35,13 +35,17 @@
                             class="playCon"
                             style="position: relative;height:400px"
                         >
-                            <!-- <iframe src="../../../static/js/pdfjs/web/viewer.html?file=https://zyzx-test.oss-cn-beijing.aliyuncs.com/zj/qxzx/documentation-output/2020/06/5734-1591769040115.pdf&.pdf" style="width: 100%;height: 100%;position: absolute;" id="aliyunPreview"></iframe> -->
                             <iframe
+                                id="aliyunPreview"
+                                :src="pdfurl"
+                                style="width: 100%;height: 100%;position: absolute;"
+                            />
+                            <!-- <iframe
                                 :src="
                                     '/js/pdfjs/web/viewer.html?file=' + pdfurl
                                 "
                                 style="width: 100%;height: 100%;position: absolute;"
-                            />
+                            /> -->
                         </div>
                     </div>
                 </div>
@@ -62,8 +66,8 @@
                     <ul class="info1">
                         <li class="info1-keshi">
                             <span>课时：{{
-                                courseInfo.classHour
-                                    ? courseInfo.classHour
+                                courseInfo.lessonCount
+                                    ? courseInfo.lessonCount
                                     : 0
                             }}课时</span>
                             <span>学分：{{
@@ -88,6 +92,7 @@
             </div>
             <div class="resource-info">
                 <course-info
+                    :key="timer"
                     ref="courseInfo"
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
@@ -113,6 +118,7 @@ export default {
     },
     data() {
         return {
+            timer: "",
             hasvideo: false,
             ispdf: false,
             pdfPage: 1,
@@ -172,14 +178,26 @@ export default {
                         });
                     } else if (val.detailType === "3") {
                         this.pdfurl = data;
-                        this.ispdf = true;
-                        this.hasresourceURl = true;
-                        this.hasvideo = false;
+                        if (
+                            this.pdfurl.includes("docx") ||
+                            this.pdfurl.includes("xls") ||
+                            this.pdfurl.includes("ppt") ||
+                            this.pdfurl.includes("txt")
+                        ) {
+                            this.$Message.info(
+                                "文件格式暂不支持，请选择其他课程"
+                            );
+                            this.ispdf = false;
+                            this.hasresourceURl = false;
+                        } else {
+                            this.ispdf = true;
+                            this.hasresourceURl = true;
+                            this.hasvideo = false;
+                        }
                         if ($("#J_prismPlayer").length > 0) {
                             this.player.dispose();
                             $("#J_prismPlayer").remove();
                         }
-                        console.log(this.hasvideo);
                     }
                 }
             });
@@ -341,21 +359,23 @@ export default {
                 api.startStudy(param).then(res => {
                     if (res.success) {
                         this.btntext = "开始学习";
+                        this.courseDetail(this.detailparam);
+                        this.$Message.success("加入成功");
                     }
                     console.log(res);
                 });
             } else {
+                this.$refs.courseInfo.changeTab("2");
                 // console.log(this.$refs.courseInfo.lastCourse);
                 // 如果有上次看过的记录  就继续播放上次的课程
-                // if (this.$refs.courseInfo.lastCourse.studyProcess) {
-                //     this.lastCourse = this.$refs.courseInfo.lastCourse;
-                //     // console.log(this.lastCourse)
-                //     this.continueTime = this.lastCourse.studyProcess.learningLength;
-                // } else {
+
                 // 没有记录  默认播放第一个
-                this.lastCourse = this.getfirstCourse(this.catelogList);
-                // }
-                this.getrecourseId(this.lastCourse);
+                setTimeout(() => {
+                    this.lastCourse = this.getfirstCourse(this.catelogList);
+                    // }
+                    console.log(this.lastCourse);
+                    this.getrecourseId(this.lastCourse);
+                }, 900);
             }
         },
         // formatDate(inputTime) {
@@ -401,6 +421,7 @@ export default {
                     } else if (this.courseInfo.difficulty === 2) {
                         this.courseInfo.difficulty = "高阶";
                     }
+                    this.timer = new Date().getTime();
                 }
             });
         },

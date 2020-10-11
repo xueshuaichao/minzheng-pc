@@ -55,6 +55,15 @@
                 </div>
             </div>
         </div>
+        <div class="seacher">
+            <Input
+                v-model="listparam.name"
+                class="fr"
+                placeholder="请输入关键字"
+                style="width: 343px;"
+                @on-enter="getCourselist"
+            />
+        </div>
         <div
             v-if="courseList.length > 0"
             class="resource-wrapper"
@@ -76,7 +85,10 @@
                         </div> -->
                     </div>
                     <div class="info clearfix">
-                        <h5 class="title fl">
+                        <h5
+                            class="title fl"
+                            :title="item.name"
+                        >
                             {{ item.name }}
                         </h5>
                         <p class="fr">
@@ -224,6 +236,9 @@ export default {
             this.getCourselist();
         },
         getCourselist() {
+            this.listparam.name = this.listparam.name
+                ? this.listparam.name.trim()
+                : '';
             return api.getCourselist(this.listparam).then((res) => {
                 const { data } = res;
                 if (res.success === true) {
@@ -245,3 +260,10 @@ export default {
     },
 };
 </script>
+<style lang="less">
+.seacher .ivu-input {
+    border-radius: 30px;
+    height: 45px;
+    padding-left: 22px;
+}
+</style>

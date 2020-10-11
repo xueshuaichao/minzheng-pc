@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </FormItem>
-                <!-- <FormItem
+                <FormItem
                     label="养老机构"
                     prop="selectedList"
                 >
@@ -122,7 +122,7 @@
                     >
                         {{ selectedLabels }}
                     </div>
-                </FormItem> -->
+                </FormItem>
             </Form>
         </div>
         <div class="button">
@@ -224,9 +224,15 @@ export default {
     },
     created() {
         console.log('设置');
+        this.fieldSearchDetail();
         this.userInfo();
     },
     methods: {
+        async fieldSearchDetail() {
+            learningsApi.fieldSearchDetail().then((data) => {
+                console.log(data);
+            });
+        },
         async handlePhoneBlur() {
             console.log('blue');
             const result = await this.validatePhone('formValidate1');
@@ -248,7 +254,7 @@ export default {
                 return;
             }
             learningsApi
-                .userSendSms({ phone: this.formValidate1.phone })
+                .userSendSms({ userMobile: this.formValidate1.phone })
                 .then((data) => {
                     console.log(data);
                     this.isAvalible = false;
@@ -316,57 +322,8 @@ export default {
                     this.formValidate1.selectedList = userInfo.selectedList;
                     // this.selectedLabels = userInfo.selectedLabels.join('/');
                     const abc = [JSON.parse(userInfo.extensionInfo).areaUnit];
-                    abc[0].children.children = null;
-                    this.organizations = [
-                        {
-                            value: 'beijing',
-                            label: '北京',
-                            children: [
-                                {
-                                    value: 'gugong',
-                                    label: '故宫',
-                                },
-                                {
-                                    value: 'tiantan',
-                                    label: '天坛',
-                                },
-                                {
-                                    value: 'wangfujing',
-                                    label: '王府井',
-                                },
-                            ],
-                        },
-                        {
-                            value: 'jiangsu',
-                            label: '江苏',
-                            children: [
-                                {
-                                    value: 'nanjing',
-                                    label: '南京',
-                                    children: [
-                                        {
-                                            value: 'fuzimiao',
-                                            label: '夫子庙',
-                                        },
-                                    ],
-                                },
-                                {
-                                    value: 'suzhou',
-                                    label: '苏州',
-                                    children: [
-                                        {
-                                            value: 'zhuozhengyuan',
-                                            label: '拙政园',
-                                        },
-                                        {
-                                            value: 'shizilin',
-                                            label: '狮子林',
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                    ];
+                    // abc[0].children.children = null;
+                    this.organizations = abc;
                     console.log(this.organizations, 'sdfs');
                     this.portrait = userInfo.portrait;
                 });

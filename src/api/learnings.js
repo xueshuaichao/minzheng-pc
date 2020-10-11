@@ -36,8 +36,8 @@ export default {
     },
     // 用户基本信息
     userInfo(param) {
-        // return axios.get('/learn/v1/user/info', param);
-        return axios.post('/ucenter/userInfo', param);
+        return axios.get('/ucenter/sso/checkCookie', param);
+        // return axios.post('/ucenter/userInfo', param);
     },
     // 删除错题
     questionRemove(param) {
@@ -53,7 +53,7 @@ export default {
     },
     // 获取验证码
     userSendSms(param) {
-        return axios.get('/learn/v1/user/sendSms', param);
+        return axios.get('/ucenter/smsCode/changeInfo', param);
     },
     // 试卷分类
     examGetCategoryTree() {
@@ -65,10 +65,14 @@ export default {
     },
     // 修改密码
     updatePassword() {
-        return axios.post('/learn/v1/user/updatePassword');
+        return axios.post('/ucenter/changePassword');
     },
     // 更新用户信息
     userUpdate(param) {
         return axios.post('/learn/v1/user/update', param);
+    },
+    // 获取机构信息
+    fieldSearchDetail() {
+        return axios.get('/ucenter/field/searchDetail?id=1');
     },
 };
