@@ -1,5 +1,4 @@
 /* eslint-disable */
-/* eslint-disable no-unused-vars */
 import { Promise } from "es6-promise-polyfill";
 import api from "./api";
 import { getQueryByName } from "./utils";

@@ -1,7 +1,8 @@
-import { Promise } from 'es6-promise-polyfill';
+/* eslint-disable */
+import { Promise } from "es6-promise-polyfill";
 
 function ajax(type, url, data, headers) {
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open(type.toUpperCase(), url, true);
         xhr.withCredentials = true;
@@ -13,7 +14,7 @@ function ajax(type, url, data, headers) {
                 }
             }
         }
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     try {
@@ -29,51 +30,50 @@ function ajax(type, url, data, headers) {
         };
 
         xhr.send(data || null);
-    }));
+    });
 }
 
 function params(obj) {
     const ret = [];
     for (const key in obj) {
         // eslint-disable-next-line no-prototype-builtins
-        if (obj.hasOwnProperty(key) && obj[key] !== null && obj[key] !== '') {
+        if (obj.hasOwnProperty(key) && obj[key] !== null && obj[key] !== "") {
             ret.push(`${key}=${encodeURIComponent(obj[key])}`);
         }
     }
-    return ret.join('&');
+    return ret.join("&");
 }
 
 // eslint-disable-next-line no-unused-vars
 function post(url, data) {
-    if (typeof data === 'object') {
+    if (typeof data === "object") {
         data = params(data);
     }
-    return ajax('post', url, data, {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    return ajax("post", url, data, {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
     });
 }
 
 function get(url, data, header) {
-    if (typeof data === 'object') {
+    if (typeof data === "object") {
         data = params(data);
     }
     if (data) {
-        if (url.indexOf('?') > 0) {
+        if (url.indexOf("?") > 0) {
             url = `${url}&${data}`;
         } else {
             url = `${url}?${data}`;
         }
     }
 
-    return ajax('get', url, {}, header);
+    return ajax("get", url, {}, header);
 }
 
-export var $host = '';
-export var $activeHost = '';
+export var $host = "";
+export var $activeHost = "";
 export var $header = {};
 
 export default {
-
     setHost(host) {
         $host = host;
     },
@@ -88,9 +88,13 @@ export default {
     },
     checkToken(data, token) {
         console.log($header);
-        return get(`${$host}/ucenter/sso/checkToken`, data, Object.assign({ Token: token }, $header));
+        return get(
+            `${$host}/ucenter/sso/checkToken`,
+            data,
+            Object.assign({ Token: token }, $header)
+        );
     },
     signOut() {
-        return get(`${$host}/ucenter/sso/logOut`);
-    },
+        return get(`${$host}/ucenter/sso/logOut`, {}, $header);
+    }
 };
