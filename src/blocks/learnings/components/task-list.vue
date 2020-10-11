@@ -40,7 +40,7 @@
                 v-for="item in taskList"
                 :key="item.id"
                 class="content-item"
-                @click="handleDetail(item.courseId)"
+                @click="handleDetail(item.id)"
             >
                 <div style="height:126px">
                     <img

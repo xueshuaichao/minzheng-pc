@@ -53,15 +53,15 @@ export default {
     },
     // 获取验证码
     userSendSms(param) {
-        return axios.get('/ucenter/smsCode/changeInfo', param);
+        return axios.post('/ucenter/smsCode/changeInfo', param);
     },
     // 试卷分类
     examGetCategoryTree() {
         return axios.get('/learn/v1/exam/getCategoryTree');
     },
     // 用户信息提交
-    abc() {
-        return axios.get('/learn/v1/exam/getCategoryTree');
+    updateByToken(param) {
+        return axios.post('/ucenter/updateByToken', param);
     },
     // 修改密码
     updatePassword() {
@@ -74,5 +74,9 @@ export default {
     // 获取机构信息
     fieldSearchDetail() {
         return axios.get('/ucenter/field/searchDetail?id=1');
+    },
+    // 修改手机号
+    changePhone(param) {
+        return axios.post('/ucenter/changePhone', param);
     },
 };

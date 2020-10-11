@@ -228,11 +228,6 @@ export default {
         this.userInfo();
     },
     methods: {
-        async fieldSearchDetail() {
-            learningsApi.fieldSearchDetail().then((data) => {
-                console.log(data);
-            });
-        },
         async handlePhoneBlur() {
             console.log('blue');
             const result = await this.validatePhone('formValidate1');
@@ -240,7 +235,7 @@ export default {
             if (result) {
                 return;
             }
-
+            console.log(this.initPhone, this.formValidate1.phone, 'sdfs');
             if (this.initPhone === this.formValidate1.phone) {
                 this.isSendCodeAvalible = true;
             } else {
@@ -286,9 +281,12 @@ export default {
                     console.log(valid, 'valid手机号未改ian');
                     if (valid) {
                         this.$Message.success('Success!');
-                        // learningsApi.abc(this.formValidate1).then((data) => {
-                        //     console.log(data);
-                        // });
+                        learningsApi
+                            .updateByToken(this.formValidate1)
+                            .then((data) => {
+                                console.log(data);
+                                this.userInfo();
+                            });
                     } else {
                         this.$Message.error('Fail!');
                     }
@@ -299,8 +297,24 @@ export default {
                     console.log(valid, '手机号改动了');
                     if (valid) {
                         this.$Message.success('Success!');
-                        learningsApi.abc(this.formValidate1).then((data) => {
+                        // learningsApi.updateByToken(this.formValidate1).then((data) => {
+                        //     console.log(data);
+                        // });
+                        // learningsApi.changePhone({
+                        //     userMobile: this.formValidate1.phone,
+                        //     vcode: this.formValidate1.code,
+                        // }).then((data) => {
+                        //     console.log(data);
+                        // });
+                        Promise.all([
+                            learningsApi.updateByToken(this.formValidate1),
+                            learningsApi.changePhone({
+                                userMobile: this.formValidate1.phone,
+                                vcode: this.formValidate1.code,
+                            }),
+                        ]).then((data) => {
                             console.log(data);
+                            this.userInfo();
                         });
                     } else {
                         // this.$Message.error('Fail!');
@@ -309,23 +323,32 @@ export default {
             }
             this.ruleValidate1.code[0].required = false;
         },
+        async fieldSearchDetail() {
+            learningsApi.fieldSearchDetail().then((data) => {
+                console.log(data, 'data333');
+                const abc = JSON.parse(data.data.fieldText).areaUnit;
+                // abc[0].children.children = null;
+                console.log(abc, 'abc33');
+                this.organizations = abc;
+            });
+        },
         // 请求用户基本信息
         userInfo() {
             return learningsApi
                 .userInfo({ userId: '1000118612570987' })
                 .then((data) => {
-                    console.log(data);
+                    console.log(data, 'data555');
                     const userInfo = data.data;
                     this.formValidate1.name = userInfo.username;
                     this.formValidate1.phone = userInfo.userMobile;
-                    this.initPhone = userInfo.phone;
-                    this.formValidate1.selectedList = userInfo.selectedList;
-                    // this.selectedLabels = userInfo.selectedLabels.join('/');
-                    const abc = [JSON.parse(userInfo.extensionInfo).areaUnit];
-                    // abc[0].children.children = null;
-                    this.organizations = abc;
-                    console.log(this.organizations, 'sdfs');
+                    this.initPhone = userInfo.userMobile;
+                    this.formValidate1.selectedList = userInfo.selectedList || [];
+                    this.selectedLabels = userInfo.selectedLabels
+                        ? userInfo.selectedLabels.join('/')
+                        : '--';
+
                     this.portrait = userInfo.portrait;
+                    this.isEdit = true;
                 });
         },
         // 手动上传图片
