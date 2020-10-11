@@ -542,13 +542,17 @@ export default {
             return api.commitPaper(this.saveData).then(data => {
                 if (data.success) {
                     this.modal2 = false;
-                    if (this.examtype) {
+                    if (this.$route.query.examType) {
                         this.$router.push({
                             name: "examUltimate",
                             params: {
                                 id: this.saveData.paperId
                                 // type: this.saveData.purposeType,
                                 // paperId: this.saveData.paperId,
+                            },
+                            query: {
+                                trainEndTime: this.$route.query.trainEndTime,
+                                examType: this.$route.query.examType
                             }
                         });
                     } else {
