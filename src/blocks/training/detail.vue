@@ -11,12 +11,12 @@
                         {{ detail.name }}
                     </h4>
                     <p class="time">
-                        培训时间：{{ detail.trainStartTime }} ~
-                        {{ detail.trainEndTime }}
-                    </p>
-                    <p class="time">
                         报名时间：{{ detail.applyStartTime }} ~
                         {{ detail.applyEndTime }}
+                    </p>
+                    <p class="time">
+                        培训时间：{{ detail.trainStartTime }} ~
+                        {{ detail.trainEndTime }}
                     </p>
                     <p class="infos infos-top">
                         <span>总课时：{{ detail.allClass }}</span>
@@ -151,6 +151,7 @@ export default {
             showModel: false,
             selItem: null,
             sceneId: 0,
+            isLogin: false,
         };
     },
     created() {
@@ -159,9 +160,22 @@ export default {
         }
         this.getDetail();
         this.getUserInfo();
+        this.checkLogin();
     },
     methods: {
+        checkLogin() {
+            this.$passport.checkCookie().then(
+                (res) => {
+                    console.log(res);
+                    this.isLogin = true;
+                },
+                () => {
+                    this.isLogin = false;
+                },
+            );
+        },
         closeing(arg) {
+            // 考试须知之后进行跳转
             this.showModel = false;
             if (arg) {
                 // 跳转试卷。就是去考试的了
@@ -183,6 +197,7 @@ export default {
                         },
                         query: {
                             examType: this.selItem.scene.examType,
+                            trainEndTime: this.selItem.trainEndTime,
                         },
                     });
                 });
@@ -273,6 +288,8 @@ export default {
                     content: msg,
                     duration: 3,
                 });
+            } else if (!this.isLogin) {
+                this.$passport.goPcLogin();
             } else if (this.lackInfo) {
                 // 补全信息，并返回报名页面
                 this.setModel();
