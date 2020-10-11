@@ -64,12 +64,8 @@ export default {
         return axios.post('/ucenter/updateByToken', param);
     },
     // 修改密码
-    updatePassword() {
-        return axios.post('/ucenter/changePassword');
-    },
-    // 更新用户信息
-    userUpdate(param) {
-        return axios.post('/learn/v1/user/update', param);
+    updatePassword(param) {
+        return axios.post('/ucenter/changePassword', param);
     },
     // 获取机构信息
     fieldSearchDetail() {

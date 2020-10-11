@@ -10,8 +10,7 @@
             </div>
         </div>
         <div class="upload">
-            <!-- <img src="@/assets/images/learnings/card4.png"> -->
-            <img :src="portrait">
+            <img :src="avatar">
             <Upload
                 :show-upload-list="false"
                 action
@@ -50,7 +49,7 @@
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        {{ formValidate1.name }}
+                        {{ formLabel.name }}
                     </div>
                 </FormItem>
                 <FormItem
@@ -73,7 +72,7 @@
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        {{ formValidate1.phone | formatephone }}
+                        {{ formLabel.phone | formatephone }}
                     </div>
                 </FormItem>
                 <FormItem
@@ -120,7 +119,7 @@
                         v-else
                         style="display:flex;align-items:center"
                     >
-                        {{ selectedLabels }}
+                        {{ formLabel.selectedLabels }}
                     </div>
                 </FormItem>
             </Form>
@@ -141,7 +140,7 @@
             </div>
             <div
                 v-if="!isEdit"
-                @click="isEdit = !isEdit"
+                @click="handleCancel('formValidate1')"
             >
                 取消
             </div>
@@ -172,7 +171,11 @@ export default {
                 code: '',
                 selectedList: [],
             },
-            selectedLabels: [],
+            formLabel: {
+                selectedLabels: '',
+                name: '',
+                phone: '',
+            },
             ruleValidate1: {
                 name: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -213,11 +216,10 @@ export default {
             maxSize: 5 * 1024 * 1024,
             loading: false,
             organizations: [],
-            portrait: '',
+            avatar: '',
             isAvalible: true,
             time: 60,
             setId: '',
-            initPhone: '',
             phoneAvalible: true,
             isSendCodeAvalible: true,
         };
@@ -235,8 +237,7 @@ export default {
             if (result) {
                 return;
             }
-            console.log(this.initPhone, this.formValidate1.phone, 'sdfs');
-            if (this.initPhone === this.formValidate1.phone) {
+            if (this.formLabel.phone === this.formValidate1.phone) {
                 this.isSendCodeAvalible = true;
             } else {
                 this.isSendCodeAvalible = false;
@@ -272,10 +273,14 @@ export default {
                 });
             });
         },
+        handleCancel() {
+            // this.$refs[item].resetFields();
+            this.isEdit = !this.isEdit;
+        },
         // 用户信息保存
         handleSubmit(item) {
             console.log('object');
-            if (this.initPhone === this.formValidate1.phone) {
+            if (this.formLabel.phone === this.formValidate1.phone) {
                 // 如果手机号未改动
                 this.$refs[item].validate((valid) => {
                     console.log(valid, 'valid手机号未改ian');
@@ -341,14 +346,16 @@ export default {
                     const userInfo = data.data;
                     this.formValidate1.name = userInfo.username;
                     this.formValidate1.phone = userInfo.userMobile;
-                    this.initPhone = userInfo.userMobile;
                     this.formValidate1.selectedList = userInfo.selectedList || [];
-                    this.selectedLabels = userInfo.selectedLabels
-                        ? userInfo.selectedLabels.join('/')
-                        : '--';
-
-                    this.portrait = userInfo.portrait;
+                    this.avatar = userInfo.avatar;
                     this.isEdit = true;
+                    this.formLabel = {
+                        selectedLabels: userInfo.selectedLabels
+                            ? userInfo.selectedLabels.join('/')
+                            : '--',
+                        name: userInfo.username,
+                        phone: userInfo.userMobile,
+                    };
                 });
         },
         // 手动上传图片
@@ -386,7 +393,7 @@ export default {
                         name: file.name,
                         url: data.path,
                     });
-                    this.userUpdate({ portrait: data });
+                    this.userUpdate({ avatar: data });
                     this.$Message.success('上传成功');
                 })
                 .catch(() => {
@@ -397,7 +404,7 @@ export default {
         // 更新用户信息
         userUpdate(param) {
             learningsApi
-                .userUpdate(param)
+                .updateByToken(param)
                 .then(({ data }) => {
                     console.log(data);
                     this.userInfo();

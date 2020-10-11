@@ -247,7 +247,7 @@ export default {
     }
     .mobile {
         position: relative;
-        margin-right: 60px;
+        margin-right: 20px;
         cursor: pointer;
         .btn {
             width: 123px;

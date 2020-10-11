@@ -11,10 +11,10 @@
         >
             <FormItem
                 label="密码"
-                prop="oldPassword"
+                prop="password"
             >
                 <Input
-                    v-model="passwordformValidate.oldPassword"
+                    v-model="passwordformValidate.password"
                     placeholder="请输入原密码"
                 />
             </FormItem>
@@ -87,12 +87,12 @@ export default {
         return {
             modal_loading: false,
             passwordformValidate: {
-                oldPassword: '',
+                password: '',
                 newPassword: '',
                 repeatPassword: '',
             },
             passwordruleValidate: {
-                pasword: [
+                password: [
                     {
                         required: true,
                         message: '请输入密码',
@@ -128,7 +128,11 @@ export default {
                         .updatePassword(this.passwordformValidate)
                         .then((data) => {
                             console.log(data);
+                            this.$refs[item].resetFields();
                             this.$emit('change', false);
+                        })
+                        .catch((data) => {
+                            console.log(data, 'data123');
                         });
                 } else {
                     this.$Message.error('Fail!');
