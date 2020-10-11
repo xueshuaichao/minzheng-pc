@@ -58,7 +58,9 @@
                                     }}
                                         人已学习</span>
                                     <span>课时：{{
-                                        item.classHour ? item.classHour : 0
+                                        item.lessonCount
+                                            ? item.lessonCount
+                                            : 0
                                     }}</span>
                                 </div>
                             </div>

@@ -15,6 +15,7 @@ export default new Vuex.Store({
     state: {
         //
         pageConfigs: [],
+        judgenum: 0,
     },
     mutations: {
         //
