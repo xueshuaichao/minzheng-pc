@@ -362,11 +362,6 @@ export default {
                 that.$router.push({
                     path: '/exam',
                 });
-                // if(that.backEvent){
-
-                //     that.backEvent();
-
-                // }
             };
         }
     },

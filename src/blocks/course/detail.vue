@@ -35,18 +35,17 @@
                             class="playCon"
                             style="position: relative;height:400px"
                         >
-                            <iframe
+                            <!-- <iframe
                                 id="aliyunPreview"
                                 :src="pdfurl"
                                 style="width: 100%;height: 100%;position: absolute;"
-                            />
-                            <!-- <iframe
-                                :src="
-                                    '/js/pdfjs/web/viewer.html?file=' + pdfurl
-                                "
-                                style="width: 100%;height: 100%;position: absolute;"
                             /> -->
+                            <iframe
+                                :src="'js/pdfjs/web/viewer.html?file=' + pdfurl"
+                                style="width: 100%;height: 100%;position: absolute;"
+                            />
                         </div>
+                        s
                     </div>
                 </div>
                 <div class="right">
@@ -97,7 +96,6 @@
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
                     :zhjudge="courseInfo.starAvg - 0"
-                    :myjudge="courseInfo.stars - 0"
                     @getrecourseId="getrecourseId"
                     @changeInfo="changeInfo"
                 />
@@ -110,6 +108,7 @@ import './index.less';
 import CourseInfo from './components/courseInfo.vue';
 // import store from '../../store/index';
 import api from '../../api/course';
+import apitask from '../../api/exam';
 /* eslint-disable */
 export default {
     name: "CourseDetail",
@@ -230,13 +229,37 @@ export default {
                     this.getPDFandYinpin(val);
                 } else if (val.detailType === "4") {
                     // 试题
+                    //  console.log(val);
+                    this.joinScene(val);
                 }
             }
         },
-        // 保存课程进度
+        // 报名考试
+        joinScene(exam) {
+            const params = {
+                sceneId: exam.detailId,
+                businessId: 1, //
+                businessType: 1
+                // userId: store.state.user.userInfo ? store.state.user.userInfo.id : 1000,
+            };
+            return apitask.joinScene(params).then(data => {
+                this.$router.push({
+                    name: "examDetail",
+                    params: {
+                        id: exam.detailId,
+                        paperId: data.data
+                        // type: exam.purposeType,
+                    }
+                });
+            });
+        },
+        // 保存课程进度L
         saveLearningLog() {
             this.saveLearningParams.detailId = this.courseItemDetailId;
             this.saveLearningParams.recordId = this.courseInfo.recordId;
+            this.saveLearningParams.maxLength = Math.round(
+                this.player.getDuration()
+            );
             this.saveLearningParams.curSecond = Math.round(
                 this.player.getCurrentTime()
             );
@@ -329,7 +352,7 @@ export default {
                     //     'courseId',
                     // );
                     this.saveLearningLog();
-                    this.clearTimeing();
+                    // this.clearTimeing();
                 });
                 this.player.on("ended", () => {
                     // 保存记录

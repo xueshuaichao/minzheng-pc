@@ -27,11 +27,15 @@
                         <span>已学完：{{ detail.timeSchedule }}%</span>
                     </p>
                     <button
+                        v-if="!detail.applyStatus"
                         class="join"
                         :class="{ disable: disabled }"
                         @click="changeStaus"
                     >
-                        {{ detail.applyStatus ? "已报名" : "立即报名" }}
+                        立即报名
+                    </button>
+                    <button v-else>
+                        已报名
                     </button>
                 </div>
             </div>
@@ -159,7 +163,6 @@ export default {
             this.taskId = Number(this.$route.query.id);
         }
         this.getDetail();
-        this.getUserInfo();
         this.checkLogin();
     },
     methods: {
@@ -168,6 +171,7 @@ export default {
                 (res) => {
                     console.log(res);
                     this.isLogin = true;
+                    this.getUserInfo();
                 },
                 () => {
                     this.isLogin = false;
@@ -197,7 +201,7 @@ export default {
                         },
                         query: {
                             examType: this.selItem.scene.examType,
-                            trainEndTime: this.selItem.trainEndTime,
+                            trainEndTime: this.detail.trainEndTime,
                         },
                     });
                 });
@@ -241,10 +245,6 @@ export default {
                         if (time > res.data.applyEndTime) {
                             this.disabled = 2;
                         }
-                        console.log(new Date(time).toLocaleString());
-                        console.log(
-                            new Date(res.data.applyEndTime).toLocaleString(),
-                        );
                         const trainEndTime = new Date(
                             res.data.trainEndTime,
                         ).toLocaleString();
@@ -294,15 +294,12 @@ export default {
                 // 补全信息，并返回报名页面
                 this.setModel();
             } else {
-                const status = this.detail.applyStatus ? 0 : 1;
                 api.changeTaskApply({
                     taskId: this.taskId,
-                    isApply: status,
+                    isApply: 1,
                 }).then((res) => {
                     if (res.success) {
-                        this.detail.applyStatus = this.detail.applyStatus
-                            ? 0
-                            : 1;
+                        this.detail.applyStatus = 1;
                         this.$Message.info({
                             content: '操作成功',
                             duration: 3,
