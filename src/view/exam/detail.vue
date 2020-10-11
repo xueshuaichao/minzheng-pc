@@ -607,7 +607,7 @@ export default {
                     this.buttonShow = true;
                     if (this.$route.query.examType) {
                         self.iscodetime += 1;
-                        if (self.iscodetime === 10) {
+                        if (self.iscodetime === 300) {
                             this.iscode = true;
                             this.verify();
                             // this.codetimebtn();
