@@ -156,6 +156,7 @@ export default {
             selItem: null,
             sceneId: 0,
             isLogin: false,
+            trainEndTime: 0,
         };
     },
     created() {
@@ -201,7 +202,7 @@ export default {
                         },
                         query: {
                             examType: this.selItem.scene.examType,
-                            trainEndTime: this.detail.trainEndTime,
+                            trainEndTime: this.trainEndTime,
                         },
                     });
                 });
@@ -245,6 +246,7 @@ export default {
                         if (time > res.data.applyEndTime) {
                             this.disabled = 2;
                         }
+                        this.trainEndTime = res.data.trainEndTime;
                         const trainEndTime = new Date(
                             res.data.trainEndTime,
                         ).toLocaleString();

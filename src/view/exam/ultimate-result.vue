@@ -129,14 +129,14 @@ export default {
             showModel: false,
             selItem: null,
             sceneId: 0,
-            trainEndTime: '',
-            time: new Date(),
+            trainEndTime: 0,
+            time: new Date().getTime(),
         };
     },
     created() {
         if (this.$route) {
             this.paperId = this.$route.params.id;
-            this.trainEndTime = new Date(this.$route.query.trainEndTime);
+            this.trainEndTime = this.$route.query.trainEndTime;
             this.getExamResultOverview();
         }
     },
