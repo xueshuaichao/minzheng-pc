@@ -92,6 +92,7 @@
             </div>
             <div class="resource-info">
                 <course-info
+                    :key="timer"
                     ref="courseInfo"
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
@@ -117,6 +118,7 @@ export default {
     },
     data() {
         return {
+            timer: "",
             hasvideo: false,
             ispdf: false,
             pdfPage: 1,
@@ -419,6 +421,7 @@ export default {
                     } else if (this.courseInfo.difficulty === 2) {
                         this.courseInfo.difficulty = "高阶";
                     }
+                    this.timer = new Date().getTime();
                 }
             });
         },
