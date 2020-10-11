@@ -28,8 +28,8 @@
                     <ul class="condition-btn">
                         <li
                             class="btnLi"
-                            :class="{ active: conditionid === null }"
-                            @click="setcondition()"
+                            :class="{ active: conditionid1 === null }"
+                            @click="setcondition1()"
                         >
                             全部
                         </li>
@@ -37,8 +37,8 @@
                             v-for="(child, index) in secondCategory"
                             :key="index"
                             class="btnLi"
-                            :class="{ active: child.id === conditionid }"
-                            @click="setcondition(child.id, index, '1')"
+                            :class="{ active: child.id === conditionid1 }"
+                            @click="setcondition1(child.id, index)"
                         >
                             {{ child.name }}
                         </li>
@@ -54,6 +54,15 @@
                     >{{ sort.name }}</span>
                 </div>
             </div>
+        </div>
+        <div class="seacher">
+            <Input
+                v-model="listparam.name"
+                class="fr"
+                placeholder="请输入关键字"
+                style="width: 343px;"
+                @on-enter="getCourselist"
+            />
         </div>
         <div
             v-if="courseList.length > 0"
@@ -144,9 +153,11 @@ export default {
                 categoryId: null,
                 type: 0,
             },
+            firstId: null,
             secondCategory: [], // 二级分类
             typeconditionid: null,
             conditionid: null,
+            conditionid1: null,
             courseType: [],
             categories: [],
             courseList: [],
@@ -156,6 +167,11 @@ export default {
         if (this.$route.query.id) {
             this.listparam.categoryId = this.$route.query.id;
             this.conditionid = this.$route.query.id;
+        }
+        if (this.$route.query.parentId) {
+            this.getChildren(this.$route.query.parentId);
+            this.conditionid = this.$route.query.parentId;
+            this.conditionid1 = this.$route.query.id;
         }
         this.getCourselist();
 
@@ -190,19 +206,36 @@ export default {
         handleSeach() {
             this.getCourselist();
         },
-        setcondition(id, index, type) {
+        setcondition(id, index) {
             if (index !== undefined) {
                 this.conditionid = id;
-                if (type !== '1') {
-                    this.getChildren(id);
-                }
+                this.firstId = id;
+                this.getChildren(id);
             } else {
                 this.conditionid = null;
+                this.conditionid1 = null;
             }
+
             this.listparam.categoryId = id;
             this.getCourselist();
         },
+        setcondition1(id, index) {
+            console.log(index);
+            if (index !== undefined) {
+                this.conditionid1 = id;
+                this.listparam.categoryId = id;
+                // console.log(id);
+                this.getChildren(this.firstId);
+            } else {
+                this.conditionid1 = null;
+                this.listparam.categoryId = this.firstId;
+            }
+            this.getCourselist();
+        },
         getCourselist() {
+            this.listparam.name = this.listparam.name
+                ? this.listparam.name.trim()
+                : '';
             return api.getCourselist(this.listparam).then((res) => {
                 const { data } = res;
                 if (res.success === true) {
@@ -224,3 +257,10 @@ export default {
     },
 };
 </script>
+<style lang="less">
+.seacher .ivu-input {
+    border-radius: 30px;
+    height: 45px;
+    padding-left: 22px;
+}
+</style>

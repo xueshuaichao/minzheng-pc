@@ -1,57 +1,78 @@
 <template>
-    <Carousel
-        v-if="bannerList"
-        autoplay
-        loop
-        class="banner"
-    >
-        <Carousel-item
-            v-for="item in bannerList"
-            :key="item.id"
-            class="bannerItem"
-        >
-            <div class="demo-carousel">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div
+                v-for="(item, index) in bannerList"
+                :key="index"
+                class="swiper-slide"
+            >
                 <img
-                    id="bannerImage"
                     :src="getImageUrl(item)"
                     @click="goLink(item)"
                 >
             </div>
-        </Carousel-item>
-        <!-- <Carousel-item>
-            <div class="demo-carousel"><img :src="bannerList[1].banner" /></div>
-        </Carousel-item>
-        <Carousel-item>
-            <div class="demo-carousel"><img :src="bannerList[2].banner" /></div>
-        </Carousel-item>
-        <Carousel-item>
-            <div class="demo-carousel"><img :src="bannerList[3].banner" /></div>
-        </Carousel-item> -->
-    </Carousel>
+        </div>
+        <div class="swiper-pagination" />
+    </div>
 </template>
 <script>
+import Swiper from 'swiper';
+
+import 'swiper/dist/css/swiper.min.css';
+
 import api from '../../api/banner';
 
 export default {
-    name: 'Banner',
     data() {
         return {
+            value1: 0,
             bannerList: [],
         };
     },
-    created() {
+
+    mounted() {
+        // this.initSwiper()
         api.findBanner({
             channel: 2,
         })
             .then((res) => {
                 console.log('banner', res);
                 this.bannerList = res.data;
+                this.initSwiper();
             })
             .catch((error) => {
                 console.log(error);
             });
     },
     methods: {
+        initSwiper() {
+            const swiper = new Swiper('.swiper-container', {
+                effect: 'coverflow',
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                loopedSlides: this.bannerList.length,
+                loop: true,
+                spaceBetween: '18%',
+                autoplay: {
+                    delay: 6000,
+                    disableOnInteraction: false,
+                },
+                coverflowEffect: {
+                    rotate: 0,
+                    stretch: 0,
+                    depth: 300,
+                    modifier: 1,
+                    slideShadows: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    // clickable: true,
+                },
+                observer: true,
+                observerParents: true,
+            });
+            console.log(swiper);
+        },
         getImageUrl(item) {
             if (item.banner && item.banner.startsWith('http')) {
                 return item.banner;
@@ -63,6 +84,9 @@ export default {
             const type = item.jumpType;
             const id = item.quoteId;
             const { outLink } = item;
+            api.reportClick({
+                id,
+            });
             if (type === 2) {
                 this.$router.push({
                     path: '/course/detail',
@@ -82,20 +106,25 @@ export default {
             }
         },
     },
-    // eslint-disable-next-line no-unused-vars
-    // render(h) {
-    //     return <div class="module-block">banner</div>;
-    // },
 };
 </script>
-<style scoped lang="less">
-.banner {
-    position: relative;
-    background: linear-gradient(90deg, #e4e2ed 0%, #bbbdc9 100%);
-    text-align: center;
-    img {
-        width: auto;
-        height: 482px;
-    }
+<style lang="less">
+.swiper-container img {
+    width: 90%;
+    height: 482px;
+}
+.swiper-wrapper {
+    width: 90% !important;
+    margin: 0 5%;
+}
+.swiper-slide-prev {
+    right: -8%;
+}
+.swiper-slide-next {
+    left: -8%;
+}
+.swiper-container {
+    --swiper-theme-color: #ff6600;
+    --swiper-pagination-color: #ff6600;
 }
 </style>

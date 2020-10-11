@@ -276,7 +276,7 @@
 
 <script>
 import api from '../../api/exam';
-// import store from '../../store';
+import store from '../../store';
 // import { countdown } from '../../utils/helper';
 // import userApi from '../../api/user';
 
@@ -298,7 +298,7 @@ export default {
             codetime: 120,
             time: null,
             secShow: false,
-            userMobile: '18235950405',
+            userMobile: '',
             stList: [], // 题号
             questionsList: [], // 试题列表
             saveData: {
@@ -329,7 +329,10 @@ export default {
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
         }
-
+        this.userMobile = store.state.user.userInfo
+            ? store.state.user.userInfo.userMobile
+            : '';
+        // console.log(store.state.user.userInfo.userMobile)
         this.findById();
         // this.start();
     },
@@ -378,15 +381,16 @@ export default {
 
                 return;
             }
-            clearInterval(this.codetimer);
             api.check({ userMobile: this.userMobile, vcode: this.vcode }).then(
                 (res) => {
                     if (res.data) {
                         this.iscode = false;
+                        clearInterval(this.codetimer);
                     } else if (this.codetime === 0) {
                         this.iscode = false;
                         this.$Message.info('验证码输入错误，系统将终止考试');
                         this.$router.go(-1);
+                        clearInterval(this.codetimer);
                     } else {
                         this.$Message.info('验证码输入错误，请重新填写');
                     }

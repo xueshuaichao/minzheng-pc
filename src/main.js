@@ -179,71 +179,38 @@ function buildApp(userInfo) {
         }).$mount('#wdc-app');
     });
 }
-buildApp();
+// buildApp();
 
-// Vue.prototype.$passport.checkCookie().then(
-//     (res) => {
-//         if (res) {
-//             buildApp(res.data);
-//         }
-//     },
-//     () => {
-//         // if ()
-//         const Token = Vue.prototype.$passport.getToken();
-//         if (Token) {
-//             Vue.prototype.$passport.setToken(Token).then(
-//                 (res) => {
-//                     if (res.code === 0 && res.data) {
-//                         Vue.prototype.$passport.checkCookie().then((res) => {
-//                             if (res) {
-//                                 buildApp(res.data);
-//                             } else {
-//                                 buildApp();
-//                             }
-//                         });
-//                     } else {
-//                         buildApp();
-//                     }
-//                 },
-//                 () => {
-//                     buildApp();
-//                 },
-//             );
-//         } else {
-//             buildApp();
-//         }
-//     },
-// );
-
-// getPageConfigs.then((data) => {
-//     // todo
-//     data.forEach((v) => {
-//         // eslint-disable-next-line no-param-reassign
-//         v.layout = JSON.stringify(v.layout);
-//     });
-
-//     store.commit('setPageConfigs', data);
-//     // 根据后端pages定义路由
-//     const routes = data
-//         .filter(page => !!page.uri && page.uri[0] === '/')
-//         .map((page) => {
-//             const route = {
-//                 path: page.uri,
-//                 name: page.name,
-//                 component: () => import('./view/common_page.vue'),
-//                 meta: {
-//                     moduleId: page.moduleId,
-//                     name: page.name,
-//                 },
-//             };
-//             return route;
-//         });
-//     router.addRoutes(routes);
-//     console.log(router);
-//     new Vue({
-//         router,
-//         store,
-//         i18n,
-//         render: h => h(App),
-//     }).$mount('#wdc-app');
-// });
+Vue.prototype.$passport.checkCookie().then(
+    (res) => {
+        if (res) {
+            buildApp(res.data);
+        }
+    },
+    () => {
+        // if ()
+        const Token = Vue.prototype.$passport.getToken();
+        if (Token) {
+            Vue.prototype.$passport.setToken(Token).then(
+                (res) => {
+                    if (res.code === 0 && res.data) {
+                        Vue.prototype.$passport.checkCookie().then((res) => {
+                            if (res) {
+                                buildApp(res.data);
+                            } else {
+                                buildApp();
+                            }
+                        });
+                    } else {
+                        buildApp();
+                    }
+                },
+                () => {
+                    buildApp();
+                },
+            );
+        } else {
+            buildApp();
+        }
+    },
+);

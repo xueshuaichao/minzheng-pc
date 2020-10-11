@@ -331,7 +331,7 @@ export default {
                 return `${hour}小时${minute}分${second}秒`;
             }
             if (!item.menuFlag && item.detailType === "3") {
-                return `${s}页`;
+                return "";
             }
         },
         changeTab(num) {
@@ -344,6 +344,7 @@ export default {
                 this.myjudge = this.courseIntro.stars - 0;
             } else if (num === "3" && !this.courseIntro.recordId) {
                 this.noJudge = true;
+                console.log(this.noJudge);
             }
             console.log(this.courseIntro.stars - 0);
         },
@@ -352,15 +353,19 @@ export default {
             this.judgeparam.recordId = this.courseIntro.recordId;
             this.judgeparam.stars = this.myjudge;
             api.submitCourseRatingForm(this.judgeparam).then(res => {
-                console.log(res);
                 if (res.success) {
                     this.isJudge = true;
+                    this.noJudge = true;
                 }
             });
         },
         showresource(item) {
-            console.log(item);
-            this.$emit("getrecourseId", item);
+            if (this.courseIntro.recordId) {
+                console.log(item);
+                this.$emit("getrecourseId", item);
+            } else {
+                this.$Message.info("请先报名该课程");
+            }
         }
     }
 };
