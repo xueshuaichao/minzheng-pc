@@ -11,13 +11,14 @@
                         {{ detail.name }}
                     </h4>
                     <p class="time">
-                        培训时间：{{ detail.trainStartTime }} ~
-                        {{ detail.trainEndTime }}
-                    </p>
-                    <p class="time">
                         报名时间：{{ detail.applyStartTime }} ~
                         {{ detail.applyEndTime }}
                     </p>
+                    <p class="time">
+                        培训时间：{{ detail.trainStartTime }} ~
+                        {{ detail.trainEndTime }}
+                    </p>
+                    
                     <p class="infos infos-top">
                         <span>总课时：{{ detail.allClass }}</span>
                         <span>已报名：{{ detail.applyCount }}</span>
