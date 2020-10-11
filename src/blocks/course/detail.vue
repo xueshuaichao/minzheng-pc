@@ -366,12 +366,12 @@ export default {
             if (this.IntervalName) {
                 clearInterval(this.IntervalName);
                 this.IntervalName = null;
-                console.log("清楚定时器");
+                // console.log("清楚定时器");
             }
         },
         // 加入选学
         startStudy(id) {
-            console.log(this.btntext);
+            // console.log(this.btntext);
             if (this.btntext === "加入选学") {
                 const param = {
                     courseId: id,
@@ -385,20 +385,31 @@ export default {
                         this.courseDetail(this.detailparam);
                         this.$Message.success("加入成功");
                     }
-                    console.log(res);
+                    // console.log(res);
                 });
             } else {
                 this.$refs.courseInfo.changeTab("2");
                 // console.log(this.$refs.courseInfo.lastCourse);
                 // 如果有上次看过的记录  就继续播放上次的课程
-
+                if (this.btntext === "继续学习") {
+                    // console.log(this.getlastCourse(this.catelogList))
+                    // console.log(111111111111,'继续学习')
+                    setTimeout(() => {
+                        this.lastCourse = this.getlastCourse(this.catelogList);
+                        // }
+                        // console.log(this.lastCourse);
+                        this.getrecourseId(this.lastCourse);
+                    }, 900);
+                }
                 // 没有记录  默认播放第一个
-                setTimeout(() => {
-                    this.lastCourse = this.getfirstCourse(this.catelogList);
-                    // }
-                    console.log(this.lastCourse);
-                    this.getrecourseId(this.lastCourse);
-                }, 900);
+                if (this.btntext === "开始学习") {
+                    setTimeout(() => {
+                        this.lastCourse = this.getfirstCourse(this.catelogList);
+                        // }
+                        // console.log(this.lastCourse);
+                        this.getrecourseId(this.lastCourse);
+                    }, 900);
+                }
             }
         },
         // formatDate(inputTime) {
@@ -459,6 +470,25 @@ export default {
                 this.catelogList = data;
                 // console.log(this.datachang());
             });
+        },
+        getlastCourse(data) {
+            let result = null;
+            if (!data) {
+                return;
+            }
+            for (const i in data) {
+                if (result !== null) {
+                    break;
+                }
+                const item = data[i];
+                if (item.studyProcess && item.studyProcess.isLastPlay === 1) {
+                    result = item;
+                    break;
+                } else if (item.childrenList && item.childrenList.length > 0) {
+                    result = this.getlastCourse(item.childrenList);
+                }
+            }
+            return result;
         },
         getfirstCourse(data) {
             let result = null;

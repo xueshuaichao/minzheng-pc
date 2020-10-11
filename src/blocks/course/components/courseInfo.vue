@@ -355,8 +355,8 @@ export default {
                 if (res.success) {
                     this.isJudge = true;
                     this.noJudge = true;
-                    this.$parent.courseDetail(this.courseIntro);
-                    this.changeTab("3");
+                    // this.$parent.courseDetail(this.courseIntro);
+                    // this.changeTab("3");
                 }
             });
         },
