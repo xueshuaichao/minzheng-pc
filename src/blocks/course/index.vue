@@ -85,7 +85,10 @@
                         </div> -->
                     </div>
                     <div class="info clearfix">
-                        <h5 class="title fl">
+                        <h5
+                            class="title fl"
+                            :title="item.name"
+                        >
                             {{ item.name }}
                         </h5>
                         <p class="fr">
