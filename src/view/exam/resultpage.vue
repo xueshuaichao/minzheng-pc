@@ -288,12 +288,12 @@
                                 :key="index1"
                                 :class="[
                                     'pointer',
-                                    item.mark ? 'mark-active' : '',
                                     item.rightAnswer == item.userAnswer
                                         ? 'correct-active'
                                         : 'error-active'
                                 ]"
                             >
+                                <!-- item.mark ? 'mark-active' : '', -->
                                 <span v-if="index == 1">
                                     {{
                                         questionsList2[index - 1].questionList
@@ -313,6 +313,12 @@
                                     }}
                                 </span>
                                 <span v-else>{{ index1 + 1 }}</span>
+                                <img
+                                    v-if="item.mark"
+                                    class="biaoji"
+                                    src="../../assets/images/exam/biaoji.png"
+                                    alt=""
+                                >
                             </a>
                         </div>
 
@@ -760,6 +766,13 @@ export default {
                     margin-bottom: 13px;
                     box-sizing: content-box;
                     line-height: 19px;
+                    position: relative;
+                    .biaoji {
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        width: 8px;
+                    }
                     &:nth-child(8n) {
                         margin-right: 0;
                     }
