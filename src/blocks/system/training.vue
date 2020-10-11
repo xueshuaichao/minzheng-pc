@@ -90,6 +90,7 @@ export default {
             flex-wrap: wrap;
         }
         .btn {
+            cursor: pointer;
             width: 243px;
             height: 54px;
             background: #d14242;

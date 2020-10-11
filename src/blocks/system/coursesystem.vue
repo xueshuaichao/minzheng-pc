@@ -57,7 +57,7 @@ export default {
         }
         .list-wrap {
             img {
-                widows: 380px;
+                width: 380px;
                 height: 503px;
                 margin-right: 30px;
                 display: inline-block;
