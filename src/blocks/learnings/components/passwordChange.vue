@@ -29,10 +29,10 @@
             </FormItem>
             <FormItem
                 label="确认密码"
-                prop="confirmPass"
+                prop="repeatPassword"
             >
                 <Input
-                    v-model="passwordformValidate.confirmPass"
+                    v-model="passwordformValidate.repeatPassword"
                     placeholder="请再次输入新密码"
                 />
             </FormItem>
@@ -89,7 +89,7 @@ export default {
             passwordformValidate: {
                 oldPassword: '',
                 newPassword: '',
-                confirmPass: '',
+                repeatPassword: '',
             },
             passwordruleValidate: {
                 pasword: [
@@ -108,7 +108,7 @@ export default {
                     },
                     passwordvalidator,
                 ],
-                confirmPass: [
+                repeatPassword: [
                     {
                         required: true,
                         message: '请再次输入新密码',
