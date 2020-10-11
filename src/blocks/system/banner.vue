@@ -109,7 +109,7 @@ export default {
 };
 </script>
 <style lang="less">
-img {
+.swiper-container img {
     width: 90%;
     height: 482px;
 }
