@@ -17,6 +17,12 @@
                 />
             </template>
         </named-layout>
+        <BackTop
+            :height="100"
+            :bottom="200"
+        >
+            <div class="BackTop" />
+        </BackTop>
     </div>
 </template>
 
@@ -102,3 +108,15 @@ export default {
     },
 };
 </script>
+<style lang="less" scoped>
+.BackTop {
+    width: 78px;
+    height: 78px;
+    background: url("../assets/images/home/Oval@2x(1).png") no-repeat;
+    background-size: 100% 100%;
+    &:hover {
+        background: url("../assets/images/home/Oval@2x.png") no-repeat;
+        background-size: 100% 100%;
+    }
+}
+</style>

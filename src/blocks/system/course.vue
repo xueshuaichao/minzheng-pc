@@ -161,8 +161,9 @@ export default {
                     }
                     .li-content {
                         height: 99px;
-                        padding: 24px 19px;
+                        padding: 15px 19px;
                         .li-content-title {
+                            height: 45px;
                             font-size: 15px;
                             color: #272f55;
                             font-weight: 550;

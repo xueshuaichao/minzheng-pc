@@ -204,6 +204,7 @@
             width="640"
             class="exam-modal"
             :closable="false"
+            :mask-closable="false"
         >
             <p slot="header">
                 请输入验证码
@@ -235,6 +236,7 @@
             width="486"
             class="exam-modal"
             :closable="false"
+            :mask-closable="false"
         >
             <div>
                 <p
@@ -252,7 +254,7 @@
                 <div slot="footer" />
             </div>
             <div slot="footer">
-                <div>
+                <div v-if="buttonShow">
                     <Button
                         class="cancel button"
                         @click="modal2 = false"
@@ -281,6 +283,7 @@ import api from '../../api/exam';
 export default {
     data() {
         return {
+            buttonShow: true,
             prompt: '',
             cancelText: '',
             headerText: '',
@@ -318,13 +321,10 @@ export default {
                 sending: true,
                 seconds: 0,
             },
-            examtype: null,
         };
     },
     created() {
         if (this.$route) {
-            console.log(this.$route.params);
-            this.examtype = this.$route.query.examtype;
             this.saveData.paperId = this.$route.params.paperId;
             this.saveData.purposeType = this.$route.params.type;
             this.getScenePaper();
@@ -342,18 +342,21 @@ export default {
     methods: {
         // 获取验证码
         verify() {
+            const self = this;
+            this.codetimer = setInterval(() => {
+                if (self.codetime > 0) {
+                    self.codetime -= 1;
+                    this.$forceUpdate();
+                } else {
+                    clearInterval(this.codetimer);
+                    self.codehandleConfirm();
+                }
+            }, 1000);
             api.verify({ userMobile: this.userMobile, platformId: 10001 }).then(
-                () => {
-                    const self = this;
-                    this.codetimer = setInterval(() => {
-                        if (self.codetime > 0) {
-                            self.codetime -= 1;
-                            this.$forceUpdate();
-                        } else {
-                            clearInterval(this.codetimer);
-                            self.codehandleConfirm();
-                        }
-                    }, 1000);
+                (res) => {
+                    if (!res.data) {
+                        this.$Message.info(res.message);
+                    }
                 },
             );
         },
@@ -382,9 +385,7 @@ export default {
                         this.iscode = false;
                     } else if (this.codetime === 0) {
                         this.iscode = false;
-                        this.$Message.info(
-                            '验证码输入错误，系统将终止考试',
-                        );
+                        this.$Message.info('验证码输入错误，系统将终止考试');
                         this.$router.go(-1);
                     } else {
                         this.$Message.info('验证码输入错误，请重新填写');
@@ -599,7 +600,8 @@ export default {
                     const seconds1 = seconds < 10 ? `0${seconds}` : seconds;
                     this.duration = `${hours1}:${minutes1}:${seconds1}`;
                     self.maxtime -= 1;
-                    if (this.examtype) {
+                    this.buttonShow = true;
+                    if (this.$route.query.examType) {
                         self.iscodetime += 1;
                         if (self.iscodetime === 300) {
                             this.iscode = true;
@@ -609,6 +611,7 @@ export default {
                     }
                 } else {
                     clearInterval(this.timer);
+                    this.buttonShow = false;
                     this.prompt = "已到答题时间，系统将为您提交试卷";
                     setTimeout(() => {
                         this.commitPaper();

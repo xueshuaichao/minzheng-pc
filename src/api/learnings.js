@@ -36,11 +36,12 @@ export default {
     },
     // 用户基本信息
     userInfo(param) {
-        return axios.get('/learn/v1/user/info', param);
+        // return axios.get('/learn/v1/user/info', param);
+        return axios.post('/ucenter/userInfo', param);
     },
     // 删除错题
     questionRemove(param) {
-        return axios.post('/learn/v1/question/remove', param);
+        return axios.post('/exam/v1/errorBook/remove', param);
     },
     // 消息列表
     messageFindByCondition(param) {
@@ -48,7 +49,7 @@ export default {
     },
     fileUpload(param) {
         console.log(param);
-        return axios.file('/resource/v1/v1/resource/uploadImage', param);
+        return axios.file('/resource/v1/resource/uploadImage', param);
     },
     // 获取验证码
     userSendSms(param) {
@@ -57,5 +58,17 @@ export default {
     // 试卷分类
     examGetCategoryTree() {
         return axios.get('/learn/v1/exam/getCategoryTree');
+    },
+    // 用户信息提交
+    abc() {
+        return axios.get('/learn/v1/exam/getCategoryTree');
+    },
+    // 修改密码
+    updatePassword() {
+        return axios.post('/learn/v1/user/updatePassword');
+    },
+    // 更新用户信息
+    userUpdate(param) {
+        return axios.post('/learn/v1/user/update', param);
     },
 };
