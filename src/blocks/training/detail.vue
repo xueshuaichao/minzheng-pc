@@ -31,7 +31,7 @@
                         :class="{ disable: disabled }"
                         @click="changeStaus"
                     >
-                        {{ detail.applyStatus ? "取消报名" : "立即报名" }}
+                        {{ detail.applyStatus ? "已报名" : "立即报名" }}
                     </button>
                 </div>
             </div>
