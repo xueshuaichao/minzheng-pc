@@ -35,7 +35,10 @@
             </div>
         </div>
 
-        <div class="content-box">
+        <div
+            v-if="taskList.length > 0"
+            class="content-box"
+        >
             <div
                 v-for="item in taskList"
                 :key="item.id"
@@ -63,6 +66,12 @@
                     />
                 </div>
             </div>
+        </div>
+        <div
+            v-else
+            class="noData"
+        >
+            <p>十分抱歉，您搜索的内容我们暂未收录，您可以尝试搜索其他内容</p>
         </div>
         <div style="margin-top:20px;">
             <Page
@@ -130,6 +139,14 @@ export default {
 
 <style lang="less" scoped>
 @import "../index.less";
+.noData {
+    margin-top: 60px;
+    margin-bottom: 50px;
+    p {
+        font-size: 18px;
+        text-align: center;
+    }
+}
 .content {
     .header {
         height: 63px;

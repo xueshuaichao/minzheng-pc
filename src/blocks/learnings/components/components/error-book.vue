@@ -72,7 +72,10 @@
                 </div>
             </div>
         </div>
-        <div class="content-error-box">
+        <div
+            v-if="errorList.length > 0"
+            class="content-error-box"
+        >
             <div
                 v-for="item in errorList"
                 :key="item.id"
@@ -122,6 +125,12 @@
                     移除错题
                 </div>
             </div>
+        </div>
+        <div
+            v-else
+            class="noData"
+        >
+            <p>十分抱歉，您搜索的内容我们暂未收录，您可以尝试搜索其他内容</p>
         </div>
         <div style="margin-top:20px;">
             <Page
@@ -232,6 +241,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.noData {
+    margin-top: 60px;
+    margin-bottom: 50px;
+    p {
+        font-size: 18px;
+        text-align: center;
+    }
+}
 .search {
     width: 343px;
     height: 40px;

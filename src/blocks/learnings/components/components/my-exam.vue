@@ -10,7 +10,10 @@
                 @click="handlePagechange(1)"
             >
         </div>
-        <div class="content-box">
+        <div
+            v-if="testList.length > 0"
+            class="content-box"
+        >
             <div
                 v-for="item in testList"
                 :key="item.id"
@@ -44,6 +47,12 @@
                     重新测试
                 </div>
             </div>
+        </div>
+        <div
+            v-else
+            class="noData"
+        >
+            <p>十分抱歉，您搜索的内容我们暂未收录，您可以尝试搜索其他内容</p>
         </div>
         <div style="margin-top:20px;">
             <Page
@@ -102,6 +111,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.noData {
+    padding-top: 60px;
+    margin-bottom: 50px;
+    p {
+        font-size: 18px;
+        text-align: center;
+    }
+}
 .search {
     width: 343px;
     height: 40px;
@@ -109,7 +126,7 @@ export default {
     border: 1px solid #e6e6e6;
     position: relative;
     float: right;
-    transform: translate(-14px, -67px);
+    transform: translate(-14px, -53px);
     img {
         position: absolute;
         top: 11px;

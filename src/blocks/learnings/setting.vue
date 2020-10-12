@@ -33,15 +33,15 @@
                 :label-width="80"
             >
                 <FormItem
-                    label="姓名"
-                    prop="name"
+                    label="用户名"
+                    prop="username"
                 >
                     <div
                         v-if="!isEdit"
                         style="display:flex;align-items:center"
                     >
                         <Input
-                            v-model="formValidate1.name"
+                            v-model="formValidate1.username"
                             style="width:176px;margin-right:5px;"
                         />
                     </div>
@@ -166,7 +166,7 @@ export default {
         return {
             visible: false,
             formValidate1: {
-                name: '',
+                username: '',
                 phone: '',
                 code: '',
                 selectedList: [],
@@ -177,7 +177,7 @@ export default {
                 phone: '',
             },
             ruleValidate1: {
-                name: [
+                username: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
                 ],
                 phone: [
@@ -344,7 +344,7 @@ export default {
                 .then((data) => {
                     console.log(data, 'data555');
                     const userInfo = data.data;
-                    this.formValidate1.name = userInfo.username;
+                    this.formValidate1.username = userInfo.username;
                     this.formValidate1.phone = userInfo.userMobile;
                     this.formValidate1.selectedList = userInfo.selectedList || [];
                     this.avatar = userInfo.avatar;
