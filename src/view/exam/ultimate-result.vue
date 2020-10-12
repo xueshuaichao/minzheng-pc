@@ -86,8 +86,18 @@
                 >
                     申请重考
                 </Button>
-                <p class="tip">
+                <p
+                    v-if="trainEndTime > time"
+                    class="tip"
+                >
                     任务结束之后才能查看试卷详情
+                </p>
+                <p
+                    v-else
+                    class="tip2 tip"
+                    @click="resultBtn"
+                >
+                    查看试卷详情
                 </p>
             </div>
         </div>
@@ -119,33 +129,49 @@ export default {
             showModel: false,
             selItem: null,
             sceneId: 0,
+            trainEndTime: 0,
+            time: new Date().getTime(),
         };
     },
     created() {
         if (this.$route) {
             this.paperId = this.$route.params.id;
+            this.trainEndTime = this.$route.query.trainEndTime;
             this.getExamResultOverview();
         }
     },
     methods: {
-        // 开始考试
-        joinScene(exam) {
-            const params = {
-                sceneId: exam.id,
-                businessId: 1, //
-                businessType: 1,
-                // userId: store.state.user.userInfo ? store.state.user.userInfo.id : 1000,
-            };
-            return api.joinScene(params).then((data) => {
-                this.$router.push({
-                    name: 'examDetail',
-                    params: {
-                        id: exam.id,
-                        paperId: data.data,
-                        // type: exam.purposeType,
-                    },
-                });
+        resultBtn() {
+            this.$router.push({
+                name: 'examResult',
+                params: {
+                    id: this.paperId,
+                    // type: this.saveData.purposeType,
+                    // paperId: this.saveData.paperId,
+                },
             });
+        },
+        closeing(arg) {
+            this.showModel = false;
+            if (arg) {
+                const params = {
+                    sceneId: this.examDetail.sceneId,
+                    businessId: 1, //
+                    businessType: 1,
+                };
+                api.joinScene(params).then((data) => {
+                    this.$router.push({
+                        name: 'examDetail',
+                        params: {
+                            id: this.examDetail.sceneId,
+                            paperId: data.data,
+                        },
+                        query: {
+                            examType: this.$route.query.examType,
+                        },
+                    });
+                });
+            }
         },
         // 试卷信息
         getExamResultOverview() {
@@ -277,6 +303,10 @@ export default {
             color: #d14242;
             line-height: 28px;
             margin-top: 16px;
+        }
+        .tip2 {
+            color: #4a90e2;
+            cursor: pointer;
         }
     }
 }

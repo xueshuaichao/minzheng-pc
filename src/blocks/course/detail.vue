@@ -35,18 +35,17 @@
                             class="playCon"
                             style="position: relative;height:400px"
                         >
-                            <iframe
+                            <!-- <iframe
                                 id="aliyunPreview"
                                 :src="pdfurl"
                                 style="width: 100%;height: 100%;position: absolute;"
-                            />
-                            <!-- <iframe
-                                :src="
-                                    '/js/pdfjs/web/viewer.html?file=' + pdfurl
-                                "
-                                style="width: 100%;height: 100%;position: absolute;"
                             /> -->
+                            <iframe
+                                :src="'js/pdfjs/web/viewer.html?file=' + pdfurl"
+                                style="width: 100%;height: 100%;position: absolute;"
+                            />
                         </div>
+                        s
                     </div>
                 </div>
                 <div class="right">
@@ -97,7 +96,6 @@
                     :course-intro="courseInfo"
                     :catelog-list="catelogList"
                     :zhjudge="courseInfo.starAvg - 0"
-                    :myjudge="courseInfo.stars - 0"
                     @getrecourseId="getrecourseId"
                     @changeInfo="changeInfo"
                 />
@@ -110,6 +108,7 @@ import './index.less';
 import CourseInfo from './components/courseInfo.vue';
 // import store from '../../store/index';
 import api from '../../api/course';
+import apitask from '../../api/exam';
 /* eslint-disable */
 export default {
     name: "CourseDetail",
@@ -230,13 +229,37 @@ export default {
                     this.getPDFandYinpin(val);
                 } else if (val.detailType === "4") {
                     // 试题
+                    //  console.log(val);
+                    this.joinScene(val);
                 }
             }
         },
-        // 保存课程进度
+        // 报名考试
+        joinScene(exam) {
+            const params = {
+                sceneId: exam.detailId,
+                businessId: 1, //
+                businessType: 1
+                // userId: store.state.user.userInfo ? store.state.user.userInfo.id : 1000,
+            };
+            return apitask.joinScene(params).then(data => {
+                this.$router.push({
+                    name: "examDetail",
+                    params: {
+                        id: exam.detailId,
+                        paperId: data.data
+                        // type: exam.purposeType,
+                    }
+                });
+            });
+        },
+        // 保存课程进度L
         saveLearningLog() {
             this.saveLearningParams.detailId = this.courseItemDetailId;
             this.saveLearningParams.recordId = this.courseInfo.recordId;
+            this.saveLearningParams.maxLength = Math.round(
+                this.player.getDuration()
+            );
             this.saveLearningParams.curSecond = Math.round(
                 this.player.getCurrentTime()
             );
@@ -329,7 +352,7 @@ export default {
                     //     'courseId',
                     // );
                     this.saveLearningLog();
-                    this.clearTimeing();
+                    // this.clearTimeing();
                 });
                 this.player.on("ended", () => {
                     // 保存记录
@@ -343,12 +366,12 @@ export default {
             if (this.IntervalName) {
                 clearInterval(this.IntervalName);
                 this.IntervalName = null;
-                console.log("清楚定时器");
+                // console.log("清楚定时器");
             }
         },
         // 加入选学
         startStudy(id) {
-            console.log(this.btntext);
+            // console.log(this.btntext);
             if (this.btntext === "加入选学") {
                 const param = {
                     courseId: id,
@@ -362,20 +385,31 @@ export default {
                         this.courseDetail(this.detailparam);
                         this.$Message.success("加入成功");
                     }
-                    console.log(res);
+                    // console.log(res);
                 });
             } else {
                 this.$refs.courseInfo.changeTab("2");
                 // console.log(this.$refs.courseInfo.lastCourse);
                 // 如果有上次看过的记录  就继续播放上次的课程
-
+                if (this.btntext === "继续学习") {
+                    // console.log(this.getlastCourse(this.catelogList))
+                    // console.log(111111111111,'继续学习')
+                    setTimeout(() => {
+                        this.lastCourse = this.getlastCourse(this.catelogList);
+                        // }
+                        // console.log(this.lastCourse);
+                        this.getrecourseId(this.lastCourse);
+                    }, 900);
+                }
                 // 没有记录  默认播放第一个
-                setTimeout(() => {
-                    this.lastCourse = this.getfirstCourse(this.catelogList);
-                    // }
-                    console.log(this.lastCourse);
-                    this.getrecourseId(this.lastCourse);
-                }, 900);
+                if (this.btntext === "开始学习") {
+                    setTimeout(() => {
+                        this.lastCourse = this.getfirstCourse(this.catelogList);
+                        // }
+                        // console.log(this.lastCourse);
+                        this.getrecourseId(this.lastCourse);
+                    }, 900);
+                }
             }
         },
         // formatDate(inputTime) {
@@ -436,6 +470,25 @@ export default {
                 this.catelogList = data;
                 // console.log(this.datachang());
             });
+        },
+        getlastCourse(data) {
+            let result = null;
+            if (!data) {
+                return;
+            }
+            for (const i in data) {
+                if (result !== null) {
+                    break;
+                }
+                const item = data[i];
+                if (item.studyProcess && item.studyProcess.isLastPlay === 1) {
+                    result = item;
+                    break;
+                } else if (item.childrenList && item.childrenList.length > 0) {
+                    result = this.getlastCourse(item.childrenList);
+                }
+            }
+            return result;
         },
         getfirstCourse(data) {
             let result = null;

@@ -283,12 +283,14 @@
 
 <script>
 import api from '../../../api/course';
+// import store from '../../../store/index';
 /* eslint-disable */
 export default {
     components: {},
-    props: ["catelogList", "courseIntro", "zhjudge", "myjudge"],
+    props: ["catelogList", "courseIntro", "zhjudge"],
     data() {
         return {
+            myjudge: 0,
             changeInfo: "1",
             noJudge: false,
             isJudge: false,
@@ -335,7 +337,6 @@ export default {
             }
         },
         changeTab(num) {
-            console.log(num);
             this.changeInfo = num;
             this.$emit("changeInfo", num);
             if (num === "3" && this.courseIntro.isEvaluate === 1) {
@@ -344,9 +345,7 @@ export default {
                 this.myjudge = this.courseIntro.stars - 0;
             } else if (num === "3" && !this.courseIntro.recordId) {
                 this.noJudge = true;
-                console.log(this.noJudge);
             }
-            console.log(this.courseIntro.stars - 0);
         },
         submitCourseRatingForm() {
             this.judgeparam.courseId = this.courseIntro.id;
@@ -356,6 +355,8 @@ export default {
                 if (res.success) {
                     this.isJudge = true;
                     this.noJudge = true;
+                    // this.$parent.courseDetail(this.courseIntro);
+                    // this.changeTab("3");
                 }
             });
         },

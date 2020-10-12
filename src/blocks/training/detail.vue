@@ -11,12 +11,12 @@
                         {{ detail.name }}
                     </h4>
                     <p class="time">
-                        培训时间：{{ detail.trainStartTime }} ~
-                        {{ detail.trainEndTime }}
-                    </p>
-                    <p class="time">
                         报名时间：{{ detail.applyStartTime }} ~
                         {{ detail.applyEndTime }}
+                    </p>
+                    <p class="time">
+                        培训时间：{{ detail.trainStartTime }} ~
+                        {{ detail.trainEndTime }}
                     </p>
                     <p class="infos infos-top">
                         <span>总课时：{{ detail.allClass }}</span>
@@ -27,11 +27,15 @@
                         <span>已学完：{{ detail.timeSchedule }}%</span>
                     </p>
                     <button
+                        v-if="!detail.applyStatus"
                         class="join"
                         :class="{ disable: disabled }"
                         @click="changeStaus"
                     >
-                        {{ detail.applyStatus ? "取消报名" : "立即报名" }}
+                        立即报名
+                    </button>
+                    <button v-else>
+                        已报名
                     </button>
                 </div>
             </div>
@@ -151,6 +155,8 @@ export default {
             showModel: false,
             selItem: null,
             sceneId: 0,
+            isLogin: false,
+            trainEndTime: 0,
         };
     },
     created() {
@@ -158,10 +164,23 @@ export default {
             this.taskId = Number(this.$route.query.id);
         }
         this.getDetail();
-        this.getUserInfo();
+        this.checkLogin();
     },
     methods: {
+        checkLogin() {
+            this.$passport.checkCookie().then(
+                (res) => {
+                    console.log(res);
+                    this.isLogin = true;
+                    this.getUserInfo();
+                },
+                () => {
+                    this.isLogin = false;
+                },
+            );
+        },
         closeing(arg) {
+            // 考试须知之后进行跳转
             this.showModel = false;
             if (arg) {
                 // 跳转试卷。就是去考试的了
@@ -183,6 +202,7 @@ export default {
                         },
                         query: {
                             examType: this.selItem.scene.examType,
+                            trainEndTime: this.trainEndTime,
                         },
                     });
                 });
@@ -226,10 +246,7 @@ export default {
                         if (time > res.data.applyEndTime) {
                             this.disabled = 2;
                         }
-                        console.log(new Date(time).toLocaleString());
-                        console.log(
-                            new Date(res.data.applyEndTime).toLocaleString(),
-                        );
+                        this.trainEndTime = res.data.trainEndTime;
                         const trainEndTime = new Date(
                             res.data.trainEndTime,
                         ).toLocaleString();
@@ -273,19 +290,18 @@ export default {
                     content: msg,
                     duration: 3,
                 });
+            } else if (!this.isLogin) {
+                this.$passport.goPcLogin();
             } else if (this.lackInfo) {
                 // 补全信息，并返回报名页面
                 this.setModel();
             } else {
-                const status = this.detail.applyStatus ? 0 : 1;
                 api.changeTaskApply({
                     taskId: this.taskId,
-                    isApply: status,
+                    isApply: 1,
                 }).then((res) => {
                     if (res.success) {
-                        this.detail.applyStatus = this.detail.applyStatus
-                            ? 0
-                            : 1;
+                        this.detail.applyStatus = 1;
                         this.$Message.info({
                             content: '操作成功',
                             duration: 3,
